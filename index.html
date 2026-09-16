@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GEO — Portfolio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #e5a93b;
+    --white: #f2ede3;
+    --grey: #8c8c8c;
+    --grey-dim: #6b6b6b;
+    --line: rgba(242, 237, 227, 0.14);
+    --line-soft: rgba(242, 237, 227, 0.07);
+    --ease: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-soft: cubic-bezier(0.19, 1, 0.22, 1);
+
+    /* ---- ONE type scale for the whole site ---------------------------
+       Nothing sets a raw font-size outside this block, so Home, Works and
+       About can't drift apart. Same steps, same jumps, every page. */
+    --t-micro:   0.75rem;   /* tags, ticker items, small links   */
+    --t-meta:    0.8rem;    /* eyebrow, nav, category line       */
+    --t-body:    0.9rem;    /* card descriptions                 */
+    --t-lede:    1.08rem;   /* About body copy                   */
+    --t-h2:      1rem;      /* card heading                      */
+    --t-h1:      1.2rem;    /* featured + detail heading         */
+
+    /* ---- one vertical rhythm, shared by all three pages ---- */
+    --gap-head:  1.5rem;    /* eyebrow -> content or ticker */
+    --gap-strip: 2rem;      /* ticker  -> content           */
+  }
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; margin: 0; overflow: hidden; }
+
+  body {
+    background: #05070a;
+    color: var(--white);
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-weight: 300;
+  }
+
+  #intro .wordmark {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    color: var(--gold);
+  }
+  .wordmark { font-weight: 500; letter-spacing: 0.35em; display: inline-flex; }
+  .wordmark .ch {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.3em);
+    animation: letterIn 0.32s var(--ease-soft) forwards;
+  }
+  @keyframes letterIn { to { opacity: 1; transform: translateY(0); } }
+
+  /* ---------- intro ---------- */
+  #intro {
+    position: fixed; inset: 0; z-index: 200;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.5s var(--ease-soft), transform 0.5s var(--ease-soft);
+  }
+  #intro.hide { opacity: 0; transform: scale(1.01); pointer-events: none; }
+
+  /* ---------- background ---------- */
+  #sky { position: fixed; inset: 0; z-index: 0; background: #060708; }
+  #dots-bg { position: fixed; inset: 0; z-index: 1; display: block; pointer-events: none; }
+
+  /* ---------- nav ---------- */
+  nav a {
+    position: relative;
+    color: color-mix(in srgb, var(--white) 55%, transparent);
+    text-decoration: none;
+    font-size: var(--t-meta);
+    letter-spacing: 0.06em;
+    transition: color 0.3s var(--ease);
+    cursor: pointer;
+  }
+  nav a::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -0.35rem;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.22s var(--ease-soft);
+  }
+  nav a:hover, nav a.active { color: var(--white); }
+  nav a.active { color: var(--gold); }
+  nav a:hover::after, nav a.active::after { transform: scaleX(1); }
+  nav a.active:hover::after { transform-origin: right; }
+  nav a:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; }
+  #nav-side a { transition: color 0.3s var(--ease), transform 0.3s var(--ease); }
+  #nav-side a:hover { transform: translateX(-4px); }
+
+  #nav-top {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    display: none; justify-content: center; gap: 2.25rem; padding: 1.6rem 0;
+  }
+  #nav-side {
+    position: fixed; right: 3rem; top: 50%; transform: translateY(-50%); z-index: 20;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 1.4rem;
+  }
+  @media (max-width: 767px) {
+    #nav-top { display: flex; }
+    #nav-side { display: none; }
+  }
+
+  /* ---------- section shell ---------- */
+  main { position: fixed; inset: 0; z-index: 10; }
+
+  section {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 1.5rem 2rem;
+    opacity: 0;
+    clip-path: inset(0 0 6% 0);
+    transition: opacity 0.32s var(--ease-soft), clip-path 0.38s var(--ease-soft);
+  }
+  section.active { display: flex; opacity: 1; clip-path: inset(0 0 0% 0); }
+  @media (min-width: 768px) {
+    section { padding: 0 11rem 0 6rem; }
+  }
+
+  /* Works and About can outgrow one screen, so they scroll and sit at the
+     top. Home never scrolls — the wheel steps the featured item instead. */
+  #works, #about {
+    justify-content: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 6rem;
+    padding-bottom: 3rem;
+  }
+  @media (min-width: 768px) {
+    #works, #about { padding-top: 5rem; padding-bottom: 3rem; }
+  }
+  /* without this, a flex column with a fixed height (this one) shrinks its
+     children to fit rather than overflowing and scrolling — squashing the
+     eyebrow/ticker/grid down instead of showing all of it. Locking every
+     direct child to its natural size forces the section to overflow and
+     scroll properly once the content (e.g. a tall grid of cards) is taller
+     than the screen, which is exactly what overflow-y: auto above expects. */
+  #works > *, #about > * { flex-shrink: 0; }
+
+  section.active .eyebrow,
+  section.active #featured-single,
+  section.active .ticker,
+  section.active .works-grid,
+  section.active .about-wrap {
+    animation: riseIn 0.4s var(--ease-soft) both;
+  }
+  section.active #featured-single,
+  section.active .ticker,
+  section.active .works-grid,
+  section.active .about-wrap { animation-delay: 0.05s; }
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* same eyebrow, same size, same gap below it, on all three pages */
+  .eyebrow {
+    color: var(--grey);
+    font-size: var(--t-meta);
+    letter-spacing: 0.08em;
+    margin: 0 0 var(--gap-head);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* ---------- the moving strip (Works: categories, About: skills) ------
+     Same component, same slot on the page, different payload. Runs at a
+     steady crawl; slows to almost still while the pointer is over it so a
+     category can be read and clicked. */
+  .ticker {
+    position: relative;
+    margin: 0 0 var(--gap-strip);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 94%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 4%, #000 94%, transparent);
+  }
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    animation: tickerScroll 32s linear infinite;
+  }
+  .ticker:hover .ticker-track,
+  .ticker:focus-within .ticker-track { animation-play-state: paused; }
+  @keyframes tickerScroll {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-12.5%, 0, 0); } /* one of the 8 identical copies */
+  }
+  .ticker-group { display: flex; }
+  .ticker-item {
+    font-family: inherit;
+    font-size: var(--t-micro);
+    letter-spacing: 0.08em;
+    line-height: 1;
+    white-space: nowrap;
+    padding: 0.8rem 1.4rem;
+    background: none;
+    border: none;
+    border-right: 1px solid var(--line-soft);
+    color: color-mix(in srgb, var(--white) 55%, transparent);
+    transition: color 0.25s var(--ease), background 0.25s var(--ease);
+  }
+  button.ticker-item { cursor: pointer; }
+  button.ticker-item:hover { color: var(--white); background: rgba(242, 237, 227, 0.04); }
+  .ticker-item.active { color: var(--gold); }
+  .ticker-item.active::before {
+    content: '';
+    display: inline-block;
+    width: 4px; height: 4px;
+    margin-right: 0.55rem;
+    vertical-align: middle;
+    background: var(--gold);
+  }
+  .ticker-item:focus-visible { outline: 1px solid var(--gold); outline-offset: -3px; }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track { animation: none; flex-wrap: wrap; width: 100%; }
+    .ticker-group { flex-wrap: wrap; }
+    .ticker-group:not(:first-child) { display: none; }
+  }
+
+  /* ---------- project card: one layout, used by Home and Works ---------- */
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    cursor: pointer;
+    transition: transform 0.22s var(--ease-soft);
+  }
+  .card:hover { transform: translateY(-4px); }
+  @media (min-width: 768px) {
+    .card.featured { flex-direction: row; align-items: flex-start; gap: 2rem; }
+  }
+
+  .thumb {
+    position: relative;
+    background: #d9d9d9;
+    color: #444;
+    font-size: var(--t-micro);
+    letter-spacing: 0.05em;
+    display: flex; align-items: center; justify-content: center;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .thumb img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 0.3s var(--ease-soft), filter 0.3s var(--ease-soft);
+  }
+  .card:hover .thumb img { transform: scale(1.04); filter: brightness(0.94); }
+  .thumb::after {
+    content: '';
+    position: absolute; top: 0; bottom: 0; left: 0;
+    width: 2px;
+    background: var(--gold);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--gold) 65%, transparent);
+    opacity: 0;
+  }
+  .card:hover .thumb::after {
+    opacity: 1;
+    animation: scanSweep 0.45s var(--ease-soft) forwards;
+  }
+  @keyframes scanSweep {
+    from { transform: translateX(-4px); opacity: 1; }
+    to { transform: translateX(calc(100% + 4px)); opacity: 0; }
+  }
+  @media (min-width: 768px) {
+    .card.featured .thumb { width: 18rem; }
+  }
+
+  .card-heading {
+    color: var(--white);
+    font-size: var(--t-h2);
+    font-weight: 500;
+    margin: 0 0 0.4rem;
+    transition: color 0.3s var(--ease);
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .card-heading::after {
+    content: '→';
+    display: inline-block;
+    color: var(--gold);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+  .card:hover .card-heading { color: var(--gold); }
+  .card:hover .card-heading::after { opacity: 1; transform: translateX(0); }
+  .card-tag {
+    color: var(--grey);
+    font-size: var(--t-micro);
+    letter-spacing: 0.03em;
+    margin: 0 0 0.6rem;
+  }
+  .desc {
+    color: color-mix(in srgb, var(--white) 78%, transparent);
+    font-size: var(--t-body);
+    line-height: 1.65;
+    max-width: 28rem;
+    margin: 0;
+  }
+  .desc.clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .desc.clamp.expanded { display: block; -webkit-line-clamp: unset; overflow: visible; }
+  .desc.empty { color: var(--grey-dim); font-style: italic; }
+  .more-toggle {
+    display: inline-block;
+    margin-top: 0.45rem;
+    color: var(--gold);
+    font-size: var(--t-micro);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: opacity 0.25s ease;
+  }
+  .more-toggle:hover { opacity: 0.75; }
+
+  /* ---------- Home ---------- */
+  #featured-single {
+    max-width: 46rem;
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.26s var(--ease-soft), transform 0.26s var(--ease-soft);
+  }
+  #featured-single.fade-next { opacity: 0; transform: translateX(-12px); }
+  #featured-single.fade-prev { opacity: 0; transform: translateX(12px); }
+
+  #featured-dots {
+    display: flex; align-items: center; gap: 0.55rem;
+    margin-top: 1.9rem;
+  }
+  #featured-dots button {
+    width: 6px; height: 6px;
+    background: color-mix(in srgb, var(--white) 32%, transparent);
+    border: none; padding: 0; cursor: pointer;
+    transition: background 0.2s var(--ease-soft), width 0.2s var(--ease-soft);
+  }
+  #featured-dots button:hover { background: color-mix(in srgb, var(--white) 70%, transparent); }
+  #featured-dots button.active { background: var(--gold); width: 18px; }
+
+  /* ---------- Works grid: every card identical ---------- */
+  .works-grid { display: grid; gap: 1.75rem; align-content: start; }
+  @media (min-width: 640px) { .works-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .works-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem; } }
+  .works-empty { color: var(--grey); font-size: var(--t-body); grid-column: 1 / -1; }
+
+  /* ---------- About ---------- */
+  .about-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    max-width: 40rem;
+  }
+  @media (min-width: 700px) {
+    .about-wrap { flex-direction: row; align-items: flex-start; gap: 2.5rem; max-width: 46rem; }
+  }
+  .about-photo {
+    position: relative;
+    width: 9rem;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+    background: #d9d9d9;
+    color: #444;
+    font-size: var(--t-micro);
+    letter-spacing: 0.05em;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+  .about-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .about-text {
+    margin: 0;
+    font-size: var(--t-lede);
+    line-height: 1.75;
+    color: color-mix(in srgb, var(--white) 85%, transparent);
+    min-width: 0;
+  }
+
+  /* ---------- project detail overlay ---------- */
+  #detail {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(2, 3, 5, 0.94);
+    display: none;
+    flex-direction: column;
+    padding: 1.1rem 1.5rem 1.25rem;
+    opacity: 0;
+    transition: opacity 0.26s var(--ease-soft);
+  }
+  #detail.open { display: flex; opacity: 1; }
+
+  #detail-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 92rem;
+    margin: 0 auto 1rem;
+    flex-shrink: 0;
+  }
+  #detail-heading {
+    font-size: var(--t-h1);
+    font-weight: 500;
+    color: var(--white);
+    margin: 0;
+    min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.28s var(--ease-soft) 0.06s, transform 0.28s var(--ease-soft) 0.06s;
+  }
+  #detail.open #detail-heading { opacity: 1; transform: translateY(0); }
+  .detail-actions { display: flex; align-items: center; gap: 1.1rem; flex-shrink: 0; }
+  #detail-close, #detail-fullscreen {
+    background: none; border: none; cursor: pointer;
+    color: var(--white);
+    font-family: inherit;
+    padding: 0;
+    transition: color 0.3s var(--ease), transform 0.35s var(--ease);
+  }
+  #detail-close:hover, #detail-fullscreen:hover { color: var(--gold); }
+  #detail-close { font-size: 1.5rem; line-height: 1; }
+  #detail-close:hover { transform: rotate(90deg); }
+  #detail-fullscreen {
+    display: flex; align-items: center; justify-content: center;
+    width: 1.35rem; height: 1.35rem;
+    opacity: 0.85;
+  }
+  #detail-fullscreen:hover { opacity: 1; transform: scale(1.15); }
+  #detail-fullscreen svg { width: 100%; height: 100%; }
+
+  /* slide on the left, write-up parked on the right */
+  #detail-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
+    width: 100%;
+    max-width: 92rem;
+    margin: 0 auto;
+    flex: 1;
+    min-height: 0;
+  }
+  @media (min-width: 900px) {
+    #detail-main { grid-template-columns: minmax(0, 1fr) 19rem; }
+  }
+
+  #detail-scroll {
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold) transparent;
+    opacity: 0;
+    transform: scale(0.98);
+    transition: opacity 0.3s var(--ease-soft) 0.04s, transform 0.3s var(--ease-soft) 0.04s;
+  }
+  #detail.open #detail-scroll { opacity: 1; transform: scale(1); }
+  #detail-scroll::-webkit-scrollbar { width: 4px; }
+  #detail-scroll::-webkit-scrollbar-track { background: transparent; }
+  #detail-scroll::-webkit-scrollbar-thumb { background: var(--gold); }
+  #detail-scroll img { width: 100%; display: block; margin: 0 auto; }
+  #detail-empty {
+    color: var(--grey);
+    font-size: var(--t-body);
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  #detail-info {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+    border-top: 1px solid var(--line);
+    padding-top: 1.25rem;
+  }
+  @media (min-width: 900px) {
+    #detail-info {
+      border-top: none;
+      border-left: 1px solid var(--line);
+      padding: 0.15rem 0 0 1.75rem;
+    }
+  }
+  #detail-tag {
+    font-size: var(--t-micro);
+    letter-spacing: 0.03em;
+    color: var(--gold);
+    margin: 0 0 0.8rem;
+  }
+  #detail-desc {
+    font-size: var(--t-body);
+    line-height: 1.7;
+    color: color-mix(in srgb, var(--white) 78%, transparent);
+    margin: 0;
+  }
+  #detail-links { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.3rem; }
+  #detail-links a {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.45rem 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--white) 35%, transparent);
+    border-radius: 999px;
+    color: var(--white);
+    font-size: var(--t-micro);
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    transition: background 0.3s var(--ease), border-color 0.3s var(--ease), color 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+  #detail-links a:hover {
+    background: color-mix(in srgb, var(--gold) 14%, transparent);
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-2px);
+  }
+  #detail-links a .arrow { display: inline-block; transition: transform 0.3s var(--ease); }
+  #detail-links a:hover .arrow { transform: translate(2px, -2px); }
+
+  /* below 900px there's no room for a side panel, so the overlay becomes
+     one scroll and the write-up sits under the slide */
+  @media (max-width: 899px) {
+    #detail-main { display: block; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #detail-scroll { overflow: visible; }
+    #detail-info { overflow: visible; margin-top: 1.75rem; }
+  }
+
+  /* fullscreen: slide only */
+  #detail.fullscreen { padding: 1rem 0; }
+  #detail.fullscreen #detail-info,
+  #detail.fullscreen #detail-heading { display: none; }
+  #detail.fullscreen #detail-bar {
+    max-width: none;
+    margin-bottom: 0.6rem;
+    padding: 0 1.25rem;
+    justify-content: flex-end;
+  }
+  #detail.fullscreen #detail-main { grid-template-columns: minmax(0, 1fr); max-width: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div id="intro"><span class="wordmark">GEO</span></div>
+
+  <div id="sky"></div>
+  <canvas id="dots-bg"></canvas>
+
+  <nav id="nav-top">
+    <a data-id="works">Works</a>
+    <a data-id="home">Home</a>
+    <a data-id="about">About</a>
+  </nav>
+  <nav id="nav-side">
+    <a data-id="home">Home</a>
+    <a data-id="works">Works</a>
+    <a data-id="about">About</a>
+  </nav>
+
+  <main>
+    <section id="home" class="active">
+      <p class="eyebrow">Featured</p>
+      <div id="featured-single"></div>
+      <div id="featured-dots"></div>
+    </section>
+
+    <section id="works">
+      <p class="eyebrow">Works</p>
+      <div class="ticker" id="works-ticker"><div class="ticker-track"></div></div>
+      <div class="works-grid" id="works-grid"></div>
+    </section>
+
+    <section id="about">
+      <p class="eyebrow">About</p>
+      <div class="ticker" id="about-ticker"><div class="ticker-track"></div></div>
+      <div class="about-wrap">
+        <div class="about-photo" id="about-photo"></div>
+        <p class="about-text" id="about-text"></p>
+      </div>
+    </section>
+  </main>
+
+  <div id="detail">
+    <div id="detail-bar">
+      <p id="detail-heading"></p>
+      <div class="detail-actions">
+        <button id="detail-fullscreen" aria-label="Toggle fullscreen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/>
+          </svg>
+        </button>
+        <button id="detail-close" aria-label="Close">×</button>
+      </div>
+    </div>
+    <div id="detail-main">
+      <div id="detail-scroll"></div>
+      <aside id="detail-info">
+        <p id="detail-tag"></p>
+        <p id="detail-desc"></p>
+        <div id="detail-links"></div>
+      </aside>
+    </div>
+  </div>
+
+<script>
+  /* =========================================================================
+     EDIT EVERYTHING HERE. This is the only block you should need to touch.
+
+     FOLDER STRUCTURE (next to this index.html file):
+
+       works/
+         project-1/  face.jpg   <- horizontal cover, shown on the card
+                     slide.png  <- tall slide, opens in the overlay
+         project-2/  face.jpg   slide.png
+         project-3/  ...
+       about/
+         photo.jpg
+
+     >>> YOU NO LONGER HAVE TO LIST EVERY PROJECT HERE. <<<
+     On load the page looks for works/project-1 ... works/project-N (up to
+     SCAN_UP_TO) and shows every folder it finds, whether or not you've
+     written anything about it. A found folder with no entry below just
+     appears as "Project 7" with an empty write-up — add it here when you're
+     ready and the card fills in.
+
+     Accepted filenames: face.jpg / face.png / face.jpeg / face.webp /
+     cover.jpg / cover.png  — and slide.png / slide.jpg / slide.jpeg /
+     slide.webp. Folders must be named project-<number>.
+  ========================================================================= */
+  const SCAN_UP_TO = 30;   // raise this if you ever pass 30 projects
+
+  const CONTENT = {
+
+    featured: ["project-1", "project-2"], // which projects appear on Home, in order
+
+    projects: [
+      {
+        id: "project-1",
+        heading: "ReBrush — Simple Product Design",
+        tag: "Product Design",
+        categories: ["Product Design", "Mechanical"],
+        description:
+          "Motorcycle chain maintenance is essential for the smooth functioning and safety of the vehicle. However, the current methods of cleaning the chain are often unsafe, messy, and inefficient. Users usually clean the chain by hand using separate brushes, which exposes them to the risk of injury.",
+        links: { behance: "", github: "" },
+      },
+      {
+        id: "project-2",
+        heading: "Hyundai CRETA CMF",
+        tag: "CMF",
+        categories: ["CMF", "Automotive"],
+        description:
+          "A CMF (colour, material & finish) redesign for the Hyundai Creta, built on trend and market research and translated directly into the car's material palette and finish language — bringing the design forward while staying anchored to the brand's existing identity.",
+        links: { behance: "", github: "" },
+      },
+
+      /* ---- TO FILL IN -------------------------------------------------
+         These two are waiting on their write-ups. Until you add them the
+         cards still appear, just without a tag or description. Delete a
+         block entirely and the folder still shows up on its own.        */
+      {
+        id: "project-3",
+        heading: "",            // e.g. "Tactile Alarm Clock"
+        tag: "",                // the one label shown on the card
+        categories: [],         // every field it touches, for the filter strip
+        description: "",
+        links: { behance: "", github: "" },
+      },
+      {
+        id: "project-4",
+        heading: "",
+        tag: "",
+        categories: [],
+        description: "",
+        links: { behance: "", github: "" },
+      },
+    ],
+
+    about: {
+      image: "about/photo.jpg",
+      text:
+        "I'm an industrial design student at NID Andhra Pradesh, working at the intersection of physical and digital products — interactive, \"phygital\" objects that ask to be touched as much as they ask to be understood. " +
+        "A large part of every project goes into its technical core: the electronics, mechanical systems, and code that make an idea actually behave the way it's meant to, not just look like it does. That layer takes the most time, and I like it that way. " +
+        "I try to pull in whatever discipline a project needs, even ones outside design, because working across fields is usually where the sharpest ideas turn up. " +
+        "Most of what I build starts close to home — a friction, a habit, or a small everyday moment worth designing around.",
+
+      // these fill the moving strip on the About page
+      skills: [
+        "CAD — SolidWorks",
+        "Fusion 360",
+        "Arduino & embedded electronics",
+        "3D printing",
+        "Prototyping",
+        "Figma",
+        "PCB design",
+        "KeyShot",
+        "Sketching",
+      ],
+    },
+  };
+  /* ========================================================================= */
+
+
+  // ---------- find every project folder that actually exists ----------
+  const FACE_NAMES  = ['face.jpg', 'face.png', 'face.jpeg', 'face.webp', 'cover.jpg', 'cover.png'];
+  const SLIDE_NAMES = ['slide.png', 'slide.jpg', 'slide.jpeg', 'slide.webp'];
+
+  function probe(src) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(src);
+      img.onerror = () => resolve(null);
+      img.src = src;
+    });
+  }
+  async function firstThatLoads(paths) {
+    for (const p of paths) {
+      const hit = await probe(p);
+      if (hit) return hit;
+    }
+    return null;
+  }
+
+  const metaById = Object.fromEntries(CONTENT.projects.map((p) => [p.id, p]));
+  function prettyName(id) { return 'Project ' + id.replace('project-', ''); }
+
+  async function discoverProjects() {
+    const ids = [];
+    for (let i = 1; i <= SCAN_UP_TO; i++) ids.push('project-' + i);
+    CONTENT.projects.forEach((p) => { if (!ids.includes(p.id)) ids.push(p.id); });
+
+    const found = await Promise.all(ids.map(async (id) => {
+      const face = await firstThatLoads(FACE_NAMES.map((n) => `works/${id}/${n}`));
+      if (!face) return null;
+      const slide = await firstThatLoads(SLIDE_NAMES.map((n) => `works/${id}/${n}`));
+      const meta = metaById[id] || {};
+      return {
+        id,
+        heading: meta.heading || prettyName(id),
+        tag: meta.tag || '',
+        categories: meta.categories || [],
+        description: meta.description || '',
+        links: meta.links || {},
+        face,
+        slide,
+      };
+    }));
+
+    return found.filter(Boolean);
+  }
+
+  // what renders before the scan finishes, so the page is never blank
+  let PROJECTS = CONTENT.projects
+    .filter((p) => p.heading)
+    .map((p) => ({ ...p, face: `works/${p.id}/face.jpg`, slide: `works/${p.id}/slide.png` }));
+
+  function categoriesFor(project) {
+    if (!project) return ['Uncategorised'];
+    const cats = project.categories;
+    if (Array.isArray(cats) && cats.length) return cats.filter((c) => c != null && String(c).trim() !== '');
+    if (typeof cats === 'string' && cats.trim()) return [cats.trim()]; // written as a single string, not a list
+    if (project.tag && String(project.tag).trim()) return [String(project.tag).trim()];
+    return ['Uncategorised'];
+  }
+
+  // ---------- card ----------
+  function buildThumb(imagePath) {
+    const thumb = document.createElement('div');
+    thumb.className = 'thumb';
+    if (imagePath) {
+      const img = document.createElement('img');
+      img.src = imagePath;
+      img.alt = '';
+      img.onerror = () => { thumb.innerHTML = 'PROJECT IMAGE'; };
+      thumb.appendChild(img);
+    } else {
+      thumb.textContent = 'PROJECT IMAGE';
+    }
+    return thumb;
+  }
+
+  function buildCard(project, featured) {
+    const card = document.createElement('div');
+    card.className = 'card' + (featured ? ' featured' : '');
+    card.appendChild(buildThumb(project.face));
+
+    const text = document.createElement('div');
+    const h = document.createElement('p');
+    h.className = 'card-heading';
+    h.textContent = project.heading;
+    text.appendChild(h);
+
+    if (project.tag) {
+      const tag = document.createElement('p');
+      tag.className = 'card-tag';
+      tag.textContent = project.tag;
+      text.appendChild(tag);
+    }
+
+    const d = document.createElement('p');
+    d.className = 'desc';
+    if (project.description) {
+      d.textContent = project.description;
+    } else {
+      d.textContent = 'Write-up coming soon.';
+      d.classList.add('empty');
+    }
+    text.appendChild(d);
+
+    if (!featured) {
+      d.classList.add('clamp');
+      if (project.description) {
+        const toggle = document.createElement('span');
+        toggle.className = 'more-toggle';
+        toggle.textContent = 'More';
+        toggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const expanded = d.classList.toggle('expanded');
+          toggle.textContent = expanded ? 'Less' : 'More';
+        });
+        text.appendChild(toggle);
+      }
+    }
+
+    card.appendChild(text);
+    card.addEventListener('click', () => openDetail(project));
+    return card;
+  }
+
+  // ---------- Home ----------
+  const featuredEl = document.getElementById('featured-single');
+  const featuredDotsEl = document.getElementById('featured-dots');
+  let featuredIndex = 0;
+  let featuredList = [];
+
+  function computeFeatured() {
+    const byId = Object.fromEntries(PROJECTS.map((p) => [p.id, p]));
+    const picked = (CONTENT.featured || []).map((id) => byId[id]).filter(Boolean);
+    featuredList = picked.length ? picked : PROJECTS.slice(0, 3);
+    if (featuredIndex >= featuredList.length) featuredIndex = 0;
+  }
+
+  function renderFeatured() {
+    featuredEl.innerHTML = '';
+    if (!featuredList.length) return;
+    featuredEl.appendChild(buildCard(featuredList[featuredIndex], true));
+  }
+  function renderFeaturedDots() {
+    featuredDotsEl.innerHTML = '';
+    if (featuredList.length <= 1) return;
+    featuredList.forEach((project, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', 'Show ' + project.heading);
+      dot.className = i === featuredIndex ? 'active' : '';
+      dot.addEventListener('click', () => goToFeatured(i));
+      featuredDotsEl.appendChild(dot);
+    });
+  }
+
+  function transitionTo(newIndex, direction) {
+    const outClass = direction > 0 ? 'fade-next' : 'fade-prev';
+    featuredEl.classList.add(outClass);
+    setTimeout(() => {
+      featuredIndex = newIndex;
+      renderFeatured();
+      renderFeaturedDots();
+      featuredEl.classList.remove(outClass);
+    }, 220);
+  }
+  function stepFeatured(delta) {
+    if (featuredList.length <= 1) return;
+    const next = (featuredIndex + delta + featuredList.length) % featuredList.length;
+    transitionTo(next, delta);
+  }
+  function goToFeatured(i) {
+    if (i === featuredIndex || featuredList.length <= 1) return;
+    transitionTo(i, i > featuredIndex ? 1 : -1);
+  }
+
+  const homeSection = document.getElementById('home');
+  let wheelLocked = false;
+  homeSection.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    if (wheelLocked || Math.abs(e.deltaY) < 8) return;
+    wheelLocked = true;
+    stepFeatured(e.deltaY > 0 ? 1 : -1);
+    setTimeout(() => { wheelLocked = false; }, 750);
+  }, { passive: false });
+
+  let touchStartY = null;
+  homeSection.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; }, { passive: true });
+  homeSection.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
+  homeSection.addEventListener('touchend', (e) => {
+    if (touchStartY === null) return;
+    const dy = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(dy) > 40) stepFeatured(dy > 0 ? 1 : -1);
+    touchStartY = null;
+  });
+
+  // ---------- the moving strip ----------
+  // Always renders 8 identical copies of the content back to back — enough
+  // to cover any realistic screen width — and lets a CSS keyframe (not JS)
+  // scroll it left forever. Because nothing here depends on measuring the
+  // page at the right moment, it can't silently fail to show up the way a
+  // width-measured version can. Hovering pauses it via CSS (:hover), so a
+  // category can always be read and clicked.
+  const TICKER_COPIES = 8;
+  const PX_PER_SEC = 42; // roughly constant crawl speed regardless of list length
+
+  function buildTicker(container, items) {
+    const track = container.querySelector('.ticker-track');
+    track.innerHTML = '';
+    track.style.animationDuration = '';
+    if (!items.length) { container.style.display = 'none'; return; }
+    container.style.display = '';
+
+    for (let i = 0; i < TICKER_COPIES; i++) {
+      const group = document.createElement('div');
+      group.className = 'ticker-group';
+      items.forEach((item) => group.appendChild(item()));
+      track.appendChild(group);
+    }
+
+    // best-effort: if we can measure a copy's width, set a duration that
+    // keeps the crawl speed visually consistent regardless of list length.
+    // If this measurement comes back 0 (section not on screen yet, or the
+    // browser hasn't laid it out), the CSS default duration is still fine —
+    // it just isn't perfectly speed-matched, which is a cosmetic detail,
+    // not a missing ticker.
+    const oneCopyWidth = track.firstElementChild ? track.firstElementChild.offsetWidth : 0;
+    if (oneCopyWidth > 0) {
+      const duration = Math.max(14, (oneCopyWidth * TICKER_COPIES) / PX_PER_SEC);
+      track.style.animationDuration = duration + 's';
+    }
+  }
+
+  // ---------- Works ----------
+  const grid = document.getElementById('works-grid');
+  const worksTicker = document.getElementById('works-ticker');
+  let activeCategory = 'All';
+
+  function renderWorksGrid() {
+    grid.innerHTML = '';
+    const visible = activeCategory === 'All'
+      ? PROJECTS
+      : PROJECTS.filter((p) => categoriesFor(p).includes(activeCategory));
+
+    if (!visible.length) {
+      const empty = document.createElement('p');
+      empty.className = 'works-empty';
+      empty.textContent = 'Nothing under this category yet.';
+      grid.appendChild(empty);
+      return;
+    }
+    visible.forEach((project) => grid.appendChild(buildCard(project, false)));
+  }
+
+  function setCategory(cat) {
+    activeCategory = cat;
+    worksTicker.querySelectorAll('.ticker-item').forEach((el) => {
+      el.classList.toggle('active', el.dataset.cat === cat);
+    });
+    renderWorksGrid();
+  }
+
+  function renderWorksTicker() {
+    if (!PROJECTS.length) { worksTicker.style.display = 'none'; return; }
+    let cats;
+    try {
+      // .flatMap tolerates categoriesFor returning a plain string instead of
+      // an array (treats it as one item), so this only throws on something
+      // truly malformed — a project record that isn't a plain object, etc.
+      cats = ['All', ...Array.from(new Set(PROJECTS.flatMap((p) => categoriesFor(p) || [])))]
+        .filter((c) => c != null && String(c).trim() !== '');
+      if (cats.length < 1) cats = ['All'];
+    } catch (err) {
+      // whatever's odd about the category data on one of your real projects,
+      // fall back to something guaranteed safe rather than showing nothing
+      console.error('Category list failed to build, falling back to project names:', err);
+      cats = ['All', ...PROJECTS.map((p) => p.heading || p.id)];
+    }
+
+    try {
+      const makers = cats.map((cat) => () => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ticker-item' + (cat === activeCategory ? ' active' : '');
+        btn.dataset.cat = cat;
+        btn.textContent = cat;
+        btn.addEventListener('click', () => setCategory(cat));
+        return btn;
+      });
+      buildTicker(worksTicker, makers);
+    } catch (err) {
+      console.error('Works ticker failed to build:', err);
+      worksTicker.style.display = 'none';
+    }
+  }
+
+  // ---------- About ----------
+  document.getElementById('about-text').textContent = CONTENT.about.text;
+
+  const aboutPhotoEl = document.getElementById('about-photo');
+  if (CONTENT.about.image) {
+    const img = document.createElement('img');
+    img.src = CONTENT.about.image;
+    img.alt = '';
+    img.onerror = () => { aboutPhotoEl.innerHTML = 'ADD PHOTO'; };
+    aboutPhotoEl.appendChild(img);
+  } else {
+    aboutPhotoEl.textContent = 'ADD PHOTO';
+  }
+
+  const aboutTicker = document.getElementById('about-ticker');
+  function renderAboutTicker() {
+    const makers = (CONTENT.about.skills || []).map((skill) => () => {
+      const span = document.createElement('span');
+      span.className = 'ticker-item';
+      span.textContent = skill;
+      return span;
+    });
+    buildTicker(aboutTicker, makers);
+  }
+
+  // ---------- project detail overlay ----------
+  const detail = document.getElementById('detail');
+  const detailHeading = document.getElementById('detail-heading');
+  const detailScroll = document.getElementById('detail-scroll');
+  const detailTag = document.getElementById('detail-tag');
+  const detailDesc = document.getElementById('detail-desc');
+  const detailLinks = document.getElementById('detail-links');
+  const fullscreenBtn = document.getElementById('detail-fullscreen');
+
+  const LINK_LABELS = { behance: 'Behance', github: 'GitHub' };
+
+  function emptySlideNote(project) {
+    const empty = document.createElement('p');
+    empty.id = 'detail-empty';
+    empty.textContent = 'No slide image in this folder yet. Add slide.png to works/' + project.id + '/.';
+    return empty;
+  }
+
+  function openDetail(project) {
+    detailHeading.textContent = project.heading;
+    detailScroll.innerHTML = '';
+    detailScroll.scrollTop = 0;
+
+    if (project.slide) {
+      const img = document.createElement('img');
+      img.src = project.slide;
+      img.alt = project.heading;
+      img.onerror = () => { img.replaceWith(emptySlideNote(project)); };
+      detailScroll.appendChild(img);
+    } else {
+      detailScroll.appendChild(emptySlideNote(project));
+    }
+
+    // write-up panel — stays on the right, independent of the slide
+    detailTag.textContent = project.tag || '';
+    detailTag.style.display = project.tag ? '' : 'none';
+    detailDesc.textContent = project.description || 'Write-up coming soon.';
+
+    detailLinks.innerHTML = '';
+    const links = project.links || {};
+    Object.keys(links).forEach((key) => {
+      const url = links[key];
+      if (!url) return;
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      const label = document.createElement('span');
+      label.textContent = LINK_LABELS[key] || key;
+      const arrow = document.createElement('span');
+      arrow.className = 'arrow';
+      arrow.textContent = '↗';
+      a.appendChild(label);
+      a.appendChild(arrow);
+      detailLinks.appendChild(a);
+    });
+
+    detail.classList.remove('fullscreen');
+    detail.classList.add('open');
+  }
+  function closeDetail() {
+    detail.classList.remove('open');
+    detail.classList.remove('fullscreen');
+  }
+  function toggleFullscreen() { detail.classList.toggle('fullscreen'); }
+
+  document.getElementById('detail-close').addEventListener('click', closeDetail);
+  fullscreenBtn.addEventListener('click', toggleFullscreen);
+  detail.addEventListener('click', (e) => { if (e.target === detail) closeDetail(); });
+  window.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (detail.classList.contains('fullscreen')) toggleFullscreen();
+    else closeDetail();
+  });
+
+  // ---------- interactive dot-grid background ----------
+  // wrapped in try/catch: a canvas failure here should never take the nav,
+  // the ticker, or anything else on the page down with it
+  try {
+  (function initDotGrid() {
+    const canvas = document.getElementById('dots-bg');
+    const ctx = canvas.getContext('2d');
+
+    const SPACING = 34;
+    const BASE_RADIUS = 1.3;
+    const MAX_RADIUS = 5.5;
+    const INFLUENCE = 170;
+    const MAX_PUSH = 10;
+    const EASE = 0.18;
+
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let w = 0, h = 0, cols = 0, rows = 0;
+    let dots = [];
+    let pointer = { x: -9999, y: -9999 };
+    let tracked = { x: -9999, y: -9999 };
+    let reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function resize() {
+      w = window.innerWidth;
+      h = window.innerHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      cols = Math.ceil(w / SPACING) + 1;
+      rows = Math.ceil(h / SPACING) + 1;
+      const offsetX = (w - (cols - 1) * SPACING) / 2;
+      const offsetY = (h - (rows - 1) * SPACING) / 2;
+
+      dots = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          dots.push({ x: offsetX + c * SPACING, y: offsetY + r * SPACING });
+        }
+      }
+    }
+
+    function draw() {
+      drawFrame();
+      if (!reduced) requestAnimationFrame(draw);
+    }
+
+    function drawFrame() {
+      tracked.x += (pointer.x - tracked.x) * EASE;
+      tracked.y += (pointer.y - tracked.y) * EASE;
+
+      ctx.clearRect(0, 0, w, h);
+
+      for (let i = 0; i < dots.length; i++) {
+        const d = dots[i];
+        let x = d.x, y = d.y, radius = BASE_RADIUS, alpha = 0.16, channel = 153;
+
+        const dx = d.x - tracked.x;
+        const dy = d.y - tracked.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < INFLUENCE) {
+          const t = 1 - dist / INFLUENCE;
+          const eased = t * t * (3 - 2 * t);
+          radius = BASE_RADIUS + eased * (MAX_RADIUS - BASE_RADIUS);
+          alpha = 0.16 + eased * 0.4;
+          channel = 153 + eased * (235 - 153);
+          if (dist > 0.01) {
+            const push = eased * MAX_PUSH;
+            x = d.x + (dx / dist) * push;
+            y = d.y + (dy / dist) * push;
+          }
+        }
+
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${channel | 0}, ${channel | 0}, ${channel | 0}, ${alpha})`;
+        ctx.fill();
+      }
+    }
+
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', (e) => { pointer.x = e.clientX; pointer.y = e.clientY; });
+    window.addEventListener('mouseleave', () => { pointer.x = -9999; pointer.y = -9999; });
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches[0]) { pointer.x = e.touches[0].clientX; pointer.y = e.touches[0].clientY; }
+    }, { passive: true });
+    window.addEventListener('touchend', () => { pointer.x = -9999; pointer.y = -9999; });
+
+    resize();
+    draw();
+  })();
+  } catch (err) { console.error('Background dot-grid failed to start:', err); }
+
+  // ---------- intro ----------
+  window.addEventListener('DOMContentLoaded', () => {
+    const wordmark = document.querySelector('#intro .wordmark');
+    if (!wordmark) return;
+    const text = wordmark.textContent;
+    wordmark.innerHTML = '';
+    [...text].forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.className = 'ch';
+      span.textContent = ch;
+      span.style.animationDelay = (0.1 + i * 0.045) + 's';
+      wordmark.appendChild(span);
+    });
+
+    setTimeout(() => {
+      const intro = document.getElementById('intro');
+      intro.classList.add('hide');
+      setTimeout(() => intro.remove(), 500);
+    }, 1100);
+  });
+
+  // ---------- nav ----------
+  const links = document.querySelectorAll('nav a');
+  const sections = document.querySelectorAll('main section');
+  function goTo(id) {
+    sections.forEach((s) => s.classList.toggle('active', s.id === id));
+    links.forEach((l) => l.classList.toggle('active', l.dataset.id === id));
+  }
+  links.forEach((l) => l.addEventListener('click', () => goTo(l.dataset.id)));
+
+  // ---------- boot ----------
+  computeFeatured();
+  renderFeatured();
+  renderFeaturedDots();
+  renderWorksGrid();
+  renderWorksTicker();
+  renderAboutTicker();
+  goTo('home');
+
+  discoverProjects().then((found) => {
+    if (!found.length) return;
+    PROJECTS = found;
+    try { computeFeatured(); renderFeatured(); renderFeaturedDots(); }
+    catch (err) { console.error('Featured rebuild failed:', err); }
+    try { renderWorksGrid(); }
+    catch (err) { console.error('Works grid rebuild failed:', err); }
+    try { renderWorksTicker(); } // real categories may differ from the placeholder set
+    catch (err) { console.error('Works ticker rebuild failed:', err); }
+  }).catch((err) => console.error('Project discovery failed:', err));
+</script>
+</body>
+</html>
