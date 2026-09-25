@@ -14,13 +14,20 @@ window.SITE = {
   role: "Industrial Designer",
   school: "NID Andhra Pradesh",
   location: "India",
-  email: "hello@example.com",           // TODO: your public contact email
+  email: "geosubash@gmail.com",
   links: {
-    behance: "",                        // e.g. "https://behance.net/…"
-    linkedin: "",
-    instagram: "",
+    behance: "https://www.behance.net/geosubash",
+    linkedin: "https://www.linkedin.com/in/geo-subash-816a911ba/",
+    instagram: "https://www.instagram.com/geo.subash",
+    github: "https://github.com/geosubash-glitch",
   },
   resume: "",                           // e.g. "assets/resume.pdf"
+
+  // shown on the About page
+  certifications: [
+    { title: "Introduction to generative AI and agents", issuer: "Microsoft Learn · 2026", url: "https://learn.microsoft.com/en-us/users/geosubash-4382/achievements/xexhxczy" },
+    { title: "AI Fluency: Framework & Foundations", issuer: "Anthropic", url: "https://verify.skilljar.com/c/e5r4k2sif7tz" },
+  ],
 
   intro:
     "Industrial designer building phygital objects — things that ask to be touched as much as understood.",
@@ -48,7 +55,9 @@ window.PROJECTS = [
     role: "",                           // e.g. "Solo — research, CAD, prototyping"
     duration: "",
     tools: [],                          // e.g. ["SolidWorks", "KeyShot"]
+    material: "",
     cover: "assets/projects/rebrush/cover.jpg",
+    // gallery images in order; a nested list ["a", "b"] becomes one row
     images: [],
     summary:
       "Motorcycle chain maintenance is essential for the smooth functioning and safety of the vehicle. However, the current methods of cleaning the chain are often unsafe, messy, and inefficient. Users usually clean the chain by hand using separate brushes, which exposes them to the risk of injury.",
@@ -69,5 +78,24 @@ window.PROJECTS = [
     summary:
       "A CMF (colour, material & finish) redesign for the Hyundai Creta, built on trend and market research and translated directly into the car's material palette and finish language — bringing the design forward while staying anchored to the brand's existing identity.",
     links: { behance: "" },
+  },
+  {
+    slug: "audio-deck",
+    title: "Tactile Audio Deck",
+    subtitle: "An ESP32 music player with nothing but physical buttons",
+    year: "",
+    category: "Electronics",
+    tags: ["Electronics", "Interaction", "Prototyping"],
+    role: "",
+    duration: "",
+    tools: ["ESP32", "C++", "I2S DAC", "Perfboard"],
+    cover: "",                          // TODO: add renders from the GitHub README
+    images: [],
+    summary: [
+      "A standalone digital audio player and Bluetooth receiver built as a dedicated, single-purpose gadget with real tactile controls — no touchscreen, no bloat, just mechanical keys and a raw cassette-futurism feel.",
+      "A 16-key mechanical matrix works as a hierarchical D-pad, with a hardware buzzer giving zero-latency click feedback on every press. A 128×64 OLED shows a live visualiser and scrolling track data, and sleeps on a timeout. Inside, a custom audio pipeline on an ESP32 switches between Bluetooth streaming and lossless WAV playback from an SD card, cleanly driving sensitive in-ear monitors.",
+      "The chassis is a modular 'sandwich' of two perfboards on M3 standoffs — not just for looks: it physically separates the high-speed digital audio lines from the keypad scanning noise.",
+    ],
+    links: { github: "https://github.com/geosubash-glitch/ESP32-AUDIO-DECK" },
   },
 ];
