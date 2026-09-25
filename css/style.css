@@ -218,6 +218,8 @@ main { min-height: 100vh; padding-top: var(--header-h); outline: none; }
 .gallery { display: grid; gap: var(--gutter); padding: 0 var(--gutter); }
 .gallery img { width: 100%; height: auto; background: var(--paper-2); }
 .gallery.empty { height: 40vh; }
+.g-row { display: grid; grid-template-columns: repeat(var(--cols), 1fr); gap: var(--gutter); }
+.g-row img { height: 100%; object-fit: cover; }
 
 .next {
   display: block; margin-top: clamp(64px, 10vw, 140px); padding: 28px var(--gutter) 48px;
@@ -292,6 +294,7 @@ main { min-height: 100vh; padding-top: var(--header-h); outline: none; }
   .work-grid { grid-template-columns: 1fr; }
   .p-body .label, .p-body .copy, .about-grid .label, .about-grid .copy, .skills { grid-column: 1 / -1; }
   .p-cover { aspect-ratio: 4 / 3; }
+  .g-row { grid-template-columns: 1fr; }
 }
 
 @media (hover: none) { .preview { display: none; } }

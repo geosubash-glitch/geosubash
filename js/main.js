@@ -80,10 +80,13 @@
     const next = P[(i + 1) % P.length];
     const specs = [
       ["No.", pad(i + 1)], ["Category", p.category], ["Year", p.year],
-      ["Role", p.role], ["Duration", p.duration], ["Tools", (p.tools || []).join(", ")],
+      ["Role", p.role], ["Duration", p.duration], ["Material", p.material], ["Tools", (p.tools || []).join(", ")],
     ].filter(([, v]) => v);
     const links = Object.entries(p.links || {}).filter(([, v]) => v);
-    const gallery = (p.images || []).map((src, k) => `<img src="${esc(src)}" alt="${esc(p.title)} — ${k + 1}" loading="lazy" />`).join("");
+    let n = 0;
+    const img = (src) => `<img src="${esc(src)}" alt="${esc(p.title)} — ${++n}" loading="lazy" />`;
+    const gallery = (p.images || []).map((item) =>
+      Array.isArray(item) ? `<div class="g-row" style="--cols:${item.length}">${item.map(img).join("")}</div>` : img(item)).join("");
 
     return `
       <section class="p-head">
