@@ -23,10 +23,10 @@ window.SITE = {
   },
   resume: "",                           // e.g. "assets/resume.pdf"
 
-  // shown on the About page — rename each title to the actual course name
+  // shown on the About page
   certifications: [
-    { title: "Microsoft Learn achievement", issuer: "Microsoft", url: "https://learn.microsoft.com/en-us/users/geosubash-4382/achievements/xexhxczy" },
-    { title: "Certificate", issuer: "Skilljar", url: "https://verify.skilljar.com/c/e5r4k2sif7tz" },
+    { title: "Introduction to generative AI and agents", issuer: "Microsoft Learn · 2026", url: "https://learn.microsoft.com/en-us/users/geosubash-4382/achievements/xexhxczy" },
+    { title: "AI Fluency: Framework & Foundations", issuer: "Anthropic", url: "https://verify.skilljar.com/c/e5r4k2sif7tz" },
   ],
 
   intro:
