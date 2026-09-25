@@ -1,0 +1,7 @@
+{
+  "name": "portfolio-tools",
+  "private": true,
+  "type": "module",
+  "scripts": { "optimize": "node optimize.mjs" },
+  "dependencies": { "sharp": "^0.33.5" }
+}
