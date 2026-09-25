@@ -117,6 +117,10 @@
           <div class="copy">${S.about.map((t) => `<p>${esc(t)}</p>`).join("")}</div>
           <p class="label">Toolkit</p>
           <div class="skills">${S.skills.map((s) => `<span>${esc(s)}</span>`).join("")}</div>
+          ${(S.certifications || []).length ? `<p class="label">Certifications</p>
+          <ul class="certs">${S.certifications.map((c) => `
+            <li><a href="${esc(c.url)}" target="_blank" rel="noopener"><span>${esc(c.title)}</span><span class="label">${esc(c.issuer)} ↗</span></a></li>`).join("")}
+          </ul>` : ""}
           ${S.resume ? `<p class="label">CV</p><div class="copy"><a href="${esc(S.resume)}" target="_blank" style="border-bottom:1px solid">Download résumé ↗</a></div>` : ""}
         </div>
       </section>`;

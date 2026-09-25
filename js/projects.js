@@ -14,7 +14,7 @@ window.SITE = {
   role: "Industrial Designer",
   school: "NID Andhra Pradesh",
   location: "India",
-  email: "hello@example.com",           // TODO: your public contact email
+  email: "geosubash@gmail.com",
   links: {
     behance: "https://www.behance.net/geosubash",
     linkedin: "https://www.linkedin.com/in/geo-subash-816a911ba/",
@@ -22,6 +22,12 @@ window.SITE = {
     github: "https://github.com/geosubash-glitch",
   },
   resume: "",                           // e.g. "assets/resume.pdf"
+
+  // shown on the About page — rename each title to the actual course name
+  certifications: [
+    { title: "Microsoft Learn achievement", issuer: "Microsoft", url: "https://learn.microsoft.com/en-us/users/geosubash-4382/achievements/xexhxczy" },
+    { title: "Certificate", issuer: "Skilljar", url: "https://verify.skilljar.com/c/e5r4k2sif7tz" },
+  ],
 
   intro:
     "Industrial designer building phygital objects — things that ask to be touched as much as understood.",
@@ -42,30 +48,20 @@ window.PROJECTS = [
   {
     slug: "rebrush",
     title: "ReBrush",
-    subtitle: "A safe-scrub adapter for motorcycle chains",
+    subtitle: "Motorcycle chain cleaning tool",
     year: "",                           // e.g. "2025"
     category: "Product Design",
     tags: ["Product Design", "Mechanical"],
     role: "",                           // e.g. "Solo — research, CAD, prototyping"
     duration: "",
     tools: [],                          // e.g. ["SolidWorks", "KeyShot"]
-    material: "ABS",
-    cover: "assets/projects/rebrush/cover.webp",
-    // a nested list becomes one row on the project page
-    images: [
-      "assets/projects/rebrush/01.webp",
-      "assets/projects/rebrush/02.webp",
-      "assets/projects/rebrush/03.webp",
-      ["assets/projects/rebrush/04.webp", "assets/projects/rebrush/05.webp"],
-      ["assets/projects/rebrush/06.webp", "assets/projects/rebrush/07.webp", "assets/projects/rebrush/08.webp"],
-      "assets/projects/rebrush/09.webp",
-      "assets/projects/rebrush/10.webp",
-    ],
-    summary: [
-      "Motorcycle chain maintenance is essential for the smooth functioning and safety of the vehicle. However, the current methods of cleaning the chain are often unsafe, messy, and inefficient. Users usually clean the chain by hand using separate brushes, which exposes them to the risk of injury — a rag or short brush can pull a hand into the sprocket in a split second, while proprietary cleaning kits wear out and are expensive to refill.",
-      "ReBrush is a rigid adapter that locks two ordinary toothbrushes into a precise dual-head scrubber. Load two old brushes, lock them with a steel tension screw, and scrub — cleaning three faces of the chain at once while keeping hands more than six inches from the sprocket. When the bristles wear out, the refill is free: just swap in the next old toothbrush.",
-    ],
-    links: { github: "https://github.com/geosubash-glitch/safe_scrub" },
+    material: "",
+    cover: "assets/projects/rebrush/cover.jpg",
+    // gallery images in order; a nested list ["a", "b"] becomes one row
+    images: [],
+    summary:
+      "Motorcycle chain maintenance is essential for the smooth functioning and safety of the vehicle. However, the current methods of cleaning the chain are often unsafe, messy, and inefficient. Users usually clean the chain by hand using separate brushes, which exposes them to the risk of injury.",
+    links: { behance: "" },
   },
   {
     slug: "creta-cmf",

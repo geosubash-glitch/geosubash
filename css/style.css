@@ -242,6 +242,9 @@ main { min-height: 100vh; padding-top: var(--header-h); outline: none; }
 .about-grid .copy { grid-column: 5 / span 7; font-size: clamp(17px, 1.4vw, 21px); }
 .about-grid .copy p { margin: 0 0 1em; }
 .skills { grid-column: 5 / span 8; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 48px; }
+.certs { grid-column: 5 / span 7; list-style: none; margin: 0 0 48px; padding: 0; border-top: 1px solid var(--line); }
+.certs a { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 17px; transition: color .2s; }
+.certs a:hover { color: var(--accent); }
 .skills span { font-family: var(--mono); font-size: 12px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 99px; }
 
 /* ---------- marquee ---------- */
@@ -292,7 +295,7 @@ main { min-height: 100vh; padding-top: var(--header-h); outline: none; }
   .index-row a:hover { color: inherit; }
 
   .work-grid { grid-template-columns: 1fr; }
-  .p-body .label, .p-body .copy, .about-grid .label, .about-grid .copy, .skills { grid-column: 1 / -1; }
+  .p-body .label, .p-body .copy, .about-grid .label, .about-grid .copy, .skills, .certs { grid-column: 1 / -1; }
   .p-cover { aspect-ratio: 4 / 3; }
   .g-row { grid-template-columns: 1fr; }
 }
