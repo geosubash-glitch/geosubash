@@ -1,6 +1,7 @@
 // Turns the uploaded project files into web images.
 //
 //   assets/projects/<folder>/face.*     ->  assets/web/<slug>/cover.webp
+//     (any non-slide image works if nothing is named face/cover)
 //   assets/projects/<folder>/slide*.*   ->  assets/web/<slug>/slide-01.webp, -02…
 //
 // Slides are long scroll-through boards (up to 32k px tall), so each is
@@ -24,7 +25,7 @@ const SOURCES = {
 
 // Projects whose face image isn't ready yet: crop the cover from the top of
 // the slide instead. Remove a slug from here once its real face is uploaded.
-const COVER_FROM_SLIDE = new Set(["creta-cmf"]);
+const COVER_FROM_SLIDE = new Set([]);
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const IN = join(ROOT, "assets/projects");
@@ -44,7 +45,8 @@ for (const [folder, slug] of Object.entries(SOURCES)) {
   await mkdir(dest, { recursive: true });
   const entry = (assets[slug] = { cover: "", slides: [] });
 
-  const face = files.find((f) => /^(face|cover)\./i.test(f));
+  // cover: a file named face.* / cover.*, else any image that isn't a slide
+  const face = files.find((f) => /^(face|cover)\./i.test(f)) || files.find((f) => !/^slide/i.test(f));
   const firstSlide = files.find((f) => /^slide/i.test(f));
   if (COVER_FROM_SLIDE.has(slug) && firstSlide) {
     const img = open(join(IN, folder, firstSlide));
