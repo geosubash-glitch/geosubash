@@ -9,7 +9,7 @@
   const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const pad = (n) => String(n).padStart(2, "0");
   const media = (src, label, alt = "") =>
-    src ? `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" />` : `<div class="ph">${esc(label)}</div>`;
+    src ? `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" referrerpolicy="no-referrer" />` : `<div class="ph">${esc(label)}</div>`;
 
   // ---------- views ----------
   function home() {
@@ -85,7 +85,7 @@
     ].filter(([, v]) => v);
     const links = Object.entries(p.links || {}).filter(([, v]) => v);
     let n = 0;
-    const img = (src) => `<img src="${esc(src)}" alt="${esc(p.title)} — ${++n}" loading="lazy" />`;
+    const img = (src) => `<img src="${esc(src)}" alt="${esc(p.title)} — ${++n}" loading="lazy" referrerpolicy="no-referrer" />`;
     const gallery = (p.images || []).map((item) =>
       Array.isArray(item) ? `<div class="g-row" style="--cols:${item.length}">${item.map(img).join("")}</div>` : img(item)).join("");
 
