@@ -130,13 +130,16 @@ window.PROJECTS = [
   {
     slug: "creta-cmf",
     title: "Hyundai Creta CMF",
-    subtitle: "Colour, material & finish redesign",
+    subtitle: "Translating tech-product CMF trends to an SUV",
     year: "",
     category: "CMF",
-    tags: ["CMF"],
+    tags: ["CMF", "Research"],
     tools: [],
-    summary:
-      "A CMF (colour, material & finish) redesign for the Hyundai Creta, built on trend and market research and translated directly into the car's material palette and finish language — bringing the design forward while staying anchored to the brand's existing identity.",
+    summary: [
+      "A colour, material and finish study for the Hyundai Creta (₹11–20 L), aimed at its core buyer: a 25–35-year-old IT professional in a tier 1 or 2 city — a practical, budget-conscious, tech-enthusiast family driver who wants a strong road presence that still feels modern and easy to live with.",
+      "Research mapped how competitors use CMF — the Kia Seltos goes sporty and rugged with matte paints and heavy cladding, the Grand Vitara premium with chrome and copper accents and dual-tone leather, the RAV4 premium-minimal, the HR-V minimal-futuristic — alongside macro trends from Y2K and Y3K to athleisure, modern bohemian and the maximalist 'mob wife' look. The core insight: today's aesthetics come from combining and modifying existing movements.",
+      "A mood board of premium headphones and tech products distilled the direction — same colour in different finishes and materials, pastel and soft tones, metallic accents like rose gold and brushed aluminium, and minimal, subtle branding. That language was translated into five exterior and interior schemes for the Creta, from warm tan with brushed-copper pillars to deep blue with pale leather and dark graphite with copper trim.",
+    ],
     links: {},
   },
 ];

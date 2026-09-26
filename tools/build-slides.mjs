@@ -15,11 +15,16 @@ import { join } from "node:path";
 
 // upload folder -> project slug in js/projects.js
 const SOURCES = {
-  "cmf": "rebrush",
+  "rebrush": "rebrush",
+  "cmf": "creta-cmf",
   "detailing and assembly": "lapcare",
   "interactive product design": "anchor",
   "latent": "latent",
 };
+
+// Projects whose face image isn't ready yet: crop the cover from the top of
+// the slide instead. Remove a slug from here once its real face is uploaded.
+const COVER_FROM_SLIDE = new Set(["creta-cmf"]);
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const IN = join(ROOT, "assets/projects");
@@ -40,7 +45,14 @@ for (const [folder, slug] of Object.entries(SOURCES)) {
   const entry = (assets[slug] = { cover: "", slides: [] });
 
   const face = files.find((f) => /^(face|cover)\./i.test(f));
-  if (face) {
+  const firstSlide = files.find((f) => /^slide/i.test(f));
+  if (COVER_FROM_SLIDE.has(slug) && firstSlide) {
+    const img = open(join(IN, folder, firstSlide));
+    const { width } = await img.metadata();
+    await img.extract({ left: 0, top: 0, width, height: Math.round(width * 9 / 16) })
+      .resize({ width: COVER_W, withoutEnlargement: true }).webp({ quality: 82 }).toFile(join(dest, "cover.webp"));
+    entry.cover = `assets/web/${slug}/cover.webp`;
+  } else if (face) {
     await open(join(IN, folder, face)).rotate().resize({ width: COVER_W, withoutEnlargement: true }).webp({ quality: 82 }).toFile(join(dest, "cover.webp"));
     entry.cover = `assets/web/${slug}/cover.webp`;
   }
