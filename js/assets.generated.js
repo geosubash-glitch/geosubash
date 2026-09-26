@@ -45,6 +45,86 @@ window.ASSETS = {
       }
     ]
   },
+  "creta-cmf": {
+    "cover": "assets/web/creta-cmf/cover.webp",
+    "slides": [
+      {
+        "src": "assets/web/creta-cmf/slide-01.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-02.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-03.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-04.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-05.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-06.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-07.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-08.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-09.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-10.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-11.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-12.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-13.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-14.webp",
+        "w": 1600,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/creta-cmf/slide-15.webp",
+        "w": 1600,
+        "h": 1079
+      }
+    ]
+  },
   "lapcare": {
     "cover": "assets/web/lapcare/cover.webp",
     "slides": [
