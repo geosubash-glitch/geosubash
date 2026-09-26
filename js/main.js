@@ -86,7 +86,17 @@
     const links = Object.entries(p.links || {}).filter(([, v]) => v);
     let n = 0;
     const img = (src) => `<img src="${esc(src)}" alt="${esc(p.title)} — ${++n}" loading="lazy" referrerpolicy="no-referrer" />`;
-    const gallery = (p.images || []).map((item) =>
+    // Uploaded gallery: rows of up to 3 where every image in a row shares one
+    // height — each image's width is proportional to its aspect ratio.
+    const rows = [];
+    for (let k = 0; k < p.gallery.length; ) {
+      const left = p.gallery.length - k;
+      const take = left === 4 ? 2 : Math.min(3, left);
+      rows.push(p.gallery.slice(k, k + take)); k += take;
+    }
+    const justified = rows.map((row) => `<div class="j-row">${row.map((g) =>
+      `<img src="${esc(g.src)}" width="${g.w}" height="${g.h}" style="flex-grow:${(g.w / g.h).toFixed(4)}" alt="${esc(p.title)} — ${++n}" loading="lazy" />`).join("")}</div>`).join("");
+    const gallery = justified + (p.images || []).map((item) =>
       Array.isArray(item) ? `<div class="g-row" style="--cols:${item.length}">${item.map(img).join("")}</div>` : img(item)).join("");
 
     return `
@@ -97,6 +107,7 @@
       </section>
       <dl class="titleblock">${specs.map(([k, v]) => `<div><dt class="label">${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
       ${p.slides.length ? "" : `<div class="p-cover">${media(p.cover, "Cover image soon", p.title)}</div>`}
+      ${p.story ? story(p, links) : `
       <section class="p-body">
         <p class="label">Overview</p>
         <div class="copy">
@@ -110,8 +121,36 @@
         <div class="slide-stack">${p.slides.map((s, k) =>
           `<img src="${esc(s.src)}" width="${s.w}" height="${s.h}" alt="${esc(p.title)} case study, part ${k + 1}" ${k ? 'loading="lazy"' : ""} />`).join("")}</div>
       </section>` : ""}
-      ${gallery ? `<div class="gallery">${gallery}</div>` : p.slides.length ? "" : `<div class="gallery empty"><div class="ph">Process images coming soon</div></div>`}
+      ${gallery ? `<div class="gallery">${gallery}</div>` : p.slides.length ? "" : `<div class="gallery empty"><div class="ph">Process images coming soon</div></div>`}`}
       ${P.length > 1 ? `<a class="next" href="#/work/${next.slug}"><span class="label">Next project →</span><span class="n-title">${esc(next.title)}</span></a>` : ""}`;
+  }
+
+  // A project told as alternating sections and images, for work without a
+  // presentation board. Blocks (see js/projects.js):
+  //   { label, heading, text: [..], list: [[key, value]..] }  text section
+  //   { images: [i, j], caption }                               equal-height row
+  //   { label, heading, text, list, image: i, caption }         image beside text
+  // Image numbers index the project's uploaded gallery (0 = first).
+  function story(p, links) {
+    const g = (k) => p.gallery[k];
+    const pic = (x, eager) => `<img src="${esc(x.src)}" width="${x.w}" height="${x.h}" style="flex-grow:${(x.w / x.h).toFixed(4)}" alt="" ${eager ? "" : 'loading="lazy"'} />`;
+    const list = (rows) => rows ? `<dl class="spec-list">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : "";
+    const copy = (b) => `
+      ${b.heading ? `<h2 class="s-head">${esc(b.heading)}</h2>` : ""}
+      ${[].concat(b.text || []).map((t) => `<p>${esc(t)}</p>`).join("")}
+      ${list(b.list)}`;
+    const cap = (c) => c ? `<p class="label s-cap">${esc(c)}</p>` : "";
+    const blocks = p.story.map((b) => {
+      if (b.images) return `<figure class="s-fig">${`<div class="j-row">${b.images.map(g).filter(Boolean).map((x) => pic(x)).join("")}</div>`}${cap(b.caption)}</figure>`;
+      if (b.image != null && g(b.image)) return `
+        <section class="s-side">
+          <figure class="s-side-img">${pic(g(b.image))}${cap(b.caption)}</figure>
+          <div class="s-side-copy">${b.label ? `<p class="label">${esc(b.label)}</p>` : ""}<div class="copy">${copy(b)}</div></div>
+        </section>`;
+      return `<section class="p-body s-text"><p class="label">${esc(b.label || "")}</p><div class="copy">${copy(b)}</div></section>`;
+    }).join("");
+    const linkRow = links.length ? `<section class="p-body s-text"><p class="label">Links</p><div class="copy"><div class="p-links">${links.map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener">${esc(k)} ↗</a>`).join("")}</div></div></section>` : "";
+    return `<div class="story">${blocks}${linkRow}</div>`;
   }
 
   function about() {

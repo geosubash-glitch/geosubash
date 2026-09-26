@@ -114,24 +114,68 @@ window.PROJECTS = [
   },
   {
     slug: "audio-deck",
-    title: "Tactile Audio Deck",
-    subtitle: "An ESP32 music player with nothing but physical buttons",
+    title: "FR4 Deck",
+    subtitle: "A tactile ESP32 audio player with nothing but physical buttons",
     year: "2026",
     category: "Electronics",
     tags: ["Engineering", "Interaction"],
-    tools: ["ESP32", "C++ / Arduino", "PCM5102A DAC", "SSD1306 OLED", "Firmware co-written with Gemini"],
-    // hosted on the ESP32-AUDIO-DECK README; copy them into assets/ to self-host
-    cover: "https://github.com/user-attachments/assets/f1b9a575-8dff-436e-a986-72afbd0411c1",
-    images: [
-      ["https://github.com/user-attachments/assets/d89846af-86da-438d-8da9-67006435365c", "https://github.com/user-attachments/assets/739443b8-81d9-4f29-b826-a32a7d563d8d"],
-      "https://github.com/user-attachments/assets/cde72e48-ad13-4aa5-8933-e703e5292d72",
-      "https://github.com/user-attachments/assets/3780be33-68f1-47fe-b1f6-34b884268fa4",
-    ],
+    tools: ["ESP32", "C++ / Arduino", "PCM5102A DAC", "SSD1306 OLED", "Code logic with Claude & Gemini"],
     summary: [
-      "A standalone digital audio player and Bluetooth receiver, built as a dedicated single-purpose gadget with real tactile controls — no touchscreen, no bloat, just mechanical keys and a raw cassette-futurism feel. The audio path is tuned to cleanly drive high-sensitivity in-ear monitors.",
+      "FR4 Deck (model DAP-ESP32-M16) is a standalone digital audio player and Bluetooth receiver, built as a dedicated single-purpose gadget with real tactile controls — no touchscreen, no bloat, just mechanical keys and a raw cassette-futurism feel. The audio path is tuned to cleanly drive high-sensitivity in-ear monitors.",
       "A 16-key mechanical matrix is mapped as a hierarchical D-pad — navigate, play and pause, skip tracks, step the volume, flip between Bluetooth and SD card, open the system menu or toggle the visualiser — and a hardware buzzer gives zero-latency click feedback on every press. A 128×64 OLED shows a live audio visualiser and scrolling track data, then sleeps on a timeout to save battery and cut glare in a dark room.",
-      "Inside, an ESP32 runs a custom pipeline that switches between a Bluetooth A2DP sink and lossless WAV playback from a microSD card, with software volume scaling and mono-to-stereo conversion into an I2S DAC. The pinout was worked out to keep the SPI, I2C and I2S buses from colliding, and the chassis is a 'sandwich' of two perfboards on M3 standoffs that physically isolates the digital audio lines from the keypad scanning noise.",
+      "Inside, an ESP32 runs a custom pipeline that switches between a Bluetooth A2DP sink and lossless WAV playback from a microSD card, with software volume scaling and mono-to-stereo conversion into a 16-bit, 44.1 kHz I2S DAC. The pinout was worked out to keep the SPI, I2C and I2S buses from colliding, and the chassis is a 'sandwich' of two perfboards on M3 standoffs that physically isolates the digital audio lines from the keypad scanning noise.",
       "Next on the roadmap: a Li-Po battery with a TP4056 charger and MT3608 boost converter, a monophonic synthesiser mode that turns the keypad into an instrument, and a 3D-printed snap-fit enclosure that leans fully into the cassette-futurism look.",
+    ],
+    // told as a story on the project page; numbers point at the uploaded
+    // gallery images (0 = 01.png, 1 = 02.png, 2 = 03.png)
+    story: [
+      {
+        label: "01 — Idea",
+        heading: "One gadget, one job.",
+        text: [
+          "FR4 Deck (model DAP-ESP32-M16) is a standalone digital audio player and Bluetooth receiver, built because I wanted a dedicated, single-purpose device with real controls — no touchscreen, no bloat, just mechanical keys and a raw cassette-futurism feel.",
+          "The whole audio path is tuned to cleanly drive high-sensitivity in-ear monitors.",
+        ],
+      },
+      { images: [0, 1], caption: "Bare FR4 perfboard build · ESP32, DAC, microSD and buzzer" },
+      {
+        label: "02 — Interface",
+        heading: "Sixteen keys, no screen to learn.",
+        text: "A 4×4 mechanical matrix is mapped as a hierarchical D-pad, and a hardware buzzer clicks on every press with zero latency. A 128×64 OLED shows a live visualiser and scrolling track data, then sleeps on a timeout to save battery and cut glare in a dark room.",
+        list: [
+          ["2 · 8", "Up · Down"],
+          ["4 · 6", "Previous · Next track"],
+          ["5", "Confirm · Play / Pause"],
+          ["A · B", "Volume +10% · −10%"],
+          ["D", "Switch Bluetooth / SD card"],
+          ["*", "System menu"],
+          ["1", "Live audio visualiser"],
+        ],
+      },
+      {
+        label: "03 — Inside",
+        heading: "Two boards, one clean signal.",
+        text: "An ESP32 switches between a Bluetooth A2DP sink and lossless WAV playback from microSD, with software volume scaling and mono-to-stereo conversion into a 16-bit, 44.1 kHz I2S DAC. The pinout keeps the SPI, I2C and I2S buses from colliding, and a 'sandwich' of two perfboards on M3 standoffs physically isolates the audio lines from keypad scanning noise.",
+        list: [
+          ["Controller", "ESP32 dev module, 38-pin"],
+          ["Audio", "PCM5102A I2S DAC · 16-bit / 44.1 kHz"],
+          ["Display", "0.96\" SSD1306 OLED, I2C at 400 kHz"],
+          ["Input", "4×4 mechanical matrix keypad"],
+          ["Storage", "microSD over SPI"],
+          ["Feedback", "5 V active piezo buzzer"],
+          ["Chassis", "Dual FR4 perfboards on M3 nylon standoffs"],
+        ],
+      },
+      {
+        image: 2,
+        caption: "Product label",
+        label: "04 — Next",
+        heading: "Where it goes from here.",
+        text: [
+          "A 3.7 V Li-Po battery with a TP4056 charger and MT3608 boost converter, without letting power noise into the audio.",
+          "A monophonic synthesiser mode that turns the keypad into a playable instrument — and a 3D-printed, snap-fit enclosure that leans fully into the cassette-futurism look.",
+        ],
+      },
     ],
     links: { github: "https://github.com/geosubash-glitch/ESP32-AUDIO-DECK" },
   },
@@ -157,5 +201,6 @@ for (const p of window.PROJECTS) {
   const a = (window.ASSETS || {})[p.slug] || {};
   p.cover = p.cover || a.cover || "";
   p.slides = a.slides || [];
+  p.gallery = a.gallery || [];            // uploaded extra images, {src, w, h}
   p.images = p.images || [];
 }

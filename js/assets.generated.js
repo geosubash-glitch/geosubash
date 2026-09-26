@@ -43,7 +43,8 @@ window.ASSETS = {
         "w": 1600,
         "h": 128
       }
-    ]
+    ],
+    "gallery": []
   },
   "creta-cmf": {
     "cover": "assets/web/creta-cmf/cover.webp",
@@ -123,7 +124,8 @@ window.ASSETS = {
         "w": 1600,
         "h": 1079
       }
-    ]
+    ],
+    "gallery": []
   },
   "lapcare": {
     "cover": "assets/web/lapcare/cover.webp",
@@ -168,7 +170,8 @@ window.ASSETS = {
         "w": 1600,
         "h": 224
       }
-    ]
+    ],
+    "gallery": []
   },
   "anchor": {
     "cover": "assets/web/anchor/cover.webp",
@@ -213,7 +216,8 @@ window.ASSETS = {
         "w": 1400,
         "h": 1650
       }
-    ]
+    ],
+    "gallery": []
   },
   "latent": {
     "cover": "assets/web/latent/cover.webp",
@@ -242,6 +246,28 @@ window.ASSETS = {
         "src": "assets/web/latent/slide-05.webp",
         "w": 1600,
         "h": 1180
+      }
+    ],
+    "gallery": []
+  },
+  "audio-deck": {
+    "cover": "assets/web/audio-deck/cover.webp",
+    "slides": [],
+    "gallery": [
+      {
+        "src": "assets/web/audio-deck/gallery-01.webp",
+        "w": 1344,
+        "h": 768
+      },
+      {
+        "src": "assets/web/audio-deck/gallery-02.webp",
+        "w": 1600,
+        "h": 900
+      },
+      {
+        "src": "assets/web/audio-deck/gallery-03.webp",
+        "w": 1600,
+        "h": 1410
       }
     ]
   }
