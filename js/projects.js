@@ -1,9 +1,12 @@
 /* =============================================================================
    PROJECTS — the only file you edit to add or change work.
 
-   Images live in  assets/projects/<slug>/
-     cover.*      the main image (index hover, project hero)
-     01.*, 02.*…  gallery images, shown in order on the project page
+   Upload a project's files to  assets/projects/<folder>/
+     face.*       the cover image (index hover, cards, project hero)
+     slide.*      the long scroll-through presentation board
+   then run  node tools/build-slides.mjs  (folder -> slug map at its top).
+   It writes web-sized copies to assets/web/<slug>/ and js/assets.generated.js;
+   the cover and slides below are filled in from that automatically.
 
    Any field left empty is simply hidden. A project with no cover yet shows a
    numbered placeholder, so the site never looks broken while you fill it in.
@@ -46,38 +49,68 @@ window.SITE = {
 
 window.PROJECTS = [
   {
-    slug: "rebrush",
-    title: "ReBrush",
-    subtitle: "Motorcycle chain cleaning tool",
-    year: "",                           // e.g. "2025"
-    category: "Product Design",
-    tags: ["Product Design", "Mechanical"],
-    role: "",                           // e.g. "Solo — research, CAD, prototyping"
-    duration: "",
-    tools: [],                          // e.g. ["SolidWorks", "KeyShot"]
-    material: "",
-    cover: "assets/projects/rebrush/cover.jpg",
-    // gallery images in order; a nested list ["a", "b"] becomes one row
-    images: [],
-    summary:
-      "Motorcycle chain maintenance is essential for the smooth functioning and safety of the vehicle. However, the current methods of cleaning the chain are often unsafe, messy, and inefficient. Users usually clean the chain by hand using separate brushes, which exposes them to the risk of injury.",
-    links: { behance: "" },
+    slug: "anchor",
+    title: "Anchor",
+    subtitle: "A memory companion for independent elders",
+    year: "2026",
+    category: "Interactive Product Design",
+    tags: ["Interaction", "Product Design", "Research"],
+    team: "Geo Subash, Sarang V",
+    guide: "Lakshya",
+    tools: [],
+    summary: [
+      "140 million people in India are over 60, and most are still independent. Routine holds — it's the one-off task that slips: a bank visit at 3 PM, a short course of afternoon medicine. The memory at stake is prospective memory, remembering to do something later, and it's the first thing to go for non-routine tasks.",
+      "Research moved from one everyday observation through seven studies, three rounds of interviews, two personas and journey maps to a single question: how might we build memory support into familiar objects, so remembering takes no effort? The answer had to ask almost nothing of memory, put the task in the room, help without being noticed, and stay calm — never alarming.",
+      "Anchor is two objects. A wearable, clipped to a collar or worn on the wrist, catches a task the moment it's spoken — hold, say it once, let go. A tabletop tray then holds it quietly: a spiral of light slowly builds through the day as the time approaches, the round display shows the task, and a physical reset closes the loop. No alarms, no screen to learn — from luck to certainty.",
+    ],
+    links: { "Spiral light simulation": "https://geosubash-glitch.github.io/smartlight/" },
   },
   {
-    slug: "creta-cmf",
-    title: "Hyundai Creta CMF",
-    subtitle: "Colour, material & finish redesign",
+    slug: "rebrush",
+    title: "ReBrush",
+    subtitle: "A safer motorcycle chain cleaner made from old toothbrushes",
     year: "",
-    category: "CMF",
-    tags: ["CMF", "Automotive"],
-    role: "",
-    duration: "",
+    category: "Product Design",
+    tags: ["Product Design", "Research", "Engineering"],
+    duration: "6 weeks",
+    guide: "Archana",
     tools: [],
-    cover: "",
-    images: [],
-    summary:
-      "A CMF (colour, material & finish) redesign for the Hyundai Creta, built on trend and market research and translated directly into the car's material palette and finish language — bringing the design forward while staying anchored to the brand's existing identity.",
-    links: { behance: "" },
+    summary: [
+      "Riders often clean their chains with the engine idling in gear to save time — bringing hands and makeshift tools right up to the sprocket's pinch points, a leading cause of fingertip injuries. Professional kits are expensive, so most people improvise with a single old toothbrush, cardboard or plastic bags, and get poor reach, messy overspray and real risk.",
+      "Digital ethnography of forums and videos, a survey of riders across bike segments and step-by-step task analysis mapped exactly where the friction was. That became four goals: absolute safety, universal modularity, sustainable low cost and ergonomic control.",
+      "ReBrush clamps two discarded toothbrushes into a rigid dual-head scrubber that reaches both sides of the chain from a safe distance. Open-ended slide-in slots accept almost any brush, and a toothed locking plate bites into the handles so they can't twist under load. More than 25 prototypes tested fit, strength, clearance, torsional stability and quick-swap loading before the final model.",
+    ],
+    links: {},
+  },
+  {
+    slug: "lapcare",
+    title: "Lapcare WL-102",
+    subtitle: "Keyboard teardown and DFM / DFA redesign",
+    year: "",
+    category: "Detailing & Assembly",
+    tags: ["Engineering", "Product Design"],
+    tools: [],
+    summary: [
+      "A full teardown of the Lapcare WL-102, a 104-key 2.4 GHz wireless keyboard — mapping its function, user process, every exterior and interior part, and an approximate bill of materials (₹765–1,680).",
+      "The redesign adds a rechargeable Li-Po battery with USB-C charging (TP4056 charge module and a buck converter, with the wiring worked out) and dedicated volume and mic-mute keys — then pushes the whole product through design for manufacturing and assembly.",
+      "For manufacturing: an integrated light-indicator window, a back plate that's only thicker at the electronics zone, a flat membrane support and taller key stems with thinner domes to save plastic. For assembly: screws cut from 16 to 6, snap-on clips, the battery built into the main body and separate lids removed entirely.",
+    ],
+    links: {},
+  },
+  {
+    slug: "latent",
+    title: "Latent",
+    subtitle: "A film-emulation workspace for CCD-sensor photographs",
+    year: "",
+    category: "Software & Interface",
+    tags: ["Software", "Interaction"],
+    tools: ["Python", "Code co-written with Gemini"],
+    summary: [
+      "Latent is an opinionated editing workspace that gives creative direction without endless options. Rather than imitating analog film with texture overlays, it simulates each stage of development natively at the pixel level — treating the digital image as a living chemical environment.",
+      "Release v1.0.15-CCDera is tuned for old CCD sensors: instead of correcting their quirks, it splits each raw file into 15 film-stock hypotheses shown side by side in an evaluation matrix, so a sensor's colour bias and highlight clipping become material to design with.",
+      "The workflow runs in three stages — a discovery bay for mounting and scanning local files, the evaluation matrix, and a workbench with tone splines, luma waveforms and geometric transforms. Grain is driven by luminance, so it peaks in the midtones and dissolves into clipped highlights and deep shadows the way real film does.",
+    ],
+    links: { github: "https://github.com/geosubash-glitch/latentworkspaces-v1.0.15-CCDera" },
   },
   {
     slug: "audio-deck",
@@ -85,12 +118,8 @@ window.PROJECTS = [
     subtitle: "An ESP32 music player with nothing but physical buttons",
     year: "",
     category: "Electronics",
-    tags: ["Electronics", "Interaction", "Prototyping"],
-    role: "",
-    duration: "",
+    tags: ["Engineering", "Interaction"],
     tools: ["ESP32", "C++", "I2S DAC", "Perfboard"],
-    cover: "",                          // TODO: add renders from the GitHub README
-    images: [],
     summary: [
       "A standalone digital audio player and Bluetooth receiver built as a dedicated, single-purpose gadget with real tactile controls — no touchscreen, no bloat, just mechanical keys and a raw cassette-futurism feel.",
       "A 16-key mechanical matrix works as a hierarchical D-pad, with a hardware buzzer giving zero-latency click feedback on every press. A 128×64 OLED shows a live visualiser and scrolling track data, and sleeps on a timeout. Inside, a custom audio pipeline on an ESP32 switches between Bluetooth streaming and lossless WAV playback from an SD card, cleanly driving sensitive in-ear monitors.",
@@ -98,4 +127,24 @@ window.PROJECTS = [
     ],
     links: { github: "https://github.com/geosubash-glitch/ESP32-AUDIO-DECK" },
   },
+  {
+    slug: "creta-cmf",
+    title: "Hyundai Creta CMF",
+    subtitle: "Colour, material & finish redesign",
+    year: "",
+    category: "CMF",
+    tags: ["CMF"],
+    tools: [],
+    summary:
+      "A CMF (colour, material & finish) redesign for the Hyundai Creta, built on trend and market research and translated directly into the car's material palette and finish language — bringing the design forward while staying anchored to the brand's existing identity.",
+    links: {},
+  },
 ];
+
+// Merge in the generated cover + slides for each project.
+for (const p of window.PROJECTS) {
+  const a = (window.ASSETS || {})[p.slug] || {};
+  p.cover = p.cover || a.cover || "";
+  p.slides = a.slides || [];
+  p.images = p.images || [];
+}

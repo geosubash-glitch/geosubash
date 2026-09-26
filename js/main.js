@@ -80,7 +80,8 @@
     const next = P[(i + 1) % P.length];
     const specs = [
       ["No.", pad(i + 1)], ["Category", p.category], ["Year", p.year],
-      ["Role", p.role], ["Duration", p.duration], ["Material", p.material], ["Tools", (p.tools || []).join(", ")],
+      ["Team", p.team], ["Role", p.role], ["Guided by", p.guide], ["Duration", p.duration],
+      ["Material", p.material], ["Tools", (p.tools || []).join(", ")],
     ].filter(([, v]) => v);
     const links = Object.entries(p.links || {}).filter(([, v]) => v);
     let n = 0;
@@ -95,7 +96,7 @@
         ${p.subtitle ? `<p class="p-sub">${esc(p.subtitle)}</p>` : ""}
       </section>
       <dl class="titleblock">${specs.map(([k, v]) => `<div><dt class="label">${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
-      <div class="p-cover">${media(p.cover, "Cover image soon", p.title)}</div>
+      ${p.slides.length ? "" : `<div class="p-cover">${media(p.cover, "Cover image soon", p.title)}</div>`}
       <section class="p-body">
         <p class="label">Overview</p>
         <div class="copy">
@@ -103,7 +104,13 @@
           ${links.length ? `<div class="p-links">${links.map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener">${esc(k)} ↗</a>`).join("")}</div>` : ""}
         </div>
       </section>
-      <div class="gallery${gallery ? "" : " empty"}">${gallery || `<div class="ph">Process images coming soon</div>`}</div>
+      ${p.slides.length ? `
+      <section class="slides">
+        <div class="section-head"><p class="label">Full case study</p><p class="label">Scroll ↓</p></div>
+        <div class="slide-stack">${p.slides.map((s, k) =>
+          `<img src="${esc(s.src)}" width="${s.w}" height="${s.h}" alt="${esc(p.title)} case study, part ${k + 1}" ${k ? 'loading="lazy"' : ""} />`).join("")}</div>
+      </section>` : ""}
+      ${gallery ? `<div class="gallery">${gallery}</div>` : p.slides.length ? "" : `<div class="gallery empty"><div class="ph">Process images coming soon</div></div>`}
       ${P.length > 1 ? `<a class="next" href="#/work/${next.slug}"><span class="label">Next project →</span><span class="n-title">${esc(next.title)}</span></a>` : ""}`;
   }
 
