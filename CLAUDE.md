@@ -36,3 +36,6 @@ The owner **likes the motion and wants it kept**: the page wipe between pages, t
 the hero name reveal, the scrolling skills bar (slash separators, no sparkles), the pulsing
 "in progress" dot, row/arrow/image hover animations, the cursor-follow preview and the footer
 scramble. Don't strip these in the name of the list above.
+- **No taglines.** The owner finds slogan-style one-liners cringe ("I build X with Y inside",
+  "Objects with…", clever section headlines). Keep subtitles as plain descriptions
+  ("Motorcycle chain cleaner"), no intro tagline, no text on the share image beyond the name.

@@ -33,8 +33,7 @@ window.SITE = {
     { title: "AI Fluency: Framework & Foundations", issuer: "Anthropic", url: "https://verify.skilljar.com/c/e5r4k2sif7tz" },
   ],
 
-  intro:
-    "Industrial design student at NID Andhra Pradesh. I build physical things with electronics and code inside.",
+  intro: "",
 
   about: [
     "I'm an industrial design student at NID Andhra Pradesh. I like objects that are part physical, part digital, and most of my time goes into the part you don't see: the electronics, mechanisms and code that make an idea actually work.",
@@ -51,7 +50,7 @@ window.PROJECTS = [
   {
     slug: "anchor",
     title: "Anchor",
-    subtitle: "A memory aid for older adults",
+    subtitle: "Memory aid for older adults",
     year: "2026",
     category: "Interactive Product Design",
     tags: ["Interaction", "Product Design", "Research"],
@@ -66,7 +65,7 @@ window.PROJECTS = [
   {
     slug: "rebrush",
     title: "ReBrush",
-    subtitle: "A chain cleaner made from old toothbrushes",
+    subtitle: "Motorcycle chain cleaner",
     year: "",
     category: "Product Design",
     tags: ["Product Design", "Research", "Engineering"],
@@ -94,7 +93,7 @@ window.PROJECTS = [
   {
     slug: "latent",
     title: "Latent",
-    subtitle: "Film looks for old CCD photos",
+    subtitle: "Film emulation for CCD photos",
     year: "",
     category: "Software & Interface",
     tags: ["Software", "Interaction"],
@@ -107,7 +106,7 @@ window.PROJECTS = [
   {
     slug: "audio-deck",
     title: "FR4 Deck",
-    subtitle: "An ESP32 music player with physical keys",
+    subtitle: "ESP32 music player",
     year: "2026",
     category: "Electronics",
     tags: ["Engineering", "Interaction"],
@@ -120,7 +119,6 @@ window.PROJECTS = [
     story: [
       {
         "label": "01, Why",
-        "heading": "I wanted keys, not a touchscreen",
         "text": "A single-purpose player for WAV files and Bluetooth, tuned to sound clean on my in-ear monitors."
       },
       {
@@ -132,7 +130,6 @@ window.PROJECTS = [
       },
       {
         "label": "02, Keys",
-        "heading": "The keypad",
         "text": "A 4×4 keypad works as a D-pad, and a buzzer clicks on every press.",
         "list": [
           [
@@ -167,7 +164,6 @@ window.PROJECTS = [
       },
       {
         "label": "03, Inside",
-        "heading": "Most of the time went into the pins",
         "text": "Sharing one ESP32 between the display, SD card, DAC and keypad caused SPI conflicts and memory crashes until the OLED and SD reader moved to other pins.",
         "list": [
           [
@@ -196,7 +192,6 @@ window.PROJECTS = [
         "image": 2,
         "caption": "Product label",
         "label": "04, Next",
-        "heading": "Next",
         "text": "A Li-Po battery without charger noise in the audio, a synth mode, and a printed case."
       }
     ],
@@ -224,7 +219,7 @@ window.ONGOING = [
   {
     slug: "patient-transfers",
     title: "Patient transfers",
-    subtitle: "How carers move people who can't move themselves",
+    subtitle: "Research on moving patients",
     status: "In research",
     year: "2026",
     category: "Product Design · Research",
