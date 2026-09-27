@@ -203,7 +203,10 @@
     return `
       <section class="section">
         <div class="section-head" style="margin-bottom:clamp(32px,5vw,64px)"><p class="label">About</p><p class="label">${esc(S.school)}</p></div>
-        <p class="about-lede">${esc(S.intro)}</p>
+        <div class="about-top">
+          <p class="about-lede">${esc(S.intro)}</p>
+          ${S.portrait ? `<figure class="portrait"><img src="${esc(S.portrait)}" alt="Portrait of ${esc(S.name)}" width="900" height="1200" /></figure>` : ""}
+        </div>
         <div class="about-grid">
           <p class="label">Approach</p>
           <div class="copy">${S.about.map((t) => `<p>${esc(t)}</p>`).join("")}</div>
