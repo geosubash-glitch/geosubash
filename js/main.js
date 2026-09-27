@@ -2,176 +2,264 @@
   const S = window.SITE;
   const P = window.PROJECTS;
   const view = document.getElementById("view");
+  const wipe = document.getElementById("wipe");
+  const preview = document.getElementById("preview");
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const pad = (n) => String(n).padStart(2, "0");
-  const no = (i) => `<span class="num">No. ${pad(i + 1)}</span>`;
-  const paras = (t) => [].concat(t || []).filter(Boolean).map((x) => `<p>${esc(x)}</p>`).join("");
-  const NAMES = { linkedin: "LinkedIn", github: "GitHub", behance: "Behance", instagram: "Instagram" };
-  const cap1 = (k) => NAMES[k] || k[0].toUpperCase() + k.slice(1);
-  const linkList = (links) => Object.entries(links || {}).filter(([, v]) => v)
-    .map(([k, v]) => `<a class="u" href="${esc(v)}" target="_blank" rel="noopener">${esc(cap1(k))}</a>`).join("");
-  const img = (x, alt = "", eager = false, style = "") =>
-    `<img src="${esc(x.src || x)}" ${x.w ? `width="${x.w}" height="${x.h}"` : ""} ${style ? `style="${style}"` : ""} alt="${esc(alt)}" ${eager ? "" : 'loading="lazy"'} />`;
-  const plate = (p, cls = "") =>
-    `<div class="plate ${cls}">${p.cover ? img(p.cover, p.title) : `<span class="empty">Image to follow</span>`}</div>`;
+  const media = (src, label, alt = "") =>
+    src ? `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" referrerpolicy="no-referrer" />` : `<div class="ph">${esc(label)}</div>`;
 
-  // ---------- catalogue ----------
-  let filter = "All";
-  function catalogue() {
-    const tags = ["All", ...new Set(P.flatMap((p) => p.tags))];
-    const count = (t) => (t === "All" ? P.length : P.filter((p) => p.tags.includes(t)).length);
-    const list = P.map((p, i) => [p, i]).filter(([p]) => filter === "All" || p.tags.includes(filter));
+  // ---------- views ----------
+  function home() {
+    const [first, ...rest] = S.name.toUpperCase().split(" ");
+    const rows = P.map((p, i) => `
+      <li class="index-row">
+        <a href="#/work/${p.slug}" data-cover="${esc(p.cover)}">
+          <span class="num">${pad(i + 1)}</span>
+          <span class="title">${esc(p.title)}</span>
+          <span class="label disc">${esc(p.category)}</span>
+          <span class="label year">${esc(p.year || "—")}</span>
+          <span class="arrow">→</span>
+          <span class="mthumb">${media(p.cover, `${pad(i + 1)} — image soon`, p.title)}</span>
+        </a>
+      </li>`).join("");
+
     return `
-      <section class="intro"><p>${esc(S.intro)}</p></section>
-      <div class="filters" role="group" aria-label="Filter work">${tags.map((t) =>
-        `<button data-filter="${esc(t)}" class="${t === filter ? "is-active" : ""}" aria-pressed="${t === filter}">${esc(t)}<sup class="num">${count(t)}</sup></button>`).join("")}
-      </div>
-      <section class="catalogue">${list.map(([p, i]) => `
-        <a class="entry" href="#/work/${p.slug}">
-          ${plate(p)}
-          <div class="caption">
-            <div class="no">${no(i)}</div>
-            <div class="t">${esc(p.title)}</div>
-            <div class="soft">${esc(p.category)}${p.year ? `, <span class="num">${esc(p.year)}</span>` : ""}</div>
+      <section class="hero">
+        <i class="reg tl"></i><i class="reg tr"></i>
+        <h1 class="hero-name">
+          <span class="line"><span>${esc(first)}</span></span>
+          <span class="line"><span>${esc(rest.join(" "))}<span class="accent">.</span></span></span>
+        </h1>
+        <div class="hero-grid">
+          <div class="hero-meta">
+            <div class="row"><b>Discipline</b>${esc(S.role)}</div>
+            <div class="row"><b>Studying</b>${esc(S.school)}</div>
+            <div class="row"><b>Based</b>${esc(S.location)}</div>
           </div>
-        </a>`).join("")}
+          <p class="hero-intro">${esc(S.intro)}</p>
+        </div>
+      </section>
+      ${marquee(S.skills)}
+      <section class="section">
+        <div class="section-head"><p class="label">Selected work</p><p class="label">(${pad(P.length)})</p></div>
+        <ul class="index-list">${rows}</ul>
       </section>`;
   }
 
-  // ---------- object page ----------
-  function object(slug) {
+  function work(filter = "All") {
+    const tags = ["All", ...new Set(P.flatMap((p) => p.tags))];
+    const count = (t) => (t === "All" ? P.length : P.filter((p) => p.tags.includes(t)).length);
+    const list = filter === "All" ? P : P.filter((p) => p.tags.includes(filter));
+    return `
+      <section class="section">
+        <div class="section-head"><p class="label">Work</p><p class="label">(${pad(list.length)})</p></div>
+        <div class="filters">${tags.map((t) =>
+          `<button class="chip${t === filter ? " is-active" : ""}" data-filter="${esc(t)}">${esc(t)}<sup>${count(t)}</sup></button>`).join("")}
+        </div>
+        <div class="work-grid">${list.map((p) => {
+          const i = P.indexOf(p);
+          return `
+          <a class="card" href="#/work/${p.slug}">
+            <div class="card-media">${media(p.cover, `${pad(i + 1)} — image soon`, p.title)}<span class="tag">${esc(p.category)}</span></div>
+            <div class="card-info">
+              <div><h3>${esc(p.title)}</h3><p>${esc(p.subtitle)}</p></div>
+              <span class="label">${pad(i + 1)}${p.year ? " / " + esc(p.year) : ""}</span>
+            </div>
+          </a>`;
+        }).join("")}</div>
+      </section>`;
+  }
+
+  function project(slug) {
     const i = P.findIndex((p) => p.slug === slug);
     if (i < 0) return notFound();
     const p = P[i];
-    const facts = [
-      ["Year", p.year], ["Category", p.category], ["Team", p.team], ["Role", p.role],
-      ["Guided by", p.guide], ["Duration", p.duration], ["Material", p.material], ["Tools", (p.tools || []).join(", ")],
+    const next = P[(i + 1) % P.length];
+    const specs = [
+      ["No.", pad(i + 1)], ["Category", p.category], ["Year", p.year],
+      ["Team", p.team], ["Role", p.role], ["Guided by", p.guide], ["Duration", p.duration],
+      ["Material", p.material], ["Tools", (p.tools || []).join(", ")],
     ].filter(([, v]) => v);
-    const links = linkList(p.links);
-    const prev = P[(i - 1 + P.length) % P.length], next = P[(i + 1) % P.length];
+    const links = Object.entries(p.links || {}).filter(([, v]) => v);
+    let n = 0;
+    const img = (src) => `<img src="${esc(src)}" alt="${esc(p.title)} — ${++n}" loading="lazy" referrerpolicy="no-referrer" />`;
+    // Uploaded gallery: rows of up to 3 where every image in a row shares one
+    // height — each image's width is proportional to its aspect ratio.
+    const rows = [];
+    for (let k = 0; k < p.gallery.length; ) {
+      const left = p.gallery.length - k;
+      const take = left === 4 ? 2 : Math.min(3, left);
+      rows.push(p.gallery.slice(k, k + take)); k += take;
+    }
+    const justified = rows.map((row) => `<div class="j-row">${row.map((g) =>
+      `<img src="${esc(g.src)}" width="${g.w}" height="${g.h}" style="flex-grow:${(g.w / g.h).toFixed(4)}" alt="${esc(p.title)} — ${++n}" loading="lazy" />`).join("")}</div>`).join("");
+    const gallery = justified + (p.images || []).map((item) =>
+      Array.isArray(item) ? `<div class="g-row" style="--cols:${item.length}">${item.map(img).join("")}</div>` : img(item)).join("");
 
     return `
-      <article class="object">
-        <div class="object-text">
-          <a href="#/" class="back">← Catalogue</a>
-          <div class="soft">${no(i)}</div>
-          <h1>${esc(p.title)}</h1>
-          ${p.subtitle ? `<p class="sub">${esc(p.subtitle)}</p>` : ""}
-          <dl class="facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
-          ${p.story ? "" : `<div class="prose">${paras(p.summary)}${links ? `<div class="links">${links}</div>` : ""}</div>`}
+      <section class="p-head">
+        <a href="#/work" class="back">← All work</a>
+        <h1 class="p-title">${esc(p.title)}</h1>
+        ${p.subtitle ? `<p class="p-sub">${esc(p.subtitle)}</p>` : ""}
+      </section>
+      <dl class="titleblock">${specs.map(([k, v]) => `<div><dt class="label">${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+      ${p.slides.length ? "" : `<div class="p-cover">${media(p.cover, "Cover image soon", p.title)}</div>`}
+      ${p.story ? story(p, links) : `
+      <section class="p-body">
+        <p class="label">Overview</p>
+        <div class="copy">
+          ${(Array.isArray(p.summary) ? p.summary : [p.summary]).filter(Boolean).map((t) => `<p>${esc(t)}</p>`).join("")}
+          ${links.length ? `<div class="p-links">${links.map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener">${esc(k)} ↗</a>`).join("")}</div>` : ""}
         </div>
-        ${plate(p, "object-plate")}
-      </article>
-      ${p.story ? story(p, links) : ""}
+      </section>
       ${p.slides.length ? `
-      <section class="study">
-        <div class="study-head"><span>Case study</span><span>Scroll</span></div>
-        <div class="slide-stack">${p.slides.map((s, k) => img(s, `${p.title} case study, part ${k + 1}`, k === 0)).join("")}</div>
+      <section class="slides">
+        <div class="section-head"><p class="label">Full case study</p><p class="label">Scroll ↓</p></div>
+        <div class="slide-stack">${p.slides.map((s, k) =>
+          `<img src="${esc(s.src)}" width="${s.w}" height="${s.h}" alt="${esc(p.title)} case study, part ${k + 1}" ${k ? 'loading="lazy"' : ""} />`).join("")}</div>
       </section>` : ""}
-      ${P.length > 1 ? `
-      <nav class="pager" aria-label="More work">
-        <a href="#/work/${prev.slug}"><span class="no">← ${no(P.indexOf(prev))}</span><span class="t">${esc(prev.title)}</span></a>
-        <a href="#/work/${next.slug}"><span class="no">${no(P.indexOf(next))} →</span><span class="t">${esc(next.title)}</span></a>
-      </nav>` : ""}`;
+      ${gallery ? `<div class="gallery">${gallery}</div>` : p.slides.length ? "" : `<div class="gallery empty"><div class="ph">Process images coming soon</div></div>`}`}
+      ${P.length > 1 ? `<a class="next" href="#/work/${next.slug}"><span class="label">Next project →</span><span class="n-title">${esc(next.title)}</span></a>` : ""}`;
   }
 
-  // A project told as alternating sections and images (see js/projects.js):
-  //   { label, heading, text, list }                 text section
-  //   { images: [i, j], caption }                    equal-height image row
-  //   { label, heading, text, list, image, caption } image beside text
+  // A project told as alternating sections and images, for work without a
+  // presentation board. Blocks (see js/projects.js):
+  //   { label, heading, text: [..], list: [[key, value]..] }  text section
+  //   { images: [i, j], caption }                               equal-height row
+  //   { label, heading, text, list, image: i, caption }         image beside text
   // Image numbers index the project's uploaded gallery (0 = first).
   function story(p, links) {
     const g = (k) => p.gallery[k];
-    const row = (xs) => `<div class="j-row">${xs.map((x) => img(x, "", false, `flex-grow:${(x.w / x.h).toFixed(4)}`)).join("")}</div>`;
-    const spec = (rows) => rows ? `<dl class="spec">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : "";
-    const body = (b) => `${b.heading ? `<h2 class="s-head">${esc(b.heading)}</h2>` : ""}${paras(b.text)}${spec(b.list)}`;
-    const cap = (c) => c ? `<figcaption>${esc(c)}</figcaption>` : "";
-    return `<div class="story">${p.story.map((b) => {
-      if (b.images) return `<figure class="s-fig">${row(b.images.map(g).filter(Boolean))}${cap(b.caption)}</figure>`;
+    const pic = (x, eager) => `<img src="${esc(x.src)}" width="${x.w}" height="${x.h}" style="flex-grow:${(x.w / x.h).toFixed(4)}" alt="" ${eager ? "" : 'loading="lazy"'} />`;
+    const list = (rows) => rows ? `<dl class="spec-list">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : "";
+    const copy = (b) => `
+      ${b.heading ? `<h2 class="s-head">${esc(b.heading)}</h2>` : ""}
+      ${[].concat(b.text || []).map((t) => `<p>${esc(t)}</p>`).join("")}
+      ${list(b.list)}`;
+    const cap = (c) => c ? `<p class="label s-cap">${esc(c)}</p>` : "";
+    const blocks = p.story.map((b) => {
+      if (b.images) return `<figure class="s-fig">${`<div class="j-row">${b.images.map(g).filter(Boolean).map((x) => pic(x)).join("")}</div>`}${cap(b.caption)}</figure>`;
       if (b.image != null && g(b.image)) return `
         <section class="s-side">
-          <figure>${img(g(b.image))}${cap(b.caption)}</figure>
-          <div>${b.label ? `<div class="k">${esc(b.label)}</div>` : ""}${body(b)}</div>
+          <figure class="s-side-img">${pic(g(b.image))}${cap(b.caption)}</figure>
+          <div class="s-side-copy">${b.label ? `<p class="label">${esc(b.label)}</p>` : ""}<div class="copy">${copy(b)}</div></div>
         </section>`;
-      return `<section class="s-text"><div class="k">${esc(b.label || "")}</div><div>${body(b)}</div></section>`;
-    }).join("")}
-    ${links ? `<section class="s-text"><div class="k">Links</div><div class="prose"><div class="links">${links}</div></div></section>` : ""}</div>`;
+      return `<section class="p-body s-text"><p class="label">${esc(b.label || "")}</p><div class="copy">${copy(b)}</div></section>`;
+    }).join("");
+    const linkRow = links.length ? `<section class="p-body s-text"><p class="label">Links</p><div class="copy"><div class="p-links">${links.map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener">${esc(k)} ↗</a>`).join("")}</div></div></section>` : "";
+    return `<div class="story">${blocks}${linkRow}</div>`;
   }
 
-  // ---------- about ----------
   function about() {
     return `
-      <section class="about">
-        <div><p class="lede">${esc(S.intro)}</p></div>
-        <div>
-          <h2>About</h2>
-          <div class="prose">${paras(S.about)}</div>
-          <h2>Toolkit</h2>
-          <p>${S.skills.map(esc).join(", ")}.</p>
-          ${(S.certifications || []).length ? `<h2>Certifications</h2>
-          <ul class="plain">${S.certifications.map((c) =>
-            `<li><a class="u" href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title)}</a><span class="soft">${esc(c.issuer)}</span></li>`).join("")}</ul>` : ""}
-          <h2>Contact</h2>
-          <ul class="plain">
-            <li><a class="u" href="mailto:${esc(S.email)}">${esc(S.email)}</a><span class="soft">Email</span></li>
-            ${Object.entries(S.links).filter(([, v]) => v).map(([k, v]) =>
-              `<li><a class="u" href="${esc(v)}" target="_blank" rel="noopener">${esc(v.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""))}</a><span class="soft">${esc(cap1(k))}</span></li>`).join("")}
-          </ul>
+      <section class="section">
+        <div class="section-head" style="margin-bottom:clamp(32px,5vw,64px)"><p class="label">About</p><p class="label">${esc(S.school)}</p></div>
+        <p class="about-lede">${esc(S.intro)}</p>
+        <div class="about-grid">
+          <p class="label">Approach</p>
+          <div class="copy">${S.about.map((t) => `<p>${esc(t)}</p>`).join("")}</div>
+          <p class="label">Toolkit</p>
+          <div class="skills">${S.skills.map((s) => `<span>${esc(s)}</span>`).join("")}</div>
+          ${(S.certifications || []).length ? `<p class="label">Certifications</p>
+          <ul class="certs">${S.certifications.map((c) => `
+            <li><a href="${esc(c.url)}" target="_blank" rel="noopener"><span>${esc(c.title)}</span><span class="label">${esc(c.issuer)} ↗</span></a></li>`).join("")}
+          </ul>` : ""}
+          ${S.resume ? `<p class="label">CV</p><div class="copy"><a href="${esc(S.resume)}" target="_blank" style="border-bottom:1px solid">Download résumé ↗</a></div>` : ""}
         </div>
       </section>`;
   }
 
   function notFound() {
-    return `<section class="intro"><p>Nothing catalogued here. <a class="u" href="#/">Back to the catalogue</a>.</p></section>`;
+    return `<section class="section"><p class="label">404</p><h1 class="p-title">Not here.</h1><p><a class="back" href="#/">← Back to index</a></p></section>`;
+  }
+
+  function marquee(items) {
+    const run = items.map((s) => `<span>${esc(s)}</span>`).join("");
+    return `<div class="marquee" aria-hidden="true"><div class="marquee-track">${run}${run}</div></div>`;
   }
 
   // ---------- router ----------
-  function route() {
+  let workFilter = "All";
+  function parse() {
     const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
-    if (!parts.length || (parts[0] === "work" && !parts[1])) return { nav: "work", html: catalogue() };
-    if (parts[0] === "work") return { nav: "", html: object(parts[1]) };
-    if (parts[0] === "about") return { nav: "about", html: about() };
-    return { nav: "", html: notFound() };
+    if (!parts.length) return { name: "home", html: home() };
+    if (parts[0] === "work" && parts[1]) return { name: "work", html: project(parts[1]) };
+    if (parts[0] === "work") return { name: "work", html: work(workFilter) };
+    if (parts[0] === "about") return { name: "about", html: about() };
+    return { name: "", html: notFound() };
   }
 
-  // images fade in as they arrive; ones already cached show at once
-  function fadeImages() {
-    view.querySelectorAll("img").forEach((el) => {
-      if (el.complete && el.naturalWidth) return;
-      el.classList.add("fade");
-      const show = () => el.classList.add("in");
-      el.addEventListener("load", show, { once: true });
-      el.addEventListener("error", show, { once: true });
-    });
-  }
-
-  function render(scroll = true) {
-    const r = route();
-    view.innerHTML = r.html;
-    fadeImages();
-    document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("is-active", a.dataset.nav === r.nav));
+  function render(animate) {
+    const route = parse();
+    view.innerHTML = route.html;
+    view.classList.remove("view-enter");
+    if (animate) { void view.offsetWidth; view.classList.add("view-enter"); }
+    document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("is-active", a.dataset.nav === route.name));
     const h1 = view.querySelector("h1");
-    document.title = h1 ? `${h1.textContent} — ${S.name}` : `${S.name} — Industrial Design`;
-    if (scroll) window.scrollTo(0, 0);
+    document.title = route.name === "home" || !h1 ? `${S.name} — Industrial Design` : `${h1.textContent} — ${S.name}`;
+    window.scrollTo(0, 0);
+    hidePreview();
   }
 
-  window.addEventListener("hashchange", () => render());
-  view.addEventListener("click", (e) => {
-    const b = e.target.closest("[data-filter]");
-    if (!b) return;
-    filter = b.dataset.filter;
-    render(false);
+  window.addEventListener("hashchange", () => {
+    if (location.hash === "#contact") return;
+    if (reduceMotion) return render(false);
+    wipe.className = "wipe in";
+    setTimeout(() => { render(true); wipe.className = "wipe out"; }, 450);
   });
 
-  // ---------- header + footer ----------
-  document.getElementById("nav-mail").href = `mailto:${S.email}`;
-  if (S.resume) Object.assign(document.getElementById("nav-cv"), { href: S.resume, hidden: false, target: "_blank" });
-  document.getElementById("foot-links").innerHTML =
-    `<a href="mailto:${esc(S.email)}">${esc(S.email)}</a>` +
-    Object.entries(S.links).filter(([, v]) => v).map(([k, v]) =>
-      `<a href="${esc(v)}" target="_blank" rel="noopener">${esc(cap1(k))}</a>`).join("");
-  document.getElementById("foot-copy").textContent = `© ${new Date().getFullYear()} ${S.name}`;
+  // "Contact" should scroll to the footer, not route
+  document.getElementById("header-contact").addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("contact").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+  });
 
-  render();
+  view.addEventListener("click", (e) => {
+    const chip = e.target.closest("[data-filter]");
+    if (!chip) return;
+    workFilter = chip.dataset.filter;
+    view.innerHTML = work(workFilter);
+  });
+
+  // ---------- cursor preview on the index ----------
+  let mx = 0, my = 0, px = 0, py = 0, raf = 0;
+  const previewImg = preview.querySelector("img");
+  function hidePreview() { preview.classList.remove("is-on"); }
+  function loop() {
+    px += (mx - px) * 0.14; py += (my - py) * 0.14;
+    preview.style.transform = `translate(${px}px, ${py}px) translate(-50%, -50%)`;
+    raf = requestAnimationFrame(loop);
+  }
+  view.addEventListener("mouseover", (e) => {
+    const row = e.target.closest(".index-row a");
+    if (!row || !row.dataset.cover) return;
+    if (previewImg.getAttribute("src") !== row.dataset.cover) previewImg.src = row.dataset.cover;
+    preview.classList.add("is-on");
+  });
+  view.addEventListener("mouseout", (e) => {
+    const row = e.target.closest(".index-row a");
+    if (row && !row.contains(e.relatedTarget)) hidePreview();
+  });
+  window.addEventListener("mousemove", (e) => {
+    mx = e.clientX; my = e.clientY;
+    if (!raf) { px = mx; py = my; loop(); }
+  });
+
+  // ---------- footer + clock ----------
+  const email = document.getElementById("footer-email");
+  email.href = `mailto:${S.email}`;
+  document.getElementById("footer-links").innerHTML = [
+    ["Email", `mailto:${S.email}`], ...Object.entries(S.links).filter(([, v]) => v),
+  ].map(([k, v]) => `<a href="${esc(v)}" ${v.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${esc(k)} ↗</a>`).join("");
+  document.getElementById("footer-copy").textContent = `© ${new Date().getFullYear()} ${S.name}`;
+
+  const clock = document.getElementById("clock");
+  const fmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" });
+  const tick = () => (clock.textContent = `IN ${fmt.format(new Date())} IST`);
+  tick(); setInterval(tick, 20000);
+
+  render(!reduceMotion);
 })();
