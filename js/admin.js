@@ -14,7 +14,7 @@
   const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   let token = "";
-  let shelf = { music: [], books: [], photos: [] };
+  let shelf = { music: [], movies: [], photos: [] };
   let original = "";          // JSON as loaded, to detect changes
   const pending = new Map();  // new image path -> base64 data, not yet committed
   const previews = new Map(); // new image path -> object URL for display
@@ -69,23 +69,23 @@
       const file = await gh(`/contents/${DATA}?ref=${BRANCH}`);
       const text = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ""))));
       const d = JSON.parse(text);
-      shelf = { music: d.music || [], books: d.books || [], photos: d.photos || [] };
+      shelf = { music: d.music || [], movies: d.movies || [], photos: d.photos || [] };
     } catch (e) {
       if (!String(e.message).startsWith("404")) throw e;
-      shelf = { music: [], books: [], photos: [] };
+      shelf = { music: [], movies: [], photos: [] };
     }
     original = JSON.stringify(shelf);
     draw();
   }
 
   // ---------- list rendering ----------
-  const src = (p) => (p ? previews.get(p) || `${p}?v=${Date.now()}` : "");
+  const src = (p) => (!p ? "" : /^https?:/.test(p) ? p : previews.get(p) || `${p}?v=${Date.now()}`);
   function draw() {
-    for (const kind of ["music", "books", "photos"]) {
+    for (const kind of ["music", "movies", "photos"]) {
       $(`list-${kind}`).innerHTML = shelf[kind].map((it, i) => {
-        const img = kind === "photos" ? it.src : it.cover;
-        const title = kind === "photos" ? (it.caption || "Untitled photo") : it.title;
-        const sub = kind === "music" ? it.artist : kind === "books" ? it.author : "";
+        const img = kind === "photos" ? it.src : kind === "movies" ? it.poster : it.cover;
+        const title = kind === "photos" ? (it.caption || "Untitled photo") : (it.title || it.link);
+        const sub = kind === "music" ? (it.artist || "Spotify") : kind === "movies" ? it.year : "";
         return `<li>
           ${img ? `<img src="${esc(src(img))}" alt="" />` : `<span class="noimg"></span>`}
           <span class="t"><b>${esc(title)}</b>${sub ? `<span class="soft">${esc(sub)}</span>` : ""}</span>
@@ -126,10 +126,30 @@
   }
   const slug = (s) => String(s || "img").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "img";
 
+  // Spotify's public oEmbed gives the title and cover (not the artist; the
+  // player on the site shows that).
+  async function spotifyInfo(link) {
+    try {
+      const r = await fetch(`https://open.spotify.com/oembed?url=${encodeURIComponent(link)}`);
+      if (!r.ok) return {};
+      const d = await r.json();
+      return { title: d.title || "", cover: d.thumbnail_url || "" };
+    } catch { return {}; }
+  }
+
   document.querySelectorAll(".admin-add").forEach((form) => {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const kind = form.dataset.kind, f = new FormData(form), file = f.get("image");
+      if (kind === "music") {
+        const link = String(f.get("link") || "").trim();
+        if (!/open\.spotify\.com\//.test(link)) { alert("That doesn't look like a Spotify link."); return; }
+        const btn = form.querySelector("button"); btn.disabled = true; btn.textContent = "Looking up…";
+        const info = await spotifyInfo(link);
+        btn.disabled = false; btn.textContent = "Add";
+        shelf.music.push({ link, title: info.title || "", artist: "", cover: info.cover || "" });
+        form.reset(); draw(); return;
+      }
       let path = "";
       if (file && file.size) {
         const btn = form.querySelector("button"); btn.disabled = true; btn.textContent = "Preparing image…";
@@ -137,11 +157,9 @@
           const { b64, url } = await shrink(file, kind === "photos" ? 1600 : 600);
           path = `${IMG_DIR}/${kind}-${Date.now()}-${slug(f.get("title") || f.get("caption") || file.name)}.jpg`;
           pending.set(path, b64); previews.set(path, url);
-        } finally { btn.disabled = false; btn.textContent = { music: "Add song", books: "Add book", photos: "Add photo" }[kind]; }
+        } finally { btn.disabled = false; btn.textContent = "Add photo"; }
       }
       const clean = (v) => String(v || "").trim();
-      if (kind === "music") shelf.music.push({ title: clean(f.get("title")), artist: clean(f.get("artist")), link: clean(f.get("link")), cover: path });
-      if (kind === "books") shelf.books.push({ title: clean(f.get("title")), author: clean(f.get("author")), link: clean(f.get("link")), cover: path });
       if (kind === "photos") shelf.photos.push({ src: path, caption: clean(f.get("caption")) });
       form.reset();
       draw();
@@ -153,9 +171,9 @@
     $("save").disabled = true;
     status("save-status", "Saving…");
     try {
-      const used = new Set([...shelf.music.map((m) => m.cover), ...shelf.books.map((b) => b.cover), ...shelf.photos.map((p) => p.src)].filter(Boolean));
+      const used = new Set([...shelf.music.map((m) => m.cover), ...shelf.photos.map((p) => p.src)].filter(Boolean));
       const before = JSON.parse(original);
-      const had = new Set([...before.music.map((m) => m.cover), ...before.books.map((b) => b.cover), ...before.photos.map((p) => p.src)]
+      const had = new Set([...(before.music || []).map((m) => m.cover), ...(before.photos || []).map((p) => p.src)]
         .filter((p) => p && p.startsWith(`${IMG_DIR}/`)));
 
       const ref = await gh(`/git/ref/heads/${BRANCH}`);
@@ -182,6 +200,61 @@
       $("save").disabled = false;
     }
   }
+
+  // ---------- movies: type a name, pick a poster ----------
+  // Apple's iTunes search (JSONP, no key) first, Wikipedia as a fallback.
+  function jsonp(url) {
+    return new Promise((resolve, reject) => {
+      const cb = `cb_${Math.random().toString(36).slice(2)}`, sc = document.createElement("script");
+      const done = () => { delete window[cb]; sc.remove(); };
+      const t = setTimeout(() => { done(); reject(new Error("timeout")); }, 10000);
+      window[cb] = (d) => { clearTimeout(t); done(); resolve(d); };
+      sc.onerror = () => { clearTimeout(t); done(); reject(new Error("lookup failed")); };
+      sc.src = `${url}&callback=${cb}`;
+      document.head.appendChild(sc);
+    });
+  }
+  async function findMovies(q) {
+    const out = [];
+    try {
+      const d = await jsonp(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=movie&entity=movie&limit=8`);
+      for (const r of d.results || []) if (r.artworkUrl100) out.push({
+        title: r.trackName, year: (r.releaseDate || "").slice(0, 4),
+        poster: r.artworkUrl100.replace(/\/\d+x\d+bb\./, "/600x900bb."),
+      });
+    } catch {}
+    if (out.length < 3) {
+      try {
+        const u = `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=8&gsrsearch=${encodeURIComponent(q + " film")}&prop=pageimages|description&piprop=thumbnail&pithumbsize=600&pilicense=any`;
+        const d = await (await fetch(u)).json();
+        const pages = Object.values((d.query && d.query.pages) || {}).sort((a, b) => a.index - b.index);
+        for (const pg of pages) if (pg.thumbnail && /film|movie/i.test(pg.description || "")) out.push({
+          title: pg.title.replace(/ \((\d{4} )?film\)$/, ""), year: ((pg.description || "").match(/\b(19|20)\d{2}\b/) || [""])[0],
+          poster: pg.thumbnail.source,
+        });
+      } catch {}
+    }
+    return out;
+  }
+  let results = [];
+  $("movie-find").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const q = new FormData(e.target).get("q"), btn = e.target.querySelector("button");
+    btn.disabled = true; btn.textContent = "Searching…";
+    results = await findMovies(String(q).trim());
+    btn.disabled = false; btn.textContent = "Find poster";
+    $("movie-results").innerHTML = results.length
+      ? results.map((m, i) => `<li><button type="button" data-pick="${i}"><img src="${esc(m.poster)}" alt="" referrerpolicy="no-referrer" /><b>${esc(m.title)}</b><span class="soft">${esc(m.year)}</span></button></li>`).join("")
+      : `<li class="soft">No posters found. Try the full title or add the year.</li>`;
+  });
+  $("movie-results").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pick]");
+    if (!b) return;
+    const m = results[+b.dataset.pick];
+    shelf.movies.push({ title: m.title, year: m.year, poster: m.poster, link: `https://letterboxd.com/search/films/${encodeURIComponent(m.title)}/` });
+    $("movie-results").innerHTML = ""; $("movie-find").reset();
+    draw();
+  });
 
   $("save").addEventListener("click", save);
   $("unlock").addEventListener("click", () => unlock($("key").value));
