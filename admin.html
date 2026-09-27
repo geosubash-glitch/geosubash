@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Edit shelf — Geo Subash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="admin">
+  <main class="admin-wrap">
+    <p class="label"><a href="./">← Back to site</a></p>
+    <h1>Edit your shelf</h1>
+    <p class="soft">Music, books and photos on the About page. Changes are saved to GitHub as one commit, and the site republishes in about a minute.</p>
+
+    <section class="admin-key" id="key-box">
+      <label for="key">Passkey</label>
+      <div class="row">
+        <input id="key" type="password" autocomplete="off" placeholder="GitHub fine-grained token for this repo" />
+        <button id="unlock">Unlock</button>
+      </div>
+      <p class="soft small">Stored only in this browser. <button class="linkish" id="forget" hidden>Forget passkey</button></p>
+      <p class="status" id="key-status"></p>
+    </section>
+
+    <div id="editor" hidden>
+      <section class="admin-group">
+        <h2>On repeat</h2>
+        <ul class="admin-list" id="list-music"></ul>
+        <form class="admin-add" data-kind="music">
+          <input name="title" placeholder="Song title" required />
+          <input name="artist" placeholder="Artist" />
+          <input name="link" type="url" placeholder="Link (Spotify, YouTube…) optional" />
+          <label class="file">Cover image (optional)<input name="image" type="file" accept="image/*" /></label>
+          <button>Add song</button>
+        </form>
+      </section>
+
+      <section class="admin-group">
+        <h2>Reading</h2>
+        <ul class="admin-list" id="list-books"></ul>
+        <form class="admin-add" data-kind="books">
+          <input name="title" placeholder="Book title" required />
+          <input name="author" placeholder="Author" />
+          <input name="link" type="url" placeholder="Link, optional" />
+          <label class="file">Cover image (optional)<input name="image" type="file" accept="image/*" /></label>
+          <button>Add book</button>
+        </form>
+      </section>
+
+      <section class="admin-group">
+        <h2>Photos</h2>
+        <ul class="admin-list" id="list-photos"></ul>
+        <form class="admin-add" data-kind="photos">
+          <label class="file">Photo<input name="image" type="file" accept="image/*" required /></label>
+          <input name="caption" placeholder="Caption, optional" />
+          <button>Add photo</button>
+        </form>
+      </section>
+
+      <div class="admin-save">
+        <button id="save" disabled>Save to site</button>
+        <p class="status" id="save-status"></p>
+      </div>
+    </div>
+  </main>
+  <script src="js/admin.js"></script>
+</body>
+</html>

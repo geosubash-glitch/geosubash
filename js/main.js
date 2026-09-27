@@ -43,10 +43,56 @@
         </div>
       </section>
       ${marquee(S.skills)}
+      ${nowBlock()}
       <section class="section">
         <div class="section-head"><p class="label">Selected work</p><p class="label">(${pad(P.length)})</p></div>
         <ul class="index-list">${rows}</ul>
       </section>`;
+  }
+
+  // Work in progress, above the finished index.
+  const O = window.ONGOING || [];
+  function nowBlock() {
+    if (!O.length) return "";
+    return `<section class="section now">
+      <div class="section-head"><p class="label">Now</p><p class="label">In progress</p></div>
+      ${O.map((o) => `
+      <a class="now-item" href="#/now/${o.slug}">
+        <span class="label now-status"><i></i>${esc(o.status || "Ongoing")}</span>
+        <span class="now-title">${esc(o.title)}</span>
+        <span class="now-sub">${esc(o.subtitle)}</span>
+        <span class="now-go">See the research →</span>
+      </a>`).join("")}
+    </section>`;
+  }
+
+  // Figma share link -> embeddable URL
+  const figmaEmbed = (url) => `https://embed.figma.com/${url.replace(/^https:\/\/(www\.)?figma\.com\//, "")}${url.includes("?") ? "&" : "?"}embed-host=share`;
+
+  function ongoing(slug) {
+    const o = O.find((x) => x.slug === slug);
+    if (!o) return notFound();
+    const specs = [["Status", o.status], ["Category", o.category], ["Year", o.year], ["Team", o.team], ["Guided by", o.guide]].filter(([, v]) => v);
+    const links = Object.entries(o.links || {}).filter(([, v]) => v);
+    return `
+      <section class="p-head">
+        <a href="#/" class="back">← Index</a>
+        <h1 class="p-title">${esc(o.title)}</h1>
+        ${o.subtitle ? `<p class="p-sub">${esc(o.subtitle)}</p>` : ""}
+      </section>
+      <dl class="titleblock">${specs.map(([k, v]) => `<div><dt class="label">${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+      <section class="p-body">
+        <p class="label">So far</p>
+        <div class="copy">
+          ${[].concat(o.summary || []).map((t) => `<p>${esc(t)}</p>`).join("")}
+          ${links.length ? `<div class="p-links">${links.map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener">${esc(k)} ↗</a>`).join("")}</div>` : ""}
+        </div>
+      </section>
+      ${o.board ? `
+      <section class="board">
+        <div class="section-head"><p class="label">Research board, live from FigJam</p><p class="label">Drag and zoom inside</p></div>
+        <iframe src="${esc(figmaEmbed(o.board))}" title="${esc(o.title)} research board" loading="lazy" allowfullscreen></iframe>
+      </section>` : ""}`;
   }
 
   function work(filter = "All") {
@@ -167,10 +213,42 @@
           <ul class="certs">${S.certifications.map((c) => `
             <li><a href="${esc(c.url)}" target="_blank" rel="noopener"><span>${esc(c.title)}</span><span class="label">${esc(c.issuer)} ↗</span></a></li>`).join("")}
           </ul>` : ""}
+          ${shelf()}
           ${S.resume ? `<p class="label">CV</p><div class="copy"><a href="${esc(S.resume)}" target="_blank" style="border-bottom:1px solid">Download résumé ↗</a></div>` : ""}
         </div>
       </section>`;
   }
+
+  // Music, books and photos, edited from admin.html and stored in data/shelf.json.
+  // Each group only appears once it has something in it.
+  let SHELF = { music: [], books: [], photos: [] };
+  function shelf() {
+    const out = [];
+    if (SHELF.music.length) out.push(`<p class="label">On repeat</p>
+      <ul class="shelf-music">${SHELF.music.map((m) => {
+        const inner = `${m.cover ? `<img src="${esc(m.cover)}" alt="" loading="lazy" />` : `<span class="nocover"></span>`}
+          <span><b>${esc(m.title)}</b><span class="soft">${esc(m.artist || "")}</span></span>`;
+        return `<li>${m.link ? `<a href="${esc(m.link)}" target="_blank" rel="noopener">${inner}</a>` : `<div>${inner}</div>`}</li>`;
+      }).join("")}</ul>`);
+    if (SHELF.books.length) out.push(`<p class="label">Reading</p>
+      <ul class="shelf-books">${SHELF.books.map((b) => {
+        const inner = `<span class="cover">${b.cover ? `<img src="${esc(b.cover)}" alt="" loading="lazy" />` : `<span class="nocover">${esc(b.title)}</span>`}</span>
+          <b>${esc(b.title)}</b><span class="soft">${esc(b.author || "")}</span>`;
+        return `<li>${b.link ? `<a href="${esc(b.link)}" target="_blank" rel="noopener">${inner}</a>` : inner}</li>`;
+      }).join("")}</ul>`);
+    if (SHELF.photos.length) out.push(`<p class="label">Photos</p>
+      <div class="shelf-photos">${SHELF.photos.map((p) =>
+        `<figure><img src="${esc(p.src)}" alt="${esc(p.caption || "")}" loading="lazy" />${p.caption ? `<figcaption>${esc(p.caption)}</figcaption>` : ""}</figure>`).join("")}</div>`);
+    return out.join("");
+  }
+  fetch(`data/shelf.json?v=${Date.now()}`)
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => {
+      if (!d) return;
+      SHELF = { music: d.music || [], books: d.books || [], photos: d.photos || [] };
+      if (parse().name === "about") render(false);
+    })
+    .catch(() => {});
 
   function notFound() {
     return `<section class="section"><p class="label">404</p><h1 class="p-title">Not here.</h1><p><a class="back" href="#/">← Back to index</a></p></section>`;
@@ -189,6 +267,7 @@
     if (parts[0] === "work" && parts[1]) return { name: "work", html: project(parts[1]) };
     if (parts[0] === "work") return { name: "work", html: work(workFilter) };
     if (parts[0] === "about") return { name: "about", html: about() };
+    if (parts[0] === "now" && parts[1]) return { name: "", html: ongoing(parts[1]) };
     return { name: "", html: notFound() };
   }
 
@@ -251,6 +330,44 @@
   // ---------- footer + clock ----------
   const email = document.getElementById("footer-email");
   email.href = `mailto:${S.email}`;
+
+  // "Get in touch" scrambles into the email address on hover / focus / tap,
+  // and back again when the pointer leaves.
+  const scr = document.getElementById("scramble");
+  const FROM = "Get in touch", TO = S.email, GLYPHS = "!<>-_\\/[]{}=+*^?#@%&$";
+  let scrRaf = 0, scrTarget = FROM;
+  function scrambleTo(target) {
+    if (target === scrTarget) return;
+    scrTarget = target;
+    cancelAnimationFrame(scrRaf);
+    if (reduceMotion) { scr.textContent = target; return; }
+    const from = scr.textContent, len = Math.max(from.length, target.length);
+    // each position gets its own start and settle frame, so the change ripples
+    const q = Array.from({ length: len }, (_, i) => {
+      const start = Math.floor(Math.random() * 12), end = start + 10 + Math.floor(Math.random() * 18) + i;
+      return { from: from[i] || "", to: target[i] || "", start, end };
+    });
+    let frame = 0;
+    const step = () => {
+      let done = 0, html = "";
+      for (const c of q) {
+        if (frame >= c.end) { done++; html += esc(c.to); }
+        else if (frame >= c.start) html += `<span class="x">${esc(GLYPHS[Math.floor(Math.random() * GLYPHS.length)])}</span>`;
+        else html += esc(c.from);
+      }
+      scr.innerHTML = html;
+      if (done < q.length) { frame++; scrRaf = requestAnimationFrame(step); }
+    };
+    step();
+  }
+  email.addEventListener("pointerenter", () => scrambleTo(TO));
+  email.addEventListener("pointerleave", () => scrambleTo(FROM));
+  email.addEventListener("focus", () => scrambleTo(TO));
+  email.addEventListener("blur", () => scrambleTo(FROM));
+  // on touch screens the first tap reveals the address, the second opens mail
+  email.addEventListener("click", (e) => {
+    if (matchMedia("(hover: none)").matches && scrTarget !== TO) { e.preventDefault(); scrambleTo(TO); }
+  });
   document.getElementById("footer-links").innerHTML = [
     ["Email", `mailto:${S.email}`], ...Object.entries(S.links).filter(([, v]) => v),
   ].map(([k, v]) => `<a href="${esc(v)}" ${v.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${esc(k)} ↗</a>`).join("");

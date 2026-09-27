@@ -195,8 +195,30 @@ window.PROJECTS = [
   },
 ];
 
+// Work in progress, shown in its own "Now" block on the home page and not
+// numbered with finished projects. `board` is the FigJam link; the page embeds
+// it live (the board must be shared as "anyone with the link can view").
+window.ONGOING = [
+  {
+    slug: "patient-transfers",
+    title: "Patient transfers",
+    subtitle: "Research into moving people who can't move themselves",
+    status: "In research",
+    year: "2026",
+    category: "Product Design · Research",
+    tags: ["Research", "Product Design"],
+    board: "https://www.figma.com/board/MXgtUhK8ImltCtHCKq468F/tcp-?node-id=0-1",
+    summary: [
+      "At Nirmal Hriday Bhavan, about a hundred residents, most of them over 80, are moved between bed, wheelchair, toilet and bath entirely by hand. There are no hoists and no transfer boards. Caregivers scoop people under the neck and behind the knees, or hook them under the armpits, and the building is shaped around that: knee-height metal beds, toilets without doors so two carers can stand on either side, long tiled benches in the bathing area to slide people across.",
+      "Home visits showed the same problem in smaller rooms. A wife who can't lift her husband on her own. Families gathering two or three people for every transfer. A roster of twelve young volunteers covering twice-daily visits. A walker left unused because it needs two working hands. The aids that do exist tend to fail at home: overhead hoists don't fit, cheap motorised beds crack within a year, and slide boards still leave someone dragging the full body weight.",
+      "The project is still in research. The working brief is an aid that takes the lifting load off a carer's lower back, spreads pressure widely enough for fragile skin and bones, and survives a home without fragile electronics. Who it can serve is still open: most semi-assisted devices need at least 10–20% leg or core strength, and many of these residents have less.",
+    ],
+    links: { "Open the research board": "https://www.figma.com/board/MXgtUhK8ImltCtHCKq468F/tcp-?node-id=0-1" },
+  },
+];
+
 // Merge in the generated cover + slides for each project.
-for (const p of window.PROJECTS) {
+for (const p of [...window.PROJECTS, ...window.ONGOING]) {
   const a = (window.ASSETS || {})[p.slug] || {};
   p.cover = p.cover || a.cover || "";
   p.slides = a.slides || [];
