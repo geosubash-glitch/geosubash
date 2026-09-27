@@ -219,22 +219,31 @@
       </section>`;
   }
 
-  // Music, books and photos, edited from admin.html and stored in data/shelf.json.
+  // Music, movies and photos, edited from admin.html and stored in data/shelf.json.
   // Each group only appears once it has something in it.
-  let SHELF = { music: [], books: [], photos: [] };
+  let SHELF = { music: [], movies: [], photos: [] };
+  // Spotify links play inline through Spotify's own small player, which
+  // shows the title, artist and cover; anything else falls back to a card.
+  const spotify = (url) => {
+    const m = String(url || "").match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(track|album|playlist|episode|artist)\/([A-Za-z0-9]+)/);
+    return m ? `https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator&theme=0` : "";
+  };
   function shelf() {
     const out = [];
     if (SHELF.music.length) out.push(`<p class="label">On repeat</p>
       <ul class="shelf-music">${SHELF.music.map((m) => {
+        const embed = spotify(m.link);
+        if (embed) return `<li class="spot"><iframe src="${esc(embed)}" title="${esc(m.title || "Spotify track")}" loading="lazy"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe></li>`;
         const inner = `${m.cover ? `<img src="${esc(m.cover)}" alt="" loading="lazy" />` : `<span class="nocover"></span>`}
-          <span><b>${esc(m.title)}</b><span class="soft">${esc(m.artist || "")}</span></span>`;
+          <span><b>${esc(m.title || m.link)}</b><span class="soft">${esc(m.artist || "")}</span></span>`;
         return `<li>${m.link ? `<a href="${esc(m.link)}" target="_blank" rel="noopener">${inner}</a>` : `<div>${inner}</div>`}</li>`;
       }).join("")}</ul>`);
-    if (SHELF.books.length) out.push(`<p class="label">Reading</p>
-      <ul class="shelf-books">${SHELF.books.map((b) => {
-        const inner = `<span class="cover">${b.cover ? `<img src="${esc(b.cover)}" alt="" loading="lazy" />` : `<span class="nocover">${esc(b.title)}</span>`}</span>
-          <b>${esc(b.title)}</b><span class="soft">${esc(b.author || "")}</span>`;
-        return `<li>${b.link ? `<a href="${esc(b.link)}" target="_blank" rel="noopener">${inner}</a>` : inner}</li>`;
+    if (SHELF.movies.length) out.push(`<p class="label">Watching</p>
+      <ul class="shelf-movies">${SHELF.movies.map((v) => {
+        const inner = `<span class="cover">${v.poster ? `<img src="${esc(v.poster)}" alt="" loading="lazy" referrerpolicy="no-referrer" />` : `<span class="nocover">${esc(v.title)}</span>`}</span>
+          <b>${esc(v.title)}</b>${v.year ? `<span class="soft">${esc(v.year)}</span>` : ""}`;
+        return `<li>${v.link ? `<a href="${esc(v.link)}" target="_blank" rel="noopener">${inner}</a>` : inner}</li>`;
       }).join("")}</ul>`);
     if (SHELF.photos.length) out.push(`<p class="label">Photos</p>
       <div class="shelf-photos">${SHELF.photos.map((p) =>
@@ -245,7 +254,7 @@
     .then((r) => (r.ok ? r.json() : null))
     .then((d) => {
       if (!d) return;
-      SHELF = { music: d.music || [], books: d.books || [], photos: d.photos || [] };
+      SHELF = { music: d.music || [], movies: d.movies || [], photos: d.photos || [] };
       if (parse().name === "about") render(false);
     })
     .catch(() => {});

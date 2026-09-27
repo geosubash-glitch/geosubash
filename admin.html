@@ -14,7 +14,7 @@
   <main class="admin-wrap">
     <p class="label"><a href="./">← Back to site</a></p>
     <h1>Edit your shelf</h1>
-    <p class="soft">Music, books and photos on the About page. Changes are saved to GitHub as one commit, and the site republishes in about a minute.</p>
+    <p class="soft">Music, movies and photos on the About page. Changes are saved to GitHub as one commit, and the site republishes in about a minute.</p>
 
     <section class="admin-key" id="key-box">
       <label for="key">Passkey</label>
@@ -31,24 +31,24 @@
         <h2>On repeat</h2>
         <ul class="admin-list" id="list-music"></ul>
         <form class="admin-add" data-kind="music">
-          <input name="title" placeholder="Song title" required />
-          <input name="artist" placeholder="Artist" />
-          <input name="link" type="url" placeholder="Link (Spotify, YouTube…) optional" />
-          <label class="file">Cover image (optional)<input name="image" type="file" accept="image/*" /></label>
-          <button>Add song</button>
+          <div class="row">
+            <input name="link" type="url" placeholder="Paste a Spotify link" required />
+            <button>Add</button>
+          </div>
+          <p class="soft small">Title, artist and cover come from Spotify automatically.</p>
         </form>
       </section>
 
       <section class="admin-group">
-        <h2>Reading</h2>
-        <ul class="admin-list" id="list-books"></ul>
-        <form class="admin-add" data-kind="books">
-          <input name="title" placeholder="Book title" required />
-          <input name="author" placeholder="Author" />
-          <input name="link" type="url" placeholder="Link, optional" />
-          <label class="file">Cover image (optional)<input name="image" type="file" accept="image/*" /></label>
-          <button>Add book</button>
+        <h2>Watching</h2>
+        <ul class="admin-list" id="list-movies"></ul>
+        <form class="admin-find" id="movie-find">
+          <div class="row">
+            <input name="q" placeholder="Type a movie name" required />
+            <button>Find poster</button>
+          </div>
         </form>
+        <ul class="movie-results" id="movie-results"></ul>
       </section>
 
       <section class="admin-group">
