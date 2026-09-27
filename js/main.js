@@ -2,6 +2,7 @@
   const S = window.SITE;
   const P = window.PROJECTS;
   const view = document.getElementById("view");
+  const wipe = document.getElementById("wipe");
   const preview = document.getElementById("preview");
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -41,6 +42,7 @@
           <p class="hero-intro">${esc(S.intro)}</p>
         </div>
       </section>
+      ${marquee(S.skills)}
       ${nowBlock()}
       <section class="section">
         <div class="section-head"><p class="label">Selected work</p><p class="label">(${pad(P.length)})</p></div>
@@ -284,6 +286,11 @@
     return `<section class="section"><p class="label">404</p><h1 class="p-title">Not here.</h1><p><a class="back" href="#/">← Back to index</a></p></section>`;
   }
 
+  function marquee(items) {
+    const run = items.map((s) => `<span>${esc(s)}</span>`).join("");
+    return `<div class="marquee" aria-hidden="true"><div class="marquee-track">${run}${run}</div></div>`;
+  }
+
   // ---------- router ----------
   let workFilter = "All";
   function parse() {
@@ -311,7 +318,9 @@
 
   window.addEventListener("hashchange", () => {
     if (location.hash === "#contact") return;
-    render(false);
+    if (reduceMotion) return render(false);
+    wipe.className = "wipe in";
+    setTimeout(() => { render(true); wipe.className = "wipe out"; }, 450);
   });
 
   // "Contact" should scroll to the footer, not route

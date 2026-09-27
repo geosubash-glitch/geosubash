@@ -30,7 +30,9 @@ and keep it restrained.
 24 sparkle icons · 25 animated arrows · 26 no terms · 27 no privacy policy ·
 28 hover animations · 29 neon colours · 30 basic pastel colours
 
-How the site handles them now: square corners, no shadows or gradients, no entrance or
-page-transition animation, hovers only change colour (the footer scramble is the one
-deliberate motion the owner asked for), a panel colour shows behind images while they load,
-and `#/privacy` holds a short privacy note and terms.
+How the site handles them now: square corners, no shadows or gradients, no em dashes, a
+panel colour behind loading images, and `#/privacy` for a short privacy note and terms.
+The owner **likes the motion and wants it kept**: the page wipe between pages, text rising in,
+the hero name reveal, the scrolling skills bar (slash separators, no sparkles), the pulsing
+"in progress" dot, row/arrow/image hover animations, the cursor-follow preview and the footer
+scramble. Don't strip these in the name of the list above.
