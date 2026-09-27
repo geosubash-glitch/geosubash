@@ -260,9 +260,7 @@ main { min-height: 100vh; padding-top: var(--header-h); outline: none; }
 
 /* ---------- about ---------- */
 /* same columns as .about-grid below: photo in the label column, intro in the copy column */
-.about-top { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gutter); align-items: start; }
-.portrait { grid-column: 1 / span 3; margin: 0; }
-.about-top .about-lede { grid-column: 5 / -1; max-width: 20ch; }
+.about-grid .portrait { grid-column: 1 / span 3; margin: 0 0 48px; }
 .portrait { background: var(--paper-2); }
 .portrait img { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; filter: grayscale(1) contrast(1.02); }
 .about-lede {
@@ -327,14 +325,13 @@ main { min-height: 100vh; padding-top: var(--header-h); outline: none; }
 .site-footer { background: var(--deep); color: var(--ink); padding: clamp(56px, 8vw, 120px) var(--gutter) 24px; }
 .site-footer .label { color: var(--ink-2); }
 .footer-cta {
-  display: block; margin: 12px 0 14px; white-space: nowrap; overflow: hidden;
+  display: block; margin: 12px 0 clamp(48px, 7vw, 100px); white-space: nowrap; overflow: hidden;
   font-weight: 700; font-size: clamp(30px, 7.2vw, 128px);
   line-height: 1; letter-spacing: -0.03em; color: var(--ink);
 }
 .footer-cta:hover, .footer-cta:focus-visible { color: var(--accent); outline: none; }
 /* scrambled characters keep a steady rhythm while they change */
 .scramble .x { color: var(--ink-2); }
-.footer-hint { margin-bottom: clamp(48px, 7vw, 100px); }
 .footer-row { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 18px; }
 .footer-links { display: flex; gap: 20px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; flex-wrap: wrap; }
 .footer-links a:hover { color: var(--accent); }
@@ -366,8 +363,7 @@ main { min-height: 100vh; padding-top: var(--header-h); outline: none; }
   .index-row a:hover { color: inherit; }
 
   .work-grid { grid-template-columns: 1fr; }
-  .about-top .about-lede, .portrait { grid-column: 1 / -1; }
-  .portrait { max-width: none; }
+  .about-grid .portrait { grid-column: 1 / -1; margin-bottom: 8px; }
   .now-item { grid-template-columns: 1fr; }
   .now-sub, .now-go { grid-column: 1; grid-row: auto; }
   .p-body .label, .p-body .copy, .about-grid .label, .about-grid .copy, .skills, .certs, .shelf-music, .shelf-movies, .shelf-photos { grid-column: 1 / -1; }

@@ -39,7 +39,7 @@
             <div class="row"><b>Studying</b>${esc(S.school)}</div>
             <div class="row"><b>Based</b>${esc(S.location)}</div>
           </div>
-          <p class="hero-intro">${esc(S.intro)}</p>
+          ${S.intro ? `<p class="hero-intro">${esc(S.intro)}</p>` : ""}
         </div>
       </section>
       ${marquee(S.skills)}
@@ -203,12 +203,8 @@
     return `
       <section class="section">
         <div class="section-head" style="margin-bottom:clamp(32px,5vw,64px)"><p class="label">About</p><p class="label">${esc(S.school)}</p></div>
-        <div class="about-top">
-          ${S.portrait ? `<figure class="portrait"><img src="${esc(S.portrait)}" alt="Portrait of ${esc(S.name)}" width="900" height="1200" /></figure>` : ""}
-          <p class="about-lede">${esc(S.intro)}</p>
-        </div>
         <div class="about-grid">
-          <p class="label">Approach</p>
+          ${S.portrait ? `<figure class="portrait"><img src="${esc(S.portrait)}" alt="Portrait of ${esc(S.name)}" width="900" height="1200" /></figure>` : `<p class="label">About</p>`}
           <div class="copy">${S.about.map((t) => `<p>${esc(t)}</p>`).join("")}</div>
           <p class="label">Toolkit</p>
           <div class="skills">${S.skills.map((s) => `<span>${esc(s)}</span>`).join("")}</div>
