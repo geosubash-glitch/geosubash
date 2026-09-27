@@ -33,7 +33,7 @@ window.SITE = {
   ],
 
   intro:
-    "Industrial designer building phygital objects — things that ask to be touched as much as understood.",
+    "Industrial design student at NID Andhra Pradesh. I make objects that mix the physical and the digital: a chain cleaner built from old toothbrushes, a memory aid for elders, a music player with sixteen keys and no screen.",
 
   about: [
     "I'm an industrial design student at NID Andhra Pradesh, working at the intersection of physical and digital products — interactive, \"phygital\" objects that ask to be touched as much as they ask to be understood.",
@@ -59,9 +59,9 @@ window.PROJECTS = [
     guide: "Lakshya",
     tools: [],
     summary: [
-      "140 million people in India are over 60, and most are still independent. Routine holds — it's the one-off task that slips: a bank visit at 3 PM, a short course of afternoon medicine. The memory at stake is prospective memory, remembering to do something later, and it's the first thing to go for non-routine tasks.",
-      "Research moved from one everyday observation through seven studies, three rounds of interviews, two personas and journey maps to a single question: how might we build memory support into familiar objects, so remembering takes no effort? The answer had to ask almost nothing of memory, put the task in the room, help without being noticed, and stay calm — never alarming.",
-      "Anchor is two objects. A wearable, clipped to a collar or worn on the wrist, catches a task the moment it's spoken — hold, say it once, let go. A tabletop tray then holds it quietly: a spiral of light slowly builds through the day as the time approaches, the round display shows the task, and a physical reset closes the loop. No alarms, no screen to learn — from luck to certainty.",
+      "It started with an elderly woman filling in a form. She couldn't recall the details, so she reached for a small notebook. Sarang V and I spent the project on that gap: not memory loss from disease, but prospective memory, remembering to do something later, which is the first thing to slip for one-off tasks. India has 140 million people over 60, and 14 million of them live alone.",
+      "Two people shaped the brief. Ashok, 68, a retired teacher: \"If I have to visit the bank at 3 PM, I spend the whole day stressing about not forgetting it.\" Sunita, 71: \"When the doctor gives me a temporary afternoon medicine, I keep missing it.\" Across seven studies and three rounds of interviews the pattern held. Routines were fine, one-off tasks failed, and every lapse pushed people further onto their families; 65–70% are already partly dependent.",
+      "Anchor splits the job in two. A clip-on wearable records a task when you hold its button and say it once. A tabletop tray shows the task on a small round display and lights a spiral that fills in as the time gets closer; pressing reset clears it. It is scoped to normal ageing, not dementia, where reminders stop helping. The product images are concept renders and mockups, and the spiral's timing exists as a browser simulation.",
     ],
     links: { "Spiral light simulation": "https://geosubash-glitch.github.io/smartlight/" },
   },
@@ -76,9 +76,9 @@ window.PROJECTS = [
     guide: "Archana",
     tools: [],
     summary: [
-      "Riders often clean their chains with the engine idling in gear to save time — bringing hands and makeshift tools right up to the sprocket's pinch points, a leading cause of fingertip injuries. Professional kits are expensive, so most people improvise with a single old toothbrush, cardboard or plastic bags, and get poor reach, messy overspray and real risk.",
-      "Digital ethnography of forums and videos, a survey of riders across bike segments and step-by-step task analysis mapped exactly where the friction was. That became four goals: absolute safety, universal modularity, sustainable low cost and ergonomic control.",
-      "ReBrush clamps two discarded toothbrushes into a rigid dual-head scrubber that reaches both sides of the chain from a safe distance. Open-ended slide-in slots accept almost any brush, and a toothed locking plate bites into the handles so they can't twist under load. More than 25 prototypes tested fit, strength, clearance, torsional stability and quick-swap loading before the final model.",
+      "The key finding came out of YouTube comment sections. Under maintenance tutorials, riders kept describing the same shortcut: cleaning the chain with the engine running in first gear, hand inches from the sprocket. Two medical papers on chain-sprocket hand injuries (Geevarughese et al.; Nishar et al.) showed where that ends, so safety became the first requirement, ahead of cost.",
+      "A Google Forms survey found the people doing their own maintenance were mostly on 125cc-plus bikes with O-ring or X-ring chains, and that they skipped commercial kits for jugaad: an old toothbrush, cardboard, a plastic bag over the tyre. Watching one rider clean a chain step by step (WD-40, brush, WD-40 again, a hose on the turning wheel, lube on the moving chain) showed the rest: cramped hands, no leverage on the inner links, degreaser all over the tyre.",
+      "The toothbrush already works, so ReBrush keeps it and fixes everything around it. Over six weeks I built more than twenty prototypes, and most failed for plain reasons. Some didn't fit every brush. Rubber bands kept snapping. One version grew too big and used too much material; another's fastening was never reliable. The final tool takes any two discarded brushes in open-ended slots and clamps them with a toothed plate that bites into the handles, so they don't twist while scrubbing.",
     ],
     links: {},
   },
@@ -91,24 +91,24 @@ window.PROJECTS = [
     tags: ["Engineering", "Product Design"],
     tools: [],
     summary: [
-      "A full teardown of the Lapcare WL-102, a 104-key 2.4 GHz wireless keyboard — mapping its function, user process, every exterior and interior part, and an approximate bill of materials (₹765–1,680).",
-      "The redesign adds a rechargeable Li-Po battery with USB-C charging (TP4056 charge module and a buck converter, with the wiring worked out) and dedicated volume and mic-mute keys — then pushes the whole product through design for manufacturing and assembly.",
-      "For manufacturing: an integrated light-indicator window, a back plate that's only thicker at the electronics zone, a flat membrane support and taller key stems with thinner domes to save plastic. For assembly: screws cut from 16 to 6, snap-on clips, the battery built into the main body and separate lids removed entirely.",
+      "I took apart a Lapcare WL-102, a 104-key wireless keyboard that runs on AAA cells and weighs 400 g, mapped every part from the keycaps and rubber-dome sheet down to the membrane layers and the small PCB with its RF transmitter, and priced each one. The parts came to roughly ₹765–1,680.",
+      "Two changes came out of the teardown. The AAA cells gave way to an 800 mAh Li-Po pouch charged over USB-C through a TP4056 module and a step-down converter, and three keys were added for volume and mic mute, for calls and online classes. With those features and the manufacturing and assembly changes below, the estimate came to ₹935–1,900.",
+      "For assembly, the screw count dropped from 16 to 6 with snap-on clips doing the rest, and the battery moved into the main body, so the separate lid is gone. For moulding, the back plate is only thick where the electronics sit, the status light became a window in the body instead of a separate part, and the key stems got taller while the domes got thinner, keeping the feel with less plastic.",
     ],
     links: {},
   },
   {
     slug: "latent",
     title: "Latent",
-    subtitle: "A film-emulation workspace for CCD-sensor photographs",
+    subtitle: "A film-emulation workspace for old CCD-sensor photographs",
     year: "",
     category: "Software & Interface",
     tags: ["Software", "Interaction"],
-    tools: ["Python", "Code co-written with Gemini"],
+    tools: ["Python", "Code logic with Gemini"],
     summary: [
-      "Latent is an opinionated editing workspace that gives creative direction without endless options. Rather than imitating analog film with texture overlays, it simulates each stage of development natively at the pixel level — treating the digital image as a living chemical environment.",
-      "Release v1.0.15-CCDera is tuned for old CCD sensors: instead of correcting their quirks, it splits each raw file into 15 film-stock hypotheses shown side by side in an evaluation matrix, so a sensor's colour bias and highlight clipping become material to design with.",
-      "The workflow runs in three stages — a discovery bay for mounting and scanning local files, the evaluation matrix, and a workbench with tone splines, luma waveforms and geometric transforms. Grain is driven by luminance, so it peaks in the midtones and dissolves into clipped highlights and deep shadows the way real film does.",
+      "Most film presets clean a digital photo up and then lay grain on top. Latent goes the other way for old CCD cameras: it keeps the sensor's colour bias and the particular way it clips highlights, and works with them instead of correcting them away.",
+      "You point it at a folder, and each photo is split into 15 film-stock versions at once, laid out in a grid you compare by hovering. Pick one and a workbench opens with tone curves, a luma waveform and geometric transforms. This release, v1.0.15-CCDera, is tuned only for CCD files.",
+      "The grain is modelled on Ilford HP5: Gaussian noise weighted by brightness, strongest in the midtones and falling to nothing in blown-out sky and deep shadow, which is roughly how film behaves. The code logic was written with Gemini.",
     ],
     links: { github: "https://github.com/geosubash-glitch/latentworkspaces-v1.0.15-CCDera" },
   },
@@ -121,27 +121,24 @@ window.PROJECTS = [
     tags: ["Engineering", "Interaction"],
     tools: ["ESP32", "C++ / Arduino", "PCM5102A DAC", "SSD1306 OLED", "Code logic with Claude & Gemini"],
     summary: [
-      "FR4 Deck (model DAP-ESP32-M16) is a standalone digital audio player and Bluetooth receiver, built as a dedicated single-purpose gadget with real tactile controls — no touchscreen, no bloat, just mechanical keys and a raw cassette-futurism feel. The audio path is tuned to cleanly drive high-sensitivity in-ear monitors.",
-      "A 16-key mechanical matrix is mapped as a hierarchical D-pad — navigate, play and pause, skip tracks, step the volume, flip between Bluetooth and SD card, open the system menu or toggle the visualiser — and a hardware buzzer gives zero-latency click feedback on every press. A 128×64 OLED shows a live audio visualiser and scrolling track data, then sleeps on a timeout to save battery and cut glare in a dark room.",
-      "Inside, an ESP32 runs a custom pipeline that switches between a Bluetooth A2DP sink and lossless WAV playback from a microSD card, with software volume scaling and mono-to-stereo conversion into a 16-bit, 44.1 kHz I2S DAC. The pinout was worked out to keep the SPI, I2C and I2S buses from colliding, and the chassis is a 'sandwich' of two perfboards on M3 standoffs that physically isolates the digital audio lines from the keypad scanning noise.",
-      "Next on the roadmap: a Li-Po battery with a TP4056 charger and MT3608 boost converter, a monophonic synthesiser mode that turns the keypad into an instrument, and a 3D-printed snap-fit enclosure that leans fully into the cassette-futurism look.",
+      "A standalone music player and Bluetooth receiver with sixteen mechanical keys and no touchscreen, built to drive sensitive in-ear monitors cleanly.",
     ],
     // told as a story on the project page; numbers point at the uploaded
     // gallery images (0 = 01.png, 1 = 02.png, 2 = 03.png)
     story: [
       {
-        label: "01 — Idea",
-        heading: "One gadget, one job.",
+        label: "01, Why",
+        heading: "I wanted buttons.",
         text: [
-          "FR4 Deck (model DAP-ESP32-M16) is a standalone digital audio player and Bluetooth receiver, built because I wanted a dedicated, single-purpose device with real controls — no touchscreen, no bloat, just mechanical keys and a raw cassette-futurism feel.",
-          "The whole audio path is tuned to cleanly drive high-sensitivity in-ear monitors.",
+          "I wanted a single-purpose gadget with actual keys instead of a touchscreen. FR4 Deck (model DAP-ESP32-M16) is that: a player for WAV files on a microSD card that also works as a Bluetooth receiver, with a raw, cassette-futurism look that comes from leaving the boards exposed.",
+          "It had to sound clean on my IEMs, which pick up every bit of noise, and a lot of the hardware decisions below come from that.",
         ],
       },
-      { images: [0, 1], caption: "Bare FR4 perfboard build · ESP32, DAC, microSD and buzzer" },
+      { images: [0, 1], caption: "The bare build: ESP32, DAC, microSD reader and buzzer on FR4 perfboard" },
       {
-        label: "02 — Interface",
+        label: "02, Keys",
         heading: "Sixteen keys, no screen to learn.",
-        text: "A 4×4 mechanical matrix is mapped as a hierarchical D-pad, and a hardware buzzer clicks on every press with zero latency. A 128×64 OLED shows a live visualiser and scrolling track data, then sleeps on a timeout to save battery and cut glare in a dark room.",
+        text: "A 4×4 mechanical keypad works as a D-pad with a few extra functions. A buzzer wired straight to the ESP32 clicks on every press, so you know it registered. The small OLED shows a visualiser and the track name, then switches off after a while, partly for battery and partly because it was too bright in a dark room.",
         list: [
           ["2 · 8", "Up · Down"],
           ["4 · 6", "Previous · Next track"],
@@ -153,9 +150,12 @@ window.PROJECTS = [
         ],
       },
       {
-        label: "03 — Inside",
-        heading: "Two boards, one clean signal.",
-        text: "An ESP32 switches between a Bluetooth A2DP sink and lossless WAV playback from microSD, with software volume scaling and mono-to-stereo conversion into a 16-bit, 44.1 kHz I2S DAC. The pinout keeps the SPI, I2C and I2S buses from colliding, and a 'sandwich' of two perfboards on M3 standoffs physically isolates the audio lines from keypad scanning noise.",
+        label: "03, Inside",
+        heading: "Most of the time went into the pins.",
+        text: [
+          "Getting the display, the SD card, the DAC and the keypad to share one ESP32 without SPI conflicts or \"Guru Meditation\" memory crashes took a lot of trial and error. The OLED and SD reader ended up on alternative pins to keep the keypad away from the I2S audio buffer, and the display bus runs at 400 kHz because slower settings made the audio stutter.",
+          "Even then, the Bluetooth stack and audio libraries were too big for the default memory layout; it only compiles with the \"Huge APP\" partition scheme. The two stacked perfboards on nylon standoffs aren't just styling either: they keep the audio lines physically away from the keypad scanning noise.",
+        ],
         list: [
           ["Controller", "ESP32 dev module, 38-pin"],
           ["Audio", "PCM5102A I2S DAC · 16-bit / 44.1 kHz"],
@@ -163,17 +163,16 @@ window.PROJECTS = [
           ["Input", "4×4 mechanical matrix keypad"],
           ["Storage", "microSD over SPI"],
           ["Feedback", "5 V active piezo buzzer"],
-          ["Chassis", "Dual FR4 perfboards on M3 nylon standoffs"],
+          ["Chassis", "Two FR4 perfboards on M3 nylon standoffs"],
         ],
       },
       {
         image: 2,
         caption: "Product label",
-        label: "04 — Next",
-        heading: "Where it goes from here.",
+        label: "04, Not done",
+        heading: "Still open.",
         text: [
-          "A 3.7 V Li-Po battery with a TP4056 charger and MT3608 boost converter, without letting power noise into the audio.",
-          "A monophonic synthesiser mode that turns the keypad into a playable instrument — and a 3D-printed, snap-fit enclosure that leans fully into the cassette-futurism look.",
+          "Battery power is next: a Li-Po cell with a TP4056 charger and an MT3608 boost converter, without letting the converter's noise into the audio. After that, a synth mode that turns the keypad into an instrument, and a printed snap-fit case.",
         ],
       },
     ],
@@ -182,15 +181,15 @@ window.PROJECTS = [
   {
     slug: "creta-cmf",
     title: "Hyundai Creta CMF",
-    subtitle: "Translating tech-product CMF trends to an SUV",
+    subtitle: "Taking colour and material ideas from headphones to an SUV",
     year: "",
     category: "CMF",
     tags: ["CMF", "Research"],
     tools: [],
     summary: [
-      "A colour, material and finish study for the Hyundai Creta (₹11–20 L), aimed at its core buyer: a 25–35-year-old IT professional in a tier 1 or 2 city — a practical, budget-conscious, tech-enthusiast family driver who wants a strong road presence that still feels modern and easy to live with.",
-      "Research mapped how competitors use CMF — the Kia Seltos goes sporty and rugged with matte paints and heavy cladding, the Grand Vitara premium with chrome and copper accents and dual-tone leather, the RAV4 premium-minimal, the HR-V minimal-futuristic — alongside macro trends from Y2K and Y3K to athleisure, modern bohemian and the maximalist 'mob wife' look. The core insight: today's aesthetics come from combining and modifying existing movements.",
-      "A mood board of premium headphones and tech products distilled the direction — same colour in different finishes and materials, pastel and soft tones, metallic accents like rose gold and brushed aluminium, and minimal, subtle branding. That language was translated into five exterior and interior schemes for the Creta, from warm tan with brushed-copper pillars to deep blue with pale leather and dark graphite with copper trim.",
+      "The buyer I designed for: an IT professional aged 25 to 35 in a tier 1 or 2 city, in a family of three or four, who wants a strong road presence and a car that is still easy to drive in the city. The persona board places them alongside brands like Samsung, Decathlon and JBL.",
+      "Four competitors got a close look. The Kia Seltos is sporty and rugged, with matte paints and heavy cladding. The Maruti Grand Vitara goes premium with chrome and copper accents and dual-tone leather. The Toyota RAV4 is premium but minimal, with a single-tone cabin, and the Honda HR-V is minimal and futuristic in single-tone fabric. Alongside that, fashion trends were combining older movements into new ones: Y2K into Y3K, athleisure, modern boho, the maximalist \"mob wife\" look.",
+      "The palette came from headphones: Sony WH-1000XM6, Sennheiser Accentum Plus, Soundcore Life Q30, Bose QuietComfort Ultra and Beats Studio Pro. They share one move, the same colour in different finishes and materials, along with soft pastels, small metallic accents in rose gold and brushed aluminium, and quiet branding. On the Creta that became five exterior and interior schemes, among them warm tan with brushed-copper pillars, deep blue with pale leather, and dark graphite with copper trim.",
     ],
     links: {},
   },
