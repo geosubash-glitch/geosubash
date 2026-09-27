@@ -38,4 +38,4 @@ the hero name reveal, the scrolling skills bar (slash separators, no sparkles), 
 scramble. Don't strip these in the name of the list above.
 - **No taglines.** The owner finds slogan-style one-liners cringe ("I build X with Y inside",
   "Objects with…", clever section headlines). Keep subtitles as plain descriptions
-  ("Motorcycle chain cleaner"), no intro tagline, no text on the share image beyond the name.
+  ("Motorcycle chain cleaner"), no intro tagline, the share image (assets/og.jpg) is just the name plus "Industrial design portfolio", no photo.
