@@ -15,3 +15,22 @@
   only) kept in their browser. Never commit a token.
 - **Any project write-up, bio or story text must follow the `human-narrative` skill**
   (`.claude/skills/human-narrative/`). Only use facts from the uploads, READMEs or the owner.
+
+## Don't make it look vibe-coded (owner's list)
+
+Before shipping any change, check it against these. Use one only if there's a real reason,
+and keep it restrained.
+
+1 harsh gradients · 2 Lucide icons · 3 pure white background · 4 rainbow colouring ·
+5 drop shadows · 6 three feature cards in a row · 7 emojis · 8 liquid glass · 9 em dashes ·
+10 Inter / Geist / Space Grotesk · 11 coloured left stripe · 12 fake testimonials ·
+13 bento grids · 14 terminal window · 15 "it's not X, it's Y" · 16 checkmark bullets ·
+17 three pricing tiers · 18 no real product demos · 19 soft corner radius ·
+20 purple and black · 21 no skeleton loaders · 22 radial orbs · 23 dot grids ·
+24 sparkle icons · 25 animated arrows · 26 no terms · 27 no privacy policy ·
+28 hover animations · 29 neon colours · 30 basic pastel colours
+
+How the site handles them now: square corners, no shadows or gradients, no entrance or
+page-transition animation, hovers only change colour (the footer scramble is the one
+deliberate motion the owner asked for), a panel colour shows behind images while they load,
+and `#/privacy` holds a short privacy note and terms.

@@ -2,7 +2,6 @@
   const S = window.SITE;
   const P = window.PROJECTS;
   const view = document.getElementById("view");
-  const wipe = document.getElementById("wipe");
   const preview = document.getElementById("preview");
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -20,9 +19,9 @@
           <span class="num">${pad(i + 1)}</span>
           <span class="title">${esc(p.title)}</span>
           <span class="label disc">${esc(p.category)}</span>
-          <span class="label year">${esc(p.year || "—")}</span>
+          <span class="label year">${esc(p.year || "")}</span>
           <span class="arrow">→</span>
-          <span class="mthumb">${media(p.cover, `${pad(i + 1)} — image soon`, p.title)}</span>
+          <span class="mthumb">${media(p.cover, "Image soon", p.title)}</span>
         </a>
       </li>`).join("");
 
@@ -42,7 +41,6 @@
           <p class="hero-intro">${esc(S.intro)}</p>
         </div>
       </section>
-      ${marquee(S.skills)}
       ${nowBlock()}
       <section class="section">
         <div class="section-head"><p class="label">Selected work</p><p class="label">(${pad(P.length)})</p></div>
@@ -109,7 +107,7 @@
           const i = P.indexOf(p);
           return `
           <a class="card" href="#/work/${p.slug}">
-            <div class="card-media">${media(p.cover, `${pad(i + 1)} — image soon`, p.title)}<span class="tag">${esc(p.category)}</span></div>
+            <div class="card-media">${media(p.cover, "Image soon", p.title)}<span class="tag">${esc(p.category)}</span></div>
             <div class="card-info">
               <div><h3>${esc(p.title)}</h3><p>${esc(p.subtitle)}</p></div>
               <span class="label">${pad(i + 1)}${p.year ? " / " + esc(p.year) : ""}</span>
@@ -131,9 +129,9 @@
     ].filter(([, v]) => v);
     const links = Object.entries(p.links || {}).filter(([, v]) => v);
     let n = 0;
-    const img = (src) => `<img src="${esc(src)}" alt="${esc(p.title)} — ${++n}" loading="lazy" referrerpolicy="no-referrer" />`;
+    const img = (src) => `<img src="${esc(src)}" alt="${esc(p.title)}, image ${++n}" loading="lazy" referrerpolicy="no-referrer" />`;
     // Uploaded gallery: rows of up to 3 where every image in a row shares one
-    // height — each image's width is proportional to its aspect ratio.
+    // height; each image's width is proportional to its aspect ratio.
     const rows = [];
     for (let k = 0; k < p.gallery.length; ) {
       const left = p.gallery.length - k;
@@ -141,7 +139,7 @@
       rows.push(p.gallery.slice(k, k + take)); k += take;
     }
     const justified = rows.map((row) => `<div class="j-row">${row.map((g) =>
-      `<img src="${esc(g.src)}" width="${g.w}" height="${g.h}" style="flex-grow:${(g.w / g.h).toFixed(4)}" alt="${esc(p.title)} — ${++n}" loading="lazy" />`).join("")}</div>`).join("");
+      `<img src="${esc(g.src)}" width="${g.w}" height="${g.h}" style="flex-grow:${(g.w / g.h).toFixed(4)}" alt="${esc(p.title)}, image ${++n}" loading="lazy" />`).join("")}</div>`).join("");
     const gallery = justified + (p.images || []).map((item) =>
       Array.isArray(item) ? `<div class="g-row" style="--cols:${item.length}">${item.map(img).join("")}</div>` : img(item)).join("");
 
@@ -262,13 +260,28 @@
     })
     .catch(() => {});
 
-  function notFound() {
-    return `<section class="section"><p class="label">404</p><h1 class="p-title">Not here.</h1><p><a class="back" href="#/">← Back to index</a></p></section>`;
+  // Plain privacy note and terms, written for what this site actually does.
+  function privacy() {
+    return `
+      <section class="section legal">
+        <div class="section-head" style="margin-bottom:clamp(32px,5vw,64px)"><p class="label">Privacy & terms</p><p class="label">Updated 2026</p></div>
+        <div class="about-grid">
+          <p class="label">Privacy</p>
+          <div class="copy">
+            <p>This site has no cookies, analytics, ads or sign-up forms, and it doesn't collect anything about you.</p>
+            <p>It's hosted on GitHub Pages, which keeps standard server logs. Fonts load from Google Fonts. The music players come from Spotify, the research board from Figma, and movie posters from Apple and Wikipedia; each of those follows its own privacy policy when it loads.</p>
+            <p>If you email me, I'll only use your address to reply.</p>
+          </div>
+          <p class="label">Terms</p>
+          <div class="copy">
+            <p>All projects, images and text here are my own work unless credited. Please ask before reusing them, and credit me if you share them.</p>
+          </div>
+        </div>
+      </section>`;
   }
 
-  function marquee(items) {
-    const run = items.map((s) => `<span>${esc(s)}</span>`).join("");
-    return `<div class="marquee" aria-hidden="true"><div class="marquee-track">${run}${run}</div></div>`;
+  function notFound() {
+    return `<section class="section"><p class="label">404</p><h1 class="p-title">Not here.</h1><p><a class="back" href="#/">← Back to index</a></p></section>`;
   }
 
   // ---------- router ----------
@@ -279,6 +292,7 @@
     if (parts[0] === "work" && parts[1]) return { name: "work", html: project(parts[1]) };
     if (parts[0] === "work") return { name: "work", html: work(workFilter) };
     if (parts[0] === "about") return { name: "about", html: about() };
+    if (parts[0] === "privacy") return { name: "", html: privacy() };
     if (parts[0] === "now" && parts[1]) return { name: "", html: ongoing(parts[1]) };
     return { name: "", html: notFound() };
   }
@@ -290,16 +304,14 @@
     if (animate) { void view.offsetWidth; view.classList.add("view-enter"); }
     document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("is-active", a.dataset.nav === route.name));
     const h1 = view.querySelector("h1");
-    document.title = route.name === "home" || !h1 ? `${S.name} — Industrial Design` : `${h1.textContent} — ${S.name}`;
+    document.title = route.name === "home" || !h1 ? `${S.name}, Industrial Design` : `${h1.textContent} · ${S.name}`;
     window.scrollTo(0, 0);
     hidePreview();
   }
 
   window.addEventListener("hashchange", () => {
     if (location.hash === "#contact") return;
-    if (reduceMotion) return render(false);
-    wipe.className = "wipe in";
-    setTimeout(() => { render(true); wipe.className = "wipe out"; }, 450);
+    render(false);
   });
 
   // "Contact" should scroll to the footer, not route
@@ -383,7 +395,7 @@
   document.getElementById("footer-links").innerHTML = [
     ["Email", `mailto:${S.email}`], ...Object.entries(S.links).filter(([, v]) => v),
   ].map(([k, v]) => `<a href="${esc(v)}" ${v.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${esc(k)} ↗</a>`).join("");
-  document.getElementById("footer-copy").textContent = `© ${new Date().getFullYear()} ${S.name}`;
+  document.getElementById("footer-copy").innerHTML = `© ${new Date().getFullYear()} ${esc(S.name)} · <a href="#/privacy">Privacy & terms</a>`;
 
   const clock = document.getElementById("clock");
   const fmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" });
