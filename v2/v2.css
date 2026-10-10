@@ -3,7 +3,7 @@
    Sizes only from the old <font size=1..7> scale: 10, 13, 16, 18, 24, 32, 48px. */
 
 :root {
-  --bg: #c0c0c0;        /* Netscape / Mosaic default page grey */
+  --bg: #fff;           /* plain white page, as most hand-coded sites set with <body bgcolor="#FFFFFF"> */
   --text: #000;         /* default text */
   --link: #0000ee;      /* default unvisited link */
   --vlink: #551a8b;     /* default visited link */
@@ -32,7 +32,7 @@ p { margin: 0 0 1em; }
 .page { max-width: 1240px; margin: 0 auto; padding: 16px 24px 32px; }
 
 /* ---------- header: name, then Work | About. Rules are 2px groove, the default <hr> ---------- */
-.masthead { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px 20px; padding-bottom: 8px; border-bottom: 2px groove var(--bg); margin-bottom: 18px; }
+.masthead { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px 20px; padding-bottom: 8px; border-bottom: 2px groove #c0c0c0; margin-bottom: 18px; }
 .logo { font: bold 32px/1.1 var(--sans); color: #000 !important; text-decoration: none; }
 .masthead nav { font: 13px var(--sans); }
 .masthead nav a.is-active { color: #000; text-decoration: none; font-weight: bold; }
@@ -57,7 +57,7 @@ p { margin: 0 0 1em; }
 .list .thumb, a.thumb { border: 2px solid var(--link); }
 .list a.item:visited .thumb, a.thumb:visited { border-color: var(--vlink); }
 .list a.item:active .thumb, a.thumb:active { border-color: var(--alink); }
-.thumb img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #a8a8a8; }
+.thumb img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #eee; }
 
 /* ---------- project page ---------- */
 .back { font: 13px var(--sans); margin-bottom: 14px; }
@@ -76,7 +76,7 @@ h1 { font-size: 32px; line-height: 1.15; }
 .quote blockquote { margin: 0 0 4px; font: italic 24px/1.3 var(--serif); }
 .quote figcaption { font: 13px var(--sans); }
 .study { margin-top: 24px; }
-.study img { width: 100%; background: #a8a8a8; }
+.study img { width: 100%; background: #eee; }
 .chap { margin-top: 24px; }
 .chap h3 { font-size: 18px; margin-bottom: 6px; }
 .figs { display: flex; gap: 8px; margin-top: 10px; }
@@ -85,8 +85,8 @@ h1 { font-size: 32px; line-height: 1.15; }
 .figs .thumb img, .fig .thumb img { aspect-ratio: auto; }
 figcaption { font: 13px var(--sans); margin-top: 4px; }
 .board { margin-top: 20px; }
-.board iframe { width: 100%; height: 640px; display: block; background: #a8a8a8; border: 2px solid; border-color: var(--lo) var(--hi) var(--hi) var(--lo); }
-.next { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 10px; border-top: 2px groove var(--bg); font: 13px var(--sans); }
+.board iframe { width: 100%; height: 640px; display: block; background: #eee; border: 2px solid; border-color: var(--lo) var(--hi) var(--hi) var(--lo); }
+.next { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 10px; border-top: 2px groove #c0c0c0; font: 13px var(--sans); }
 
 /* ---------- about ---------- */
 .about-top { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; margin-bottom: 24px; }
@@ -102,7 +102,7 @@ figcaption { font: 13px var(--sans); margin-top: 4px; }
 .photos .thumb img { aspect-ratio: 4 / 3; }
 
 /* ---------- footer: contact, links, last updated ---------- */
-.foot { margin-top: 36px; padding-top: 10px; border-top: 2px groove var(--bg); font: 13px var(--sans); }
+.foot { margin-top: 36px; padding-top: 10px; border-top: 2px groove #c0c0c0; font: 13px var(--sans); }
 .foot p { margin: 0 0 6px; }
 .cta { font: bold 18px var(--sans); }
 
