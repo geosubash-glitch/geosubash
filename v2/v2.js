@@ -1,4 +1,4 @@
-// v2 preview: a plain early-2000s personal site over the same data as the live site
+// v2 preview: a hand-coded late-90s personal site over the same data as the live site
 // (js/projects.js, js/assets.generated.js, data/shelf.json).
 (() => {
   const S = window.SITE, P = window.PROJECTS, O = window.ONGOING || [];
@@ -143,8 +143,12 @@
   addEventListener("hashchange", () => render());
 
   // ---------- footer ----------
-  document.getElementById("links").innerHTML = contacts().map(([k, v]) => `<a href="${esc(v)}"${ext(v)}>${esc(k)}</a>`).join(" · ");
-  document.getElementById("copy").innerHTML = `© ${new Date().getFullYear()} ${esc(S.name)} · <a href="#/privacy">Privacy &amp; terms</a>`;
+  document.getElementById("links").innerHTML = `Email: <a href="mailto:${esc(S.email)}">${esc(S.email)}</a><br>` +
+    contacts().slice(1).map(([k, v]) => `<a href="${esc(v)}"${ext(v)}>${esc(k)}</a>`).join(" | ");
+  const upd = new Date(document.lastModified);
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  document.getElementById("copy").innerHTML = `© ${new Date().getFullYear()} ${esc(S.name)} · <a href="#/privacy">Privacy &amp; terms</a>` +
+    (isNaN(upd) ? "" : ` · Last updated ${upd.getDate()} ${MONTHS[upd.getMonth()]} ${upd.getFullYear()}`);
 
   // "Get in touch" turns into the email address on hover (kept from the live site)
   const cta = document.getElementById("cta"), scr = document.getElementById("scramble");
