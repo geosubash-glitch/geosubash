@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Geo Subash, Industrial Design Portfolio (v2 preview)</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23b9c33f'/><rect x='8' y='8' width='16' height='16' fill='%2316181d'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="v2.css" />
+</head>
+<body>
+  <div class="frame">
+    <!-- window chrome: title bar, address bar, tabs -->
+    <header class="chrome">
+      <div class="titlebar">
+        <span class="tb-name">geo subash network</span>
+        <span class="tb-btns" aria-hidden="true"><i>_</i><i>□</i><i>×</i></span>
+      </div>
+      <div class="addressbar">
+        <span class="px">address</span>
+        <span class="addr" id="addr">C:/geosubash/index</span>
+        <a class="go px" href="#/">go</a>
+      </div>
+      <nav class="tabs" aria-label="Main">
+        <a href="#/" data-nav="home"><b class="px">01</b> index</a>
+        <a href="#/work" data-nav="work"><b class="px">02</b> work</a>
+        <a href="#/about" data-nav="about"><b class="px">03</b> about</a>
+        <a href="#contact" id="tab-contact"><b class="px">04</b> contact</a>
+      </nav>
+    </header>
+
+    <div class="body">
+      <aside class="side" aria-hidden="true"><span>industrial design portfolio</span><i></i><i></i><i></i></aside>
+      <main id="view" tabindex="-1"></main>
+    </div>
+
+    <footer class="foot" id="contact">
+      <div class="win">
+        <div class="win-bar"><span>contact.txt</span><span class="px">04</span></div>
+        <div class="win-body">
+          <a class="cta" id="cta" href="#"><span id="scramble">Get in touch</span></a>
+          <ul class="foot-links" id="foot-links"></ul>
+        </div>
+      </div>
+      <div class="statusbar">
+        <span class="px" id="status-left">done</span>
+        <span class="px" id="status-right"></span>
+      </div>
+    </footer>
+  </div>
+
+  <div class="wipe" id="wipe" aria-hidden="true"><span class="px">loading…</span></div>
+  <div class="preview" id="preview" aria-hidden="true"><img alt="" /></div>
+
+  <script src="../js/assets.generated.js"></script>
+  <script src="../js/projects.js"></script>
+  <script src="v2.js"></script>
+</body>
+</html>
