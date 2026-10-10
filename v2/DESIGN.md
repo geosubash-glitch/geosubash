@@ -18,23 +18,18 @@ Below, each choice gives the period fact behind it.
   - Pages of the era changed state only on visit and on click.
 - **No other colours.** The only extra colour is the blinking red square for work in progress.
 
-## Type
-- **Times New Roman is the body text.**
-  - Until Netscape added `<font face>` in 1995, authors couldn't pick a font, and the browser default was a serif, almost always Times.
-  - Microsoft's Core Fonts for the Web (1996) put Times New Roman and Arial on every machine.
-- **Helvetica/Arial is for the name, titles, labels, captions and footer.**
-  - Authors who wanted a sans wrote `<font face="Helvetica,Arial">`: Helvetica on a Mac, Arial on Windows.
-  - It was usually at `size=2` for navigation and small print.
-- **Sizes come only from the old `<font size>` scale:** 13px (size 2), 16px (3, the default), 18px (4), 24px (5) and 32px (6).
-  - Body text is 16px, the browser default.
-- **Headings are bold Times,** as an unstyled `<h1>` rendered.
-- **Reading text is capped at about 70 characters a line** (Bringhurst: 45–75), even though the page is wide.
+## Type (owner's reference: Håkon Wium Lie, "Cascading HTML style sheets -- a proposal", CERN, 1994)
+- **Everything is set in Times New Roman,** the browser default, including headings. There's no sans-serif anywhere.
+- **Courier New is for data,** the way the proposal sets its code examples: project facts are a `<pre>` block.
+- **Headings use the browser's default sizes:** h1 2em, h2 1.5em, h3 1.17em, all bold Times.
+- **Body text is 16px with normal line height.** The page has an 8px margin, like an unstyled document.
+- **Every page opens the same way:** a bold title, italic byline lines (role and school, email, date), then a thin rule. Sections follow under bold headings, as in the proposal.
+- **Reading text is capped at about 70 characters a line** (Bringhurst: 45–75). The proposal itself runs text the full window width; that's the one deliberate difference, for readability.
 
 ## Structure and details
-- **Rules are a 2px groove,** which is how a default `<hr>` looked: a dark line over a light line, the same as a default `<hr>` on a white page.
+- **Rules are a default `<hr>`:** a thin grey line.
 - **Linked images have a 2px border in the link colour.** Blue becomes purple once you've visited that project and flashes red on click.
   - Browsers drew this border on any image inside a link unless the author wrote `border=0`. It's the most recognisable trait of the period.
-- **The facts table is `<table border=1>`:** a raised outer frame with sunken cells.
 - **Quotes use the default `<blockquote>` indent** (40px) and italic Times.
 - **Lists keep the default 40px indent and disc bullets.**
 - **Navigation is plain text links separated by `|`.**

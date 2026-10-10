@@ -13,19 +13,32 @@
   const ext = (v) => (/^https?:/.test(v) ? ' target="_blank" rel="noopener"' : "");
   const img = (src, alt = "", lazy = true) => (src ? `<img src="${esc(u(src))}" alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ""} referrerpolicy="no-referrer" />` : "");
   const contacts = () => [["Email", `mailto:${S.email}`], ...Object.entries(S.links).filter(([, v]) => v).map(([k, v]) => [nice(k), v])];
+  // facts as a Courier <pre> block, like the code examples in the 1994 proposal
   const facts = (rows) => {
     rows = rows.filter(([, v]) => v);
-    return rows.length ? `<table class="facts">${rows.map(([k, v]) => `<tr><th>${k}</th><td>${esc(v)}</td></tr>`).join("")}</table>` : "";
+    if (!rows.length) return "";
+    const w = Math.max(...rows.map(([k]) => k.length)) + 3;
+    return `<pre>${rows.map(([k, v]) => esc(k.toLowerCase().padEnd(w)) + esc(v)).join("\n")}</pre>`;
   };
+  const updated = (() => {
+    const d = new Date(document.lastModified);
+    const M = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return isNaN(d) ? "" : `${d.getDate()} ${M[d.getMonth()]} ${d.getFullYear()}`;
+  })();
 
   // ---------- home: one line for work in progress, then the list ----------
   function home() {
     return `
-      ${O.map((o) => `<p class="now"><span class="live" aria-hidden="true"></span>Now: <a href="#/now/${o.slug}">${esc(o.title)}</a> <span class="mute">(${esc((o.status || "in progress").toLowerCase())})</span></p>`).join("")}
-      <h2 class="label">Work</h2>
+      <h1>${esc(S.name)}</h1>
+      <p class="byline">${esc(S.role)}, ${esc(S.school)}</p>
+      <p class="byline"><a href="mailto:${esc(S.email)}">${esc(S.email)}</a></p>
+      <p class="byline">${esc(updated)}</p>
+      <hr>
+      ${O.map((o) => `<p class="reading"><span class="live" aria-hidden="true"></span>Now: <a href="#/now/${o.slug}">${esc(o.title)}</a>, ${esc(o.subtitle.toLowerCase())} (${esc((o.status || "in progress").toLowerCase())}).</p>`).join("")}
+      <h2>Work</h2>
       <ul class="list">${P.map((p) => `<li><a class="item" href="#/work/${p.slug}">
         <span class="thumb">${img(p.cover, "")}</span>
-        <span><span class="t">${esc(p.title)}</span><span class="s">${esc(p.subtitle)}</span>${p.year ? `<span class="y">${esc(p.year)}</span>` : ""}</span>
+        <span class="t">${esc(p.title)}</span><span class="s">${esc(p.subtitle)}</span>${p.year ? `<span class="y">${esc(p.year)}</span>` : ""}
       </a></li>`).join("")}</ul>`;
   }
 
@@ -36,18 +49,21 @@
     const p = P[i], next = P[(i + 1) % P.length];
     const links = Object.entries(p.links || {}).filter(([, v]) => v);
     return `
-      <p class="back"><a href="#/">« All work</a></p>
       <h1>${esc(p.title)}</h1>
-      <p class="sub">${esc(p.subtitle)}</p>
+      <p class="byline">${esc(p.subtitle)}</p>
+      ${[p.team, p.year].some(Boolean) ? `<p class="byline">${esc([p.team, p.year].filter(Boolean).join(", "))}</p>` : ""}
+      <hr>
       <div class="thumb cover">${img(p.cover, p.title, false)}</div>
-      ${facts([["Year", p.year], ["Team", p.team], ["Guided by", p.guide], ["Duration", p.duration], ["Tools", (p.tools || []).join(", ")]])}
+      ${facts([["Guided by", p.guide], ["Duration", p.duration], ["Tools", (p.tools || []).join(", ")], ["Type", p.category]])}
+      <h2>Summary</h2>
       <div class="reading">${paras(p.summary)}
         ${links.length ? `<p>${links.map(([k, v]) => `<a href="${esc(v)}"${ext(v)}>${esc(nice(k))}</a>`).join(" · ")}</p>` : ""}</div>
       ${p.quote ? `<figure class="quote"><blockquote>“${esc(p.quote.text)}”</blockquote><figcaption>${esc(p.quote.by)}</figcaption></figure>` : ""}
-      ${p.slides.length ? `<div class="study">${p.slides.map((s, k) =>
+      ${p.slides.length ? `<h2>Case study</h2><div class="study">${p.slides.map((s, k) =>
         `<img src="${esc(u(s.src))}" width="${s.w}" height="${s.h}" alt="${esc(p.title)} case study, part ${k + 1}" loading="lazy" />`).join("")}</div>` : ""}
       ${p.story ? story(p) : ""}
-      <div class="next"><a href="#/">« All work</a><a href="#/work/${next.slug}">Next: ${esc(next.title)} »</a></div>`;
+      <hr>
+      <p class="next"><a href="#/">Back to all work</a><a href="#/work/${next.slug}">Next: ${esc(next.title)}</a></p>`;
   }
   function story(p) {
     const g = (k) => p.gallery[k];
@@ -66,11 +82,12 @@
     const o = O.find((x) => x.slug === sl);
     if (!o) return notFound();
     return `
-      <p class="back"><a href="#/">« All work</a></p>
       <h1>${esc(o.title)}</h1>
-      <p class="sub"><span class="live" aria-hidden="true"></span>${esc(o.status || "In progress")}</p>
+      <p class="byline">${esc(o.subtitle)}</p>
+      <p class="byline"><span class="live" aria-hidden="true"></span>${esc(o.status || "In progress")}</p>
+      <hr>
       <div class="reading">${paras(o.summary)}</div>
-      ${o.board ? `<div class="board"><iframe src="${esc(figmaEmbed(o.board))}" title="${esc(o.title)} research board" loading="lazy" allowfullscreen></iframe>
+      ${o.board ? `<h2>Research board</h2><div class="board"><iframe src="${esc(figmaEmbed(o.board))}" title="${esc(o.title)} research board" loading="lazy" allowfullscreen></iframe>
         <figcaption><a href="${esc(o.board)}" target="_blank" rel="noopener">Open the board in Figma</a></figcaption></div>` : ""}`;
   }
 
@@ -81,16 +98,18 @@
     return m ? `https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator&theme=0` : "";
   };
   function about() {
-    const sect = (title, body) => `<section class="sect"><h2 class="label">${title}</h2>${body}</section>`;
+    const sect = (title, body) => `<h2>${title}</h2>${body}`;
     return `
-      <h1 style="margin-bottom:18px">About</h1>
+      <h1>About</h1>
+      <p class="byline">${esc(S.role)}, ${esc(S.school)}, ${esc(S.location)}</p>
+      <hr>
       <div class="about-top">
         ${S.portrait ? `<span class="thumb">${img(S.portrait, `Portrait of ${S.name}`, false)}</span>` : ""}
-        <div class="reading">${paras(S.about)}<p class="mute">${esc(S.role)}, ${esc(S.school)}, ${esc(S.location)}</p></div>
+        <div class="reading">${paras(S.about)}</div>
       </div>
       ${sect("Toolkit", `<p>${S.skills.map(esc).join(", ")}</p>`)}
-      ${(S.certifications || []).length ? sect("Certificates", `<ul class="plain-list">${S.certifications.map((c) =>
-        `<li><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title)}</a> <span class="mute">(${esc(c.issuer)})</span></li>`).join("")}</ul>`) : ""}
+      ${(S.certifications || []).length ? sect("Certificates", `<ul>${S.certifications.map((c) =>
+        `<li><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title)}</a>, <i>${esc(c.issuer)}</i></li>`).join("")}</ul>`) : ""}
       ${SHELF.photos.length ? sect("Photos", `<div class="photos">${SHELF.photos.map((p) =>
         `<figure style="margin:0"><span class="thumb">${img(p.src, p.caption || "Photo by Geo Subash")}</span>${p.caption ? `<figcaption>${esc(p.caption)}</figcaption>` : ""}</figure>`).join("")}</div>`) : ""}
       ${SHELF.music.length ? sect("On repeat", SHELF.music.map((m) => {
@@ -108,7 +127,7 @@
   }).catch(() => {});
 
   function privacy() {
-    return `<h1 style="margin-bottom:18px">Privacy &amp; terms</h1>
+    return `<h1>Privacy &amp; terms</h1><hr>
       <div class="reading">
         <p>This site has no cookies, analytics, ads or sign-up forms, and it doesn't collect anything about you.</p>
         <p>It's hosted on GitHub Pages, which keeps standard server logs. The music players come from Spotify, the research board from Figma, and movie posters from Apple and Wikipedia; each of those follows its own privacy policy when it loads.</p>
@@ -143,12 +162,8 @@
   addEventListener("hashchange", () => render());
 
   // ---------- footer ----------
-  document.getElementById("links").innerHTML = `Email: <a href="mailto:${esc(S.email)}">${esc(S.email)}</a><br>` +
-    contacts().slice(1).map(([k, v]) => `<a href="${esc(v)}"${ext(v)}>${esc(k)}</a>`).join(" | ");
-  const upd = new Date(document.lastModified);
-  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  document.getElementById("copy").innerHTML = `© ${new Date().getFullYear()} ${esc(S.name)} · <a href="#/privacy">Privacy &amp; terms</a>` +
-    (isNaN(upd) ? "" : ` · Last updated ${upd.getDate()} ${MONTHS[upd.getMonth()]} ${upd.getFullYear()}`);
+  document.getElementById("links").innerHTML = contacts().slice(1).map(([k, v]) => `<a href="${esc(v)}"${ext(v)}>${esc(k)}</a>`).join(" | ");
+  document.getElementById("copy").innerHTML = `<i>© ${new Date().getFullYear()} ${esc(S.name)}${updated ? `, last updated ${esc(updated)}` : ""}</i> | <a href="#/privacy">Privacy &amp; terms</a>`;
 
   // "Get in touch" turns into the email address on hover (kept from the live site)
   const cta = document.getElementById("cta"), scr = document.getElementById("scramble");
