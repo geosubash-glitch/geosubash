@@ -5,23 +5,24 @@ It has one column, system fonts, blue links and thin rules, with no buttons, sea
 The owner's rule: it's a portfolio, so keep it as simple and as small as possible.
 
 ## Layout
-- **One 720px column.** The page reads from top to bottom in one path, so there's nothing to choose between.
+- **One wide column (up to 1240px).** Wide like a modern screen rather than the square 800×600 pages of the time. The page reads from top to bottom in one path, so there's nothing to choose between.
   - Hick's law: fewer options, faster decisions.
-  - Each project is one row: thumbnail, title, subtitle, year.
+  - Projects sit in two columns on wide screens, so the width is used rather than left empty, and in one column on phones. Each entry is the image, then the title, subtitle and year.
 - **Titles come first and are links.** People scan the left edge and the first words of each line (Nielsen, *F-Shaped Pattern for Reading Web Content*, 2006).
 - **Structure comes from spacing and 1px rules, not boxes or colour.** This is Gestalt proximity.
 - **There are only two links in the header (Work, About).** Contact sits in the footer, where people look for it (Jakob's law).
 
 ## Type
-- **System fonts:** Verdana for text, Arial for headings, Georgia only for the interview quote.
-  - Verdana was drawn for screens.
-  - Bernard, Mills et al. (*Usability News*, 2001–2002) found Verdana and Arial among the most legible fonts on screen.
-  - Nothing has to download.
-- **Size:** body text is 14px with 1.6 line height, and dates and captions are 12px in grey.
+- **Times New Roman for text, Helvetica for the name, titles, labels and captions.**
+  - Times was the browser default on the early web, and Helvetica (Arial on Windows) was the standard sans.
+  - The contrast between them separates reading from navigation without colour or boxes.
+- **Size:** body text is 17px with 1.5 line height. Labels and captions are 13–15px Helvetica in grey.
+  - Times has a small x-height, so it needs to be set a few pixels larger than a sans to read as easily on screen.
   - Larger on-screen type reads better (Rello, Pielot & Marcos, CHI 2016).
-- **Line length:** reading text is capped at 600px, about 70 characters a line.
+- **Line length:** the page is wide (1240px), but reading text is capped at 640px, about 70 characters a line.
   - Bringhurst recommends 45–75 characters.
   - Dyson & Haselgrove (2001) found medium line lengths read best on screen.
+  - Images, slides and the board use the full width.
 - **Contrast:** text #333 and metadata #6b6b66 on #f3f3ef. Both pass WCAG AA.
 
 ## Links
