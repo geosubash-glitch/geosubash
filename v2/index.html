@@ -5,37 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex" />
   <title>Geo Subash, Industrial Design Portfolio</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%23224499'/><rect x='4' y='4' width='8' height='8' fill='%23f3f3ef'/></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%231a3fa6'/><rect x='4' y='4' width='8' height='8' fill='%23f3f3ef'/></svg>" />
   <link rel="stylesheet" href="v2.css" />
 </head>
 <body>
   <div class="page">
     <header class="masthead">
-      <a class="logo" href="#/">Geo Subash<small>Industrial Design Portfolio</small></a>
-      <div class="util" id="util"></div>
+      <a class="logo" href="#/">Geo Subash</a>
+      <nav aria-label="Main">
+        <a href="#/" data-nav="home">Work</a>
+        <a href="#/about" data-nav="about">About</a>
+      </nav>
     </header>
-
-    <nav class="tabs" aria-label="Main">
-      <a href="#/" data-nav="home">Home</a>
-      <a href="#/work" data-nav="work">Work</a>
-      <a href="#/about" data-nav="about">About</a>
-    </nav>
-    <form class="searchbar" id="search" role="search">
-      <label for="q" class="vh">Search projects</label>
-      <input id="q" type="search" placeholder="" autocomplete="off" />
-      <select id="cat" aria-label="Category"></select>
-      <button type="submit" class="btn">Search</button>
-      <a class="btn btn-yellow" id="mail" href="#">Email me</a>
-    </form>
 
     <main id="view" tabindex="-1"></main>
 
     <footer class="foot">
-      <div class="foot-row">
-        <a href="#/">Home</a> | <a href="#/work">Work</a> | <a href="#/about">About</a> | <a href="#/privacy">Privacy &amp; terms</a> |
-        <a class="cta" id="cta" href="#"><span id="scramble">Get in touch</span></a>
-      </div>
-      <div class="foot-copy" id="copy"></div>
+      <p><a class="cta" id="cta" href="#"><span id="scramble">Get in touch</span></a></p>
+      <p id="links"></p>
+      <p class="mute" id="copy"></p>
     </footer>
   </div>
 
