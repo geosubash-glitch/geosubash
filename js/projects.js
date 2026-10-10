@@ -60,6 +60,7 @@ window.PROJECTS = [
     summary: [
       "Sarang V and I looked at how older adults in India keep track of one-off tasks, like a bank visit at 3 PM. Anchor is a clip-on recorder you say the task into, and a tray whose light fills in as the time gets close. The product images are concept renders.",
     ],
+    quote: {"text": "If I have to visit the bank at 3 PM, I spend the whole day stressing about not forgetting it.", "by": "Ashok, 68, retired teacher, from the interviews"},
     links: { "Spiral light simulation": "https://geosubash-glitch.github.io/smartlight/" },
   },
   {
