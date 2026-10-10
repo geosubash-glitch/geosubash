@@ -7,7 +7,7 @@ Below, each choice gives the period fact behind it.
 ## Colour: the browser defaults
 | Thing | Value | Why |
 |---|---|---|
-| Page background | `#c0c0c0` grey | Mosaic and early Netscape drew pages grey unless the author set `bgcolor`. #C0C0C0 is documented as "the default for most web browsers". |
+| Page background | `#fff` white | The owner's choice. Browsers defaulted to grey #C0C0C0, but most authors overrode it with `<body bgcolor="#FFFFFF">`, so plain white is just as much of the period. |
 | Text | `#000` | Default text colour. |
 | Link | `#0000ee` | The default unvisited link blue. HTML5's suggested rendering adopted this value to match real browsers. |
 | Visited link | `#551a8b` | Netscape Navigator 4's default visited colour. |
@@ -31,7 +31,7 @@ Below, each choice gives the period fact behind it.
 - **Reading text is capped at about 70 characters a line** (Bringhurst: 45–75), even though the page is wide.
 
 ## Structure and details
-- **Rules are a 2px groove,** which is how a default `<hr>` looked: a dark line over a light line, as if cut into the grey.
+- **Rules are a 2px groove,** which is how a default `<hr>` looked: a dark line over a light line, the same as a default `<hr>` on a white page.
 - **Linked images have a 2px border in the link colour.** Blue becomes purple once you've visited that project and flashes red on click.
   - Browsers drew this border on any image inside a link unless the author wrote `border=0`. It's the most recognisable trait of the period.
 - **The facts table is `<table border=1>`:** a raised outer frame with sunken cells.
@@ -49,7 +49,7 @@ Below, each choice gives the period fact behind it.
 
 ## Avoid list check
 - No gradients, drop shadows, rounded corners, emoji, icon sets, em dashes or taglines.
-- The background is the period grey, not white.
+- The background is pure white. That is on the avoid list, but the owner asked for it, and it's the period look.
 
 ## Sources
 - Default grey #C0C0C0: [Virginia Tech, Netscape/RGB Color Guide](https://scholar.lib.vt.edu/reports/soasis-slides/colors.html); [Hugs mailing list, 2001](https://mail.haskell.org/pipermail/hugs-bugs/2001-April/000256.html)
