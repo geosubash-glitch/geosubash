@@ -22,7 +22,7 @@ Below, each choice gives the period fact behind it.
 - **Everything is set in Times New Roman,** the browser default, including headings. There's no sans-serif anywhere.
 - **Courier New is for data,** the way the proposal sets its code examples: project facts are a `<pre>` block.
 - **Headings use the browser's default sizes:** h1 2em, h2 1.5em, h3 1.17em, all bold Times.
-- **Body text is 16px with normal line height.** The page has an 8px margin, like an unstyled document.
+- **Body text is 16px with normal line height.** The page is centred, up to 1240px wide, with Work | About on the right.
 - **Every page opens the same way:** a bold title, italic byline lines (role and school, email, date), then a thin rule. Sections follow under bold headings, as in the proposal.
 - **Reading text is capped at about 70 characters a line** (Bringhurst: 45–75). The proposal itself runs text the full window width; that's the one deliberate difference, for readability.
 
@@ -38,11 +38,7 @@ Below, each choice gives the period fact behind it.
 - **Width:** the page runs wide, up to 1240px, rather than the narrow 640px or 800px pages of the time. This is the owner's choice. Projects sit in two columns, like a `<table width="100%">`.
 
 ## Motion
-- **The turnaround drawing next to the name** is the owner's one-line portrait drawings, rebuilt by `tools/turnaround.py`:
-  - Each drawing is traced into one continuous path.
-  - In-between frames slide every point of one view onto its nearest partner in the next view.
-  - Every frame is drawn with 1-pixel, un-smoothed lines on a 120px grid, like the MS Paint pencil.
-  - The page shows it at exactly 2x with `image-rendering: pixelated`, about 11 frames a second.
+- **The turnaround drawing next to the name** is the owner's own drawings, lined up by `tools/build-turnaround.mjs` and played as a sprite, about 6 frames a second.
 - **The work-in-progress square blinks on and off once a second,** the rhythm of Netscape's `<blink>`.
 - **"Get in touch" scrambles into the email on hover.** This is a late-90s DHTML-style effect, kept because the owner likes it.
 - Both stop if the visitor's system asks for reduced motion.

@@ -11,7 +11,7 @@
 }
 
 html { -webkit-text-size-adjust: 100%; }
-body { margin: 8px; background: #fff; color: #000; font: 16px/normal var(--serif); }
+body { margin: 8px 0; background: #fff; color: #000; font: 16px/normal var(--serif); }
 img { max-width: 100%; height: auto; display: block; border: 0; }
 
 a:link { color: var(--link); }
@@ -30,19 +30,18 @@ pre { font: 13px/1.35 var(--mono); margin: 1em 0 1em 2em; white-space: pre-wrap;
 ul { margin: 0 0 1em; padding-left: 40px; }
 blockquote { margin: 1em 40px; }
 
-.page { max-width: 1240px; }
-.top { margin: 0; }
+.page { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+.top { margin: 0; text-align: right; }
 .top a.is-active { color: #000; text-decoration: none; font-weight: bold; }
 
 /* home header: the turnaround loop beside the name */
 .masthead { display: flex; align-items: center; gap: 16px; }
 .masthead h1 { margin-top: .3em; }
 .turn {
-  --size: 240px;             /* the sprite is 120px a frame: shown at exactly 2x so each pixel is a crisp 2x2 block */
+  --size: 120px;
   flex: none; width: var(--size); height: var(--size);
-  background: url(../assets/turnaround/turn.png?v=2) 0 0 / calc(var(--turn-n, 1) * var(--size)) var(--size) no-repeat;
-  image-rendering: pixelated;
-  animation: turn calc(var(--turn-n, 1) * .09s) steps(var(--turn-n, 1)) infinite;
+  background: url(../assets/turnaround/turn.webp?v=1) 0 0 / calc(var(--turn-n, 1) * var(--size)) var(--size) no-repeat;
+  animation: turn calc(var(--turn-n, 1) * .17s) steps(var(--turn-n, 1)) infinite;
 }
 @keyframes turn { to { background-position: calc(var(--turn-n, 1) * var(--size) * -1) 0; } }
 
@@ -100,8 +99,8 @@ figcaption { font-style: italic; margin-top: 4px; }
 
 @media (max-width: 900px) { .about-top { grid-template-columns: 240px 1fr; } }
 @media (max-width: 560px) {
-  body { margin: 8px 12px; }
-  .turn { --size: 120px; }
+  .page { padding: 0 12px; }
+  .turn { --size: 88px; }
   .list { grid-template-columns: 1fr; }
   .about-top { grid-template-columns: 1fr; }
   .about-top .thumb { max-width: 240px; }
