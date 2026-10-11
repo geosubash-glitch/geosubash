@@ -1,5 +1,8 @@
 # Portfolio site — notes for Claude
 
+- **Owner wants short replies.** Say what changed and the link, in 2–3 lines. No long explanations, recaps,
+  research write-ups or option lists unless asked. Don't dig deeper than the task needs.
+
 - Static site on GitHub Pages; `main` deploys automatically.
 - Content lives in `js/projects.js`. Uploads go in `assets/projects/<folder>/`
   (`face.*` cover, `slide*` long case-study board, anything else = gallery);
