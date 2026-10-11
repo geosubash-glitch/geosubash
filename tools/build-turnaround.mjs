@@ -6,16 +6,16 @@ import sharp from "sharp";
 import { existsSync } from "node:fs";
 
 const SRC = "assets/turnaround/src/";
-// rotation order; files that don't exist yet are skipped
+// rotation order; files that don't exist yet are skipped. keep: [x0, x1] trims stray scan marks at the edges
 const FRAMES = [
   { f: "profile-left.webp", x: 560, y: 160, s: 1 },
   { f: "back-left.webp", x: 680, y: 112, s: 1.22 },
   { f: "back.png", x: 728, y: 201, s: 1.22 },
   { f: "back-right.png", x: 752, y: 197, s: 1.22 },
   { f: "profile-right.webp", x: 600, y: 167, s: 1 },
-  { f: "three-quarter-right.webp", x: 590, y: 150, s: 1 },
-  { f: "front.webp", x: 555, y: 155, s: 1 },
-  { f: "three-quarter-left.webp", x: 610, y: 155, s: 1 },
+  { f: "three-quarter-right.webp", x: 555, y: 144, s: 1, keep: [0, 1040] },
+  { f: "front.webp", x: 553, y: 154, s: 1, keep: [0, 1040] },
+  { f: "three-quarter-left.webp", x: 617, y: 153, s: 1, keep: [160, 1200] },
 ];
 
 const OUT = 240;              // frame size in the sprite (shown at 120px, 2x for sharp screens)
@@ -26,11 +26,13 @@ const frames = FRAMES.filter((fr) => existsSync(SRC + fr.f));
 const tiles = [];
 for (const fr of frames) {
   const meta = await sharp(SRC + fr.f).metadata();
+  const [x0, x1] = fr.keep || [0, meta.width];
   const k = SCALE * fr.s;
-  const w = Math.round(meta.width * k), h = Math.round(meta.height * k);
+  const w = Math.round((x1 - x0) * k), h = Math.round(meta.height * k);
   // threshold to pure line art so the paper tone and faint scan edges drop out
-  const img = await sharp(SRC + fr.f).flatten({ background: "#fff" }).greyscale().resize(w, h).linear(1.6, -60).toBuffer();
-  tiles.push({ img, left: Math.round(AX - fr.x * k), top: Math.round(AY - fr.y * k), w, h });
+  const img = await sharp(SRC + fr.f).extract({ left: x0, top: 0, width: x1 - x0, height: meta.height })
+    .flatten({ background: "#fff" }).greyscale().resize(w, h).linear(1.6, -60).toBuffer();
+  tiles.push({ img, left: Math.round(AX - (fr.x - x0) * k), top: Math.round(AY - fr.y * k), w, h });
 }
 
 const composites = [];
