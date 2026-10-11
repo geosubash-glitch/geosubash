@@ -38,6 +38,11 @@ Below, each choice gives the period fact behind it.
 - **Width:** the page runs wide, up to 1240px, rather than the narrow 640px or 800px pages of the time. This is the owner's choice. Projects sit in two columns, like a `<table width="100%">`.
 
 ## Motion
+- **The turnaround drawing next to the name** is the owner's one-line portrait drawings, rebuilt by `tools/turnaround.py`:
+  - Each drawing is traced into one continuous path.
+  - In-between frames slide every point of one view onto its nearest partner in the next view.
+  - Every frame is drawn with 1-pixel, un-smoothed lines on a 120px grid, like the MS Paint pencil.
+  - The page shows it at exactly 2x with `image-rendering: pixelated`, about 11 frames a second.
 - **The work-in-progress square blinks on and off once a second,** the rhythm of Netscape's `<blink>`.
 - **"Get in touch" scrambles into the email on hover.** This is a late-90s DHTML-style effect, kept because the owner likes it.
 - Both stop if the visitor's system asks for reduced motion.
