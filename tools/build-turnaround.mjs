@@ -9,14 +9,14 @@ import { existsSync } from "node:fs";
 const SRC = "assets/turnaround/src/";
 // rotation order; files that don't exist yet are skipped. keep: [x0, x1] trims stray scan marks at the edges
 const FRAMES = [
-  { f: "profile-left.webp", x: 560, y: 160, s: 0.98 },
+  { f: "profile-left.webp", x: 560, y: 160, s: 1.023, chin: 1015 },
   { f: "back-left.webp", x: 680, y: 112, s: 1.18 },
   { f: "back.png", x: 728, y: 201, s: 1.245 },
   { f: "back-right.png", x: 752, y: 197, s: 1.23 },
-  { f: "profile-right.webp", x: 600, y: 167, s: 1.04 },
-  { f: "three-quarter-right.webp", x: 555, y: 144, s: 1.07, keep: [0, 1040] },
-  { f: "front.webp", x: 553, y: 154, s: 0.93, keep: [0, 1040] },
-  { f: "three-quarter-left.webp", x: 617, y: 153, s: 1.07, keep: [160, 1200] },
+  { f: "profile-right.webp", x: 600, y: 167, s: 0.985, chin: 1055 },
+  { f: "three-quarter-right.webp", x: 555, y: 144, s: 1.072, chin: 960, keep: [0, 1040] },
+  { f: "front.webp", x: 553, y: 154, s: 0.93, chin: 1095, keep: [0, 1040] },
+  { f: "three-quarter-left.webp", x: 617, y: 153, s: 0.998, chin: 1030, keep: [160, 1200] },
 ];
 
 const OUT = 240;              // frame size in the sprite (shown at 120px, 2x for sharp screens)
