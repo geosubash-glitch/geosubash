@@ -40,7 +40,7 @@ blockquote { margin: 1em 40px; }
 .turn {
   --size: 120px;
   flex: none; width: var(--size); height: var(--size);
-  background: url(../assets/turnaround/turn.webp?v=1) 0 0 / calc(var(--turn-n, 1) * var(--size)) var(--size) no-repeat;
+  background: url(../assets/turnaround/turn.webp?v=2) 0 0 / calc(var(--turn-n, 1) * var(--size)) var(--size) no-repeat;
   animation: turn calc(var(--turn-n, 1) * .17s) steps(var(--turn-n, 1)) infinite;
 }
 @keyframes turn { to { background-position: calc(var(--turn-n, 1) * var(--size) * -1) 0; } }
