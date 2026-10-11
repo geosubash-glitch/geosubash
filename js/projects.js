@@ -1,16 +1,7 @@
-/* =============================================================================
-   PROJECTS — the only file you edit to add or change work.
-
-   Upload a project's files to  assets/projects/<folder>/
-     face.*       the cover image (index hover, cards, project hero)
-     slide.*      the long scroll-through presentation board
-   then run  node tools/build-slides.mjs  (folder -> slug map at its top).
-   It writes web-sized copies to assets/web/<slug>/ and js/assets.generated.js;
-   the cover and slides below are filled in from that automatically.
-
-   Any field left empty is simply hidden. A project with no cover yet shows a
-   numbered placeholder, so the site never looks broken while you fill it in.
-   ========================================================================== */
+/* Site info and projects.
+   Covers and slides are merged in from js/assets.generated.js: add files to
+   assets/projects/<folder>/ (face.* = cover, slide.* = board), then run
+   node tools/build-slides.mjs. Empty fields are hidden. */
 
 window.SITE = {
   name: "Geo Subash",
@@ -115,8 +106,7 @@ window.PROJECTS = [
     summary: [
       "A music player and Bluetooth receiver with sixteen keys and no touchscreen.",
     ],
-    // told as a story on the project page; numbers point at the uploaded
-    // gallery images (0 = 01.png, 1 = 02.png, 2 = 03.png)
+    // image numbers index the gallery (0 = 01.png)
     story: [
       {
         "label": "01, Why",
@@ -213,9 +203,7 @@ window.PROJECTS = [
   },
 ];
 
-// Work in progress, shown in its own "Now" block on the home page and not
-// numbered with finished projects. `board` is the FigJam link; the page embeds
-// it live (the board must be shared as "anyone with the link can view").
+// Work in progress. `board` is a FigJam link shared as "anyone with the link can view".
 window.ONGOING = [
   {
     slug: "patient-transfers",
@@ -233,7 +221,7 @@ window.ONGOING = [
   },
 ];
 
-// Merge in the generated cover + slides for each project.
+// merge generated covers and slides
 for (const p of [...window.PROJECTS, ...window.ONGOING]) {
   const a = (window.ASSETS || {})[p.slug] || {};
   p.cover = p.cover || a.cover || "";
