@@ -28,6 +28,7 @@ figure { margin: 0; }
 figcaption { margin-top: 4px; font-style: italic; }
 
 .page { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+#view:focus { outline: none; }
 .reading { max-width: 640px; }
 .byline { margin: 0; font-style: italic; }
 .byline + hr { margin-top: .6em; }
@@ -66,7 +67,8 @@ figcaption { margin-top: 4px; font-style: italic; }
 .pic img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #eee; }
 
 /* project page */
-.cover { margin: 0 0 1em; }
+.cover { max-width: 880px; margin: 0 0 1em; }
+.cover img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #eee; }
 .quote { margin: 1.2em 40px; }
 .quote blockquote { margin: 0 0 .3em; font-size: 1.5em; font-style: italic; line-height: 1.25; }
 .study img, .gallery img, .fig img { width: 100%; background: #eee; }
@@ -78,7 +80,7 @@ figcaption { margin-top: 4px; font-style: italic; }
 
 /* about */
 .intro { display: grid; grid-template-columns: 140px 1fr; gap: 18px; align-items: start; }
-.intro img { margin-top: 3px; }
+.intro img { margin-top: 3px; aspect-ratio: 3 / 4; object-fit: cover; background: #eee; }
 .photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .photos img { aspect-ratio: 4 / 3; object-fit: cover; }
 .movies { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }

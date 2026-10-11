@@ -22,8 +22,8 @@
     return (m ? m[0] : t).trim();
   };
 
-  const image = (src, alt = "", { lazy = true } = {}) =>
-    src ? `<img src="${esc(asset(src))}" alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ""} referrerpolicy="no-referrer">` : "";
+  const image = (src, alt = "", { lazy = true, w, h } = {}) =>
+    src ? `<img src="${esc(asset(src))}" alt="${esc(alt)}"${w && h ? ` width="${w}" height="${h}"` : ""}${lazy ? ' loading="lazy"' : ' fetchpriority="high"'} referrerpolicy="no-referrer">` : "";
 
   const external = (url) => (/^https?:/.test(url) ? ' target="_blank" rel="noopener"' : "");
 
@@ -56,7 +56,7 @@
     const cards = projects.map((p) => `
       <li>
         <a class="card" href="#/work/${p.slug}">
-          <span class="pic">${image(p.cover)}</span>
+          <span class="pic">${image(p.cover, "", { w: 1600, h: 900 })}</span>
           <span>
             <span class="title">${esc(p.title)}</span>
             <span class="sub">${esc(p.subtitle)}</span>
@@ -95,7 +95,7 @@
       <p class="byline">${esc(p.subtitle)}</p>
       ${credit ? `<p class="byline">${esc(credit)}</p>` : ""}
       <hr>
-      <div class="cover">${image(p.cover, p.title, { lazy: false })}</div>
+      <div class="cover">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900 })}</div>
       ${facts([["Guided by", p.guide], ["Duration", p.duration], ["Tools", (p.tools || []).join(", ")], ["Type", p.category]])}
       <h2>Summary</h2>
       <div class="reading">
@@ -115,7 +115,7 @@
     return p.story.map((block) => {
       if (block.images) {
         const figs = block.images.map(pic).filter(Boolean)
-          .map((g) => `<figure style="flex:${(g.w / g.h).toFixed(3)}">${image(g.src, p.title)}</figure>`).join("");
+          .map((g) => `<figure style="flex:${(g.w / g.h).toFixed(3)}">${image(g.src, p.title, { w: g.w, h: g.h })}</figure>`).join("");
         return `<div class="gallery">${figs}</div>${block.caption ? `<figcaption>${esc(block.caption)}</figcaption>` : ""}`;
       }
       const g = block.image != null && pic(block.image);
@@ -124,7 +124,7 @@
           ${block.label ? `<h3>${esc(block.label)}</h3>` : ""}
           ${paragraphs(block.text)}
           ${block.list ? facts(block.list) : ""}
-          ${g ? `<figure class="fig">${image(g.src, block.caption || p.title)}${block.caption ? `<figcaption>${esc(block.caption)}</figcaption>` : ""}</figure>` : ""}
+          ${g ? `<figure class="fig">${image(g.src, block.caption || p.title, { w: g.w, h: g.h })}${block.caption ? `<figcaption>${esc(block.caption)}</figcaption>` : ""}</figure>` : ""}
         </div>`;
     }).join("");
   }
@@ -178,7 +178,7 @@
       <p class="byline">${esc(site.role)}, ${esc(site.school)}, ${esc(site.location)}</p>
       <hr>
       <div class="intro">
-        ${site.portrait ? image(site.portrait, `Portrait of ${site.name}`, { lazy: false }) : ""}
+        ${site.portrait ? image(site.portrait, `Portrait of ${site.name}`, { lazy: false, w: 900, h: 1200 }) : ""}
         <div class="reading">${paragraphs(site.about)}</div>
       </div>
       ${section("Toolkit", `<p>${site.skills.map(esc).join(", ")}</p>`)}
