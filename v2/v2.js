@@ -167,7 +167,7 @@
   addEventListener("hashchange", () => render());
 
   // turnaround sprite: frames sit side by side, so the frame count is width / height
-  const TURN = "../assets/turnaround/turn.png?v=2";
+  const TURN = "../assets/turnaround/turn.webp?v=1";
   const turnImg = new Image();
   turnImg.onload = () => document.documentElement.style.setProperty("--turn-n", Math.round(turnImg.naturalWidth / turnImg.naturalHeight));
   turnImg.src = TURN;
