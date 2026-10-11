@@ -34,6 +34,17 @@ blockquote { margin: 1em 40px; }
 .top { margin: 0; }
 .top a.is-active { color: #000; text-decoration: none; font-weight: bold; }
 
+/* home header: the turnaround loop beside the name */
+.masthead { display: flex; align-items: center; gap: 16px; }
+.masthead h1 { margin-top: .3em; }
+.turn {
+  --size: 120px;
+  flex: none; width: var(--size); height: var(--size);
+  background: url(../assets/turnaround/turn.webp?v=1) 0 0 / calc(var(--turn-n, 1) * var(--size)) var(--size) no-repeat;
+  animation: turn calc(var(--turn-n, 1) * .17s) steps(var(--turn-n, 1)) infinite;
+}
+@keyframes turn { to { background-position: calc(var(--turn-n, 1) * var(--size) * -1) 0; } }
+
 /* the italic author / address / date lines under the title */
 .byline { margin: 0; font-style: italic; }
 .byline + hr { margin-top: .6em; }
@@ -89,6 +100,7 @@ figcaption { font-style: italic; margin-top: 4px; }
 @media (max-width: 900px) { .about-top { grid-template-columns: 240px 1fr; } }
 @media (max-width: 560px) {
   body { margin: 8px 12px; }
+  .turn { --size: 88px; }
   .list { grid-template-columns: 1fr; }
   .about-top { grid-template-columns: 1fr; }
   .about-top .thumb { max-width: 240px; }
@@ -99,4 +111,4 @@ figcaption { font-style: italic; margin-top: 4px; }
   .figs { flex-direction: column; }
   .board iframe { height: 380px; }
 }
-@media (prefers-reduced-motion: reduce) { .live { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .live, .turn { animation: none; } }

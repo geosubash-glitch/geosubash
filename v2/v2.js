@@ -29,10 +29,15 @@
   // ---------- home: one line for work in progress, then the list ----------
   function home() {
     return `
-      <h1>${esc(S.name)}</h1>
-      <p class="byline">${esc(S.role)}, ${esc(S.school)}</p>
-      <p class="byline"><a href="mailto:${esc(S.email)}">${esc(S.email)}</a></p>
-      <p class="byline">${esc(updated)}</p>
+      <div class="masthead">
+        <span class="turn" role="img" aria-label="Line drawing of ${esc(S.name)} turning around"></span>
+        <div>
+          <h1>${esc(S.name)}</h1>
+          <p class="byline">${esc(S.role)}, ${esc(S.school)}</p>
+          <p class="byline"><a href="mailto:${esc(S.email)}">${esc(S.email)}</a></p>
+          <p class="byline">${esc(updated)}</p>
+        </div>
+      </div>
       <hr>
       ${O.map((o) => `<p class="reading"><span class="live" aria-hidden="true"></span>Now: <a href="#/now/${o.slug}">${esc(o.title)}</a>, ${esc(o.subtitle.toLowerCase())} (${esc((o.status || "in progress").toLowerCase())}).</p>`).join("")}
       <h2>Work</h2>
@@ -160,6 +165,12 @@
     if (top) { window.scrollTo(0, 0); view.focus({ preventScroll: true }); }
   }
   addEventListener("hashchange", () => render());
+
+  // turnaround sprite: frames sit side by side, so the frame count is width / height
+  const TURN = "../assets/turnaround/turn.webp?v=1";
+  const turnImg = new Image();
+  turnImg.onload = () => document.documentElement.style.setProperty("--turn-n", Math.round(turnImg.naturalWidth / turnImg.naturalHeight));
+  turnImg.src = TURN;
 
   // ---------- footer ----------
   document.getElementById("links").innerHTML = contacts().slice(1).map(([k, v]) => `<a href="${esc(v)}"${ext(v)}>${esc(k)}</a>`).join(" | ");
