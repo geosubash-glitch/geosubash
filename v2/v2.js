@@ -152,8 +152,14 @@
     if (parts[0] === "privacy") return { name: "", html: privacy() };
     return { name: "", html: notFound() };
   }
+  // "« Back": goes to the previous page on this site, or to the work list if the visitor landed here directly
+  let inSite = false;
+  const back = document.getElementById("back");
+  back.addEventListener("click", (e) => { if (inSite) { e.preventDefault(); history.back(); } });
+
   function render(top = true) {
     const r = route();
+    back.hidden = !location.hash.replace(/^#\/?/, "").replace(/^work\/?$/, "");
     view.innerHTML = r.html;
     document.querySelectorAll("[data-nav]").forEach((a) => {
       const on = a.dataset.nav === r.name;
@@ -164,10 +170,10 @@
     document.title = !h ? `${S.name}, Industrial Design Portfolio` : `${h.textContent} - ${S.name}`;
     if (top) { window.scrollTo(0, 0); view.focus({ preventScroll: true }); }
   }
-  addEventListener("hashchange", () => render());
+  addEventListener("hashchange", () => { inSite = true; render(); });
 
   // turnaround sprite: frames sit side by side, so the frame count is width / height
-  const TURN = "../assets/turnaround/turn.webp?v=2";
+  const TURN = "../assets/turnaround/turn.webp?v=3";
   const turnImg = new Image();
   turnImg.onload = () => document.documentElement.style.setProperty("--turn-n", Math.round(turnImg.naturalWidth / turnImg.naturalHeight));
   turnImg.src = TURN;

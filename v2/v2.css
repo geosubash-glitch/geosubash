@@ -31,7 +31,8 @@ ul { margin: 0 0 1em; padding-left: 40px; }
 blockquote { margin: 1em 40px; }
 
 .page { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
-.top { margin: 0; text-align: right; }
+.top { margin: 0; display: flex; justify-content: space-between; align-items: baseline; }
+.top .nav { margin-left: auto; }
 .top a.is-active { color: #000; text-decoration: none; font-weight: bold; }
 
 /* home header: the turnaround loop beside the name */
@@ -40,7 +41,7 @@ blockquote { margin: 1em 40px; }
 .turn {
   --size: 120px;
   flex: none; width: var(--size); height: var(--size);
-  background: url(../assets/turnaround/turn.webp?v=2) 0 0 / calc(var(--turn-n, 1) * var(--size)) var(--size) no-repeat;
+  background: url(../assets/turnaround/turn.webp?v=3) 0 0 / calc(var(--turn-n, 1) * var(--size)) var(--size) no-repeat;
   animation: turn calc(var(--turn-n, 1) * .17s) steps(var(--turn-n, 1)) infinite;
 }
 @keyframes turn { to { background-position: calc(var(--turn-n, 1) * var(--size) * -1) 0; } }
