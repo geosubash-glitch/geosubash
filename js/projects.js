@@ -24,7 +24,7 @@ window.SITE = {
     instagram: "https://www.instagram.com/geo.subash",
     github: "https://github.com/geosubash-glitch",
   },
-  portrait: "assets/about/portrait.webp?v=2",
+  portrait: "assets/about/portrait.webp?v=3",
   resume: "",                           // e.g. "assets/resume.pdf"
 
   // shown on the About page
