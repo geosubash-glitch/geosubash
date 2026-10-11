@@ -2,8 +2,9 @@
 
 - **Owner wants short replies.** Say what changed and the link, in 2–3 lines. No long explanations, recaps,
   research write-ups or option lists unless asked. Don't dig deeper than the task needs.
-- **Do only what was asked.** No extra features, rewrites or research the owner didn't ask for. Make the smallest
-  change that does it. If a request is unclear or would change a lot, ask one short question first.
+- **Match the effort to the task.** Research and go deep when the task needs it (design references, typography,
+  anything the owner asks to be studied); skip it for simple changes. Don't add features or rewrites that weren't
+  asked for. If a request is unclear or would change a lot, ask one short question first.
 
 - Static site on GitHub Pages; `main` deploys automatically.
 - Content lives in `js/projects.js`. Uploads go in `assets/projects/<folder>/`
