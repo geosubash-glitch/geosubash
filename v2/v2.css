@@ -86,7 +86,8 @@ figcaption { font-style: italic; margin-top: 4px; }
 .next { display: flex; justify-content: space-between; }
 
 /* ---------- about ---------- */
-.about-top { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
+.about-top { display: grid; grid-template-columns: 140px 1fr; gap: 18px; align-items: start; }
+.about-top .thumb { margin-top: 3px; }   /* top of the photo level with the top of the first line of text */
 .about-top .thumb img { aspect-ratio: auto; }
 .spot iframe { width: 100%; max-width: 640px; height: 80px; border: 0; display: block; }
 .spot + .spot { margin-top: 6px; }
@@ -98,13 +99,11 @@ figcaption { font-style: italic; margin-top: 4px; }
 /* ---------- footer ---------- */
 .foot p { margin: 0 0 .4em; }
 
-@media (max-width: 900px) { .about-top { grid-template-columns: 240px 1fr; } }
 @media (max-width: 560px) {
   .page { padding: 0 12px; }
   .turn { --size: 88px; }
   .list { grid-template-columns: 1fr; }
-  .about-top { grid-template-columns: 1fr; }
-  .about-top .thumb { max-width: 240px; }
+  .about-top { grid-template-columns: 96px 1fr; gap: 12px; }
   .quote, blockquote { margin-left: 16px; margin-right: 16px; }
   pre { margin-left: 1em; }
   .movies { grid-template-columns: repeat(3, 1fr); }
