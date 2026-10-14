@@ -358,6 +358,7 @@
 
     const pans = tiles.map((t) => t.querySelector(".pan"));
     const frames = tiles.map((t) => t.querySelector(".frame"));
+    const labels = tiles.map((t) => t.querySelector(".label"));
 
     const frame = () => {
       const delta = (target - current) * ease;
@@ -385,6 +386,8 @@
           const blur = glideTo(blurs[i], wantBlur, now, PULL + 400);
           t.style.transform = `scale(${(size * shrink).toFixed(4)})`;
           frames[i].style.filter = blur > .05 ? `blur(${blur.toFixed(2)}px) brightness(${(1 - blur * .015).toFixed(3)})` : "";
+          // the name sits a little in front of the picture, nearer the lens, so it goes less soft
+          if (labels[i]) labels[i].style.filter = blur > .05 ? `blur(${(blur * .35).toFixed(2)}px)` : "";
         });
       }
       if (!reducedMotion) {

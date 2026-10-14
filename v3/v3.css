@@ -91,7 +91,6 @@ body.home #view { touch-action: none; }
 .tile .frame { transition: box-shadow 1s ease; }
 .tile.on-table .frame { box-shadow: 0 2px 3px rgba(0,0,0,.10), 0 12px 24px rgba(0,0,0,.14), 0 40px 80px rgba(0,0,0,.18); }
 .tile > .label { transition: opacity 1.4s ease; }
-.strip.focus .tile:not(.hot) > .label { opacity: 0; }
 .is-intro .tile > .label { opacity: 0; }
 .bar > * > span { transition: transform .9s var(--ease-out); }
 .bar > :nth-child(2) > span { transition-delay: .05s; }
