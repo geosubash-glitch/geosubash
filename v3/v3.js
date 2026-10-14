@@ -325,10 +325,11 @@
     const pos = document.getElementById("pos");
     let width = setWidth();
     let target = 0;
-    let current = intro && !reducedMotion ? -width / perSet * 1.5 : 0;
-    let ease = intro ? .035 : .085;
+    let current = 0;
+    let ease = .085;
     let raf = 0;
     let skew = 0;
+    let shrink = 1;
     // cards lean away from the side the pointer is on (mouse only)
     let pointerTilt = 0;
     const onPointer = (e) => {
@@ -346,11 +347,11 @@
       if (Math.abs(target - current) < .1) current = target;
       const x = ((current % width) + width) % width;
       const offset = -(x + width);
-      // lean a little into fast moves, and let each picture drift inside its frame
-      const lean = Math.max(-5, Math.min(5, delta * -.12)) + pointerTilt;
-      skew += ((reducedMotion ? 0 : lean) - skew) * .1;
+      // cards lean with the pointer and shrink a little when moving fast; pictures drift inside their frames
+      skew += ((reducedMotion ? 0 : pointerTilt) - skew) * .1;
+      shrink += ((reducedMotion ? 1 : 1 - Math.min(.14, Math.abs(delta) * .006)) - shrink) * .12;
       track.style.transform = `translate3d(${offset}px,0,0)`;
-      frames.forEach((f) => (f.style.transform = `skewX(${skew.toFixed(2)}deg)`));
+      frames.forEach((f) => (f.style.transform = `skewX(${skew.toFixed(2)}deg) scale(${shrink.toFixed(4)})`));
       if (!reducedMotion) {
         const mid = innerWidth / 2;
         tiles.forEach((t, i) => {
@@ -368,7 +369,6 @@
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
-    if (intro) setTimeout(() => (ease = .085), 1800);
 
     const onWheel = (e) => {
       e.preventDefault();
@@ -512,22 +512,55 @@
 
   wireScramble(document.getElementById("cta"));
 
-  // first visit to the home page: the tiles rise in one after another while the strip glides into place
+  // first visit to the home page: the projects drop onto a pile in the middle one by one,
+  // then deal out into the strip; the header and the rest of the text arrive last
   const first = route();
   if (first.home && !reducedMotion) {
-    document.body.classList.add("intro");
+    document.body.classList.add("is-intro");
     show(first, { intro: true });
-    const perSet = view.querySelectorAll(".tile").length / 3;
-    view.querySelectorAll(".tile").forEach((t, i) => (t.style.transitionDelay = `${150 + (i % perSet) * 90}ms`));
-    const imgs = [...view.querySelectorAll(".tile img")].slice(0, perSet * 2);
-    Promise.race([
-      Promise.all(imgs.map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; })))),
-      new Promise((r) => setTimeout(r, 1400)),
-    ]).then(() => requestAnimationFrame(() => {
-      document.body.classList.remove("intro");
-      setTimeout(() => view.querySelectorAll(".tile").forEach((t) => (t.style.transitionDelay = "")), 2000);
-    }));
+    // wait one frame so the strip has moved into its looping position before measuring
+    requestAnimationFrame(() => requestAnimationFrame(introPile));
   } else {
     show(first);
+  }
+
+  function introPile() {
+    const tiles = [...view.querySelectorAll(".tile")];
+    const strip = document.getElementById("strip").getBoundingClientRect();
+    const cx = innerWidth / 2, cy = strip.top + strip.height / 2;
+    const onScreen = [];
+    tiles.forEach((t, i) => {
+      const r = t.getBoundingClientRect();
+      const turn = ((i * 37) % 11) - 5;
+      t.style.transition = "none";
+      t.style.opacity = "0";
+      t.style.transform = `translate(${cx - (r.left + r.width / 2)}px, ${cy - (r.top + r.height / 2)}px) rotate(${turn}deg) scale(.46)`;
+      t.classList.add("stacked");
+      if (r.right > -40 && r.left < innerWidth + 40) onScreen.push(t);
+    });
+    const PILE = 260, DEAL = 1500;
+    const imgs = onScreen.map((t) => t.querySelector("img")).filter(Boolean);
+    Promise.race([
+      Promise.all(imgs.map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; })))),
+      new Promise((r) => setTimeout(r, 1500)),
+    ]).then(() => {
+      onScreen.forEach((t, k) => setTimeout(() => {
+        t.style.transition = "opacity .6s ease";
+        t.style.opacity = "1";
+      }, 200 + k * PILE));
+      const dealAt = 200 + onScreen.length * PILE + 500;
+      setTimeout(() => {
+        tiles.forEach((t) => {
+          const k = Math.max(0, onScreen.indexOf(t));
+          t.style.transition = `transform ${DEAL}ms var(--ease), opacity .6s ease`;
+          t.style.transitionDelay = `${k * 90}ms`;
+          t.style.opacity = "1";
+          t.style.transform = "";
+          t.classList.remove("stacked");
+        });
+      }, dealAt);
+      setTimeout(() => document.body.classList.remove("is-intro"), dealAt + DEAL + 200);
+      setTimeout(() => tiles.forEach((t) => { t.style.transition = ""; t.style.transitionDelay = ""; }), dealAt + DEAL + 1200);
+    });
   }
 })();

@@ -64,7 +64,7 @@ body.home #view { touch-action: none; }
 .tile { position: relative; flex: none; width: var(--w); }
 .tile > .label { position: absolute; top: 14px; left: 16px; right: 16px; z-index: 1; display: flex; gap: 8px; color: #fff; mix-blend-mode: difference; white-space: nowrap; overflow: hidden; }
 .tile > .label .n { opacity: .6; }
-.tile .frame { display: block; width: var(--w); height: var(--h); overflow: hidden; background: var(--panel); }
+.tile .frame { position: relative; display: block; width: var(--w); height: var(--h); overflow: hidden; background: var(--panel); }
 .tile .pan { display: block; width: 100%; height: 100%; transform: scale(1.14); will-change: transform; }
 .tile img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.1s var(--ease-out); pointer-events: none; }
 .tile:hover img { transform: scale(1.05); }
@@ -81,18 +81,39 @@ body.home #view { touch-action: none; }
 .home-foot > :nth-child(3) { grid-column: 4; justify-self: end; color: var(--mute); font-variant-numeric: tabular-nums; }
 .home-foot a:hover { color: var(--mute); }
 
-/* first visit: tiles rise and the pictures settle from close up */
-.tile { transition: transform 1.2s var(--ease-out), opacity .9s ease; }
-.intro .tile { transform: translateY(90px); opacity: 0; }
-.tile .frame img { transition: transform 1.6s var(--ease-out); }
-.intro .tile .frame img { transform: scale(1.3); }
+/* first visit: pictures start close up on the pile and settle as they deal out */
+.tile .frame img { transition: transform 1.8s var(--ease-out); }
+.tile.stacked .frame img { transform: scale(1.35); }
+.tile > .label { transition: opacity .8s ease; }
+.is-intro .tile > .label { opacity: 0; }
 .bar > * > span { transition: transform .9s var(--ease-out); }
 .bar > :nth-child(2) > span { transition-delay: .05s; }
 .bar > :nth-child(3) > span { transition-delay: .1s; }
 .bar > :nth-child(4) > span { transition-delay: .15s; }
-.intro .bar > * > span { transform: translateY(110%); }
-.home-foot { transition: opacity .8s ease .6s; }
-.intro .home-foot { opacity: 0; }
+.is-intro .bar > * > span { transform: translateY(110%); }
+.home-foot { transition: opacity .9s ease .3s; }
+.is-intro .home-foot { opacity: 0; }
+
+/* film grain over the pictures */
+.tile .frame::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  z-index: 1;
+  pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .16;
+  mix-blend-mode: overlay;
+  animation: grain .9s steps(5) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-6%, 4%); }
+  40% { transform: translate(5%, -7%); }
+  60% { transform: translate(-3%, 8%); }
+  80% { transform: translate(7%, 2%); }
+  100% { transform: translate(0, 0); }
+}
 
 /* other works */
 .cards { margin-top: 64px; row-gap: 48px; }
@@ -219,7 +240,7 @@ body.home #view { touch-action: none; }
   #privacy { grid-column: 2; grid-row: 3; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .dot { animation: none; }
+  .dot, .tile .frame::after { animation: none; }
   .lines .ln > span { transform: none; transition: none; }
   #view, .fly, .tile, .tile img, .bar > * > span { transition: none; }
 }
