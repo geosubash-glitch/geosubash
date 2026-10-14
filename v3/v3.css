@@ -123,7 +123,7 @@ body.home #view { touch-action: none; }
 }
 
 
-/* other works */
+/* archive */
 .cards { margin-top: 64px; row-gap: 48px; }
 .card { display: block; }
 .card-img { display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--panel); }
