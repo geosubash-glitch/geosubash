@@ -38,7 +38,7 @@ jobs:
       - name: Stamp asset versions
         run: |
           v="${GITHUB_SHA::7}"
-          for f in index.html v2/index.html admin.html; do
+          for f in index.html v2/index.html v3/index.html admin.html; do
             [ -f "$f" ] || continue
             sed -i -E "s#(src=\"[^\"?:]+\.js)\"#\1?v=$v\"#g; s#(href=\"[^\"?:]+\.css)\"#\1?v=$v\"#g" "$f"
           done
