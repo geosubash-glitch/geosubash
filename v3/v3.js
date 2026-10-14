@@ -48,10 +48,9 @@
       html: `
         <div class="strip" id="strip"><div class="track" id="track">${[...tiles, ...now].join("")}</div></div>
         <div class="home-foot grid label">
-          <span>${esc(site.role)}, ${esc(site.school)}</span>
+          <span>${esc(site.role)}</span>
           <a id="cta-home" href="mailto:${esc(site.email)}">Get in touch</a>
           <span id="pos">01/${String(count).padStart(2, "0")}</span>
-          <span>Scroll or drag</span>
         </div>`,
     };
   }
@@ -473,23 +472,5 @@
 
   wireScramble(document.getElementById("cta"));
 
-  // first visit: play the intro
-  const first = route();
-  if (first.home && !reducedMotion) {
-    document.body.classList.add("intro");
-    show(first, { intro: true });
-    const imgs = [...view.querySelectorAll(".tile img")].slice(0, 6);
-    const ready = Promise.race([
-      Promise.all(imgs.map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; })))),
-      new Promise((r) => setTimeout(r, 1500)),
-    ]);
-    const frames = [...view.querySelectorAll(".tile .frame")];
-    frames.forEach((f, i) => (f.style.transitionDelay = `${(i % (frames.length / 3)) * 70}ms`));
-    ready.then(() => requestAnimationFrame(() => {
-      document.body.classList.remove("intro");
-      setTimeout(() => frames.forEach((f) => (f.style.transitionDelay = "")), 2200);
-    }));
-  } else {
-    show(first);
-  }
+  show(route());
 })();
