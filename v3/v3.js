@@ -186,7 +186,6 @@
           ${row("Toolkit", `<p>${site.skills.map(esc).join(", ")}</p>`)}
           ${row("Certificates", certs && `<ul>${certs}</ul>`)}
           ${row("Photos", photos && `<div class="photos">${photos}</div>`)}
-          ${row("On repeat", music)}
           ${row("Watching", movies && `<div class="movies">${movies}</div>`)}
         </section>`,
     };
@@ -330,6 +329,14 @@
     let ease = intro ? .035 : .085;
     let raf = 0;
     let skew = 0;
+    // cards lean away from the side the pointer is on (mouse only)
+    let pointerTilt = 0;
+    const onPointer = (e) => {
+      if (e.pointerType === "mouse") pointerTilt = (e.clientX / innerWidth - .5) * -6;
+    };
+    const onLeave = () => (pointerTilt = 0);
+    addEventListener("pointermove", onPointer);
+    document.addEventListener("pointerleave", onLeave);
     const pans = tiles.map((t) => t.querySelector(".pan"));
     const frames = tiles.map((t) => t.querySelector(".frame"));
 
@@ -340,7 +347,8 @@
       const x = ((current % width) + width) % width;
       const offset = -(x + width);
       // lean a little into fast moves, and let each picture drift inside its frame
-      skew += ((reducedMotion ? 0 : Math.max(-5, Math.min(5, delta * -.12))) - skew) * .15;
+      const lean = Math.max(-5, Math.min(5, delta * -.12)) + pointerTilt;
+      skew += ((reducedMotion ? 0 : lean) - skew) * .1;
       track.style.transform = `translate3d(${offset}px,0,0)`;
       frames.forEach((f) => (f.style.transform = `skewX(${skew.toFixed(2)}deg)`));
       if (!reducedMotion) {
@@ -376,16 +384,22 @@
     addEventListener("keydown", onKey);
     addEventListener("resize", onResize);
 
-    let down = false, moved = false, startX = 0, startTarget = 0, lastX = 0, velocity = 0;
-    strip.addEventListener("pointerdown", (e) => {
-      down = true; moved = false; startX = lastX = e.clientX; startTarget = target; velocity = 0;
+    // drag or swipe in either direction; up and left both move forward
+    let down = false, moved = false, startX = 0, startY = 0, startTarget = 0, last = 0, velocity = 0;
+    const travel = (e) => {
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      return Math.abs(dx) >= Math.abs(dy) ? dx : dy;
+    };
+    view.addEventListener("pointerdown", (e) => {
+      if (!document.body.classList.contains("home")) return;
+      down = true; moved = false; startX = e.clientX; startY = e.clientY; last = 0; startTarget = target; velocity = 0;
     });
     const onMove = (e) => {
       if (!down) return;
-      const dx = e.clientX - startX;
-      if (Math.abs(dx) > 6) { moved = true; strip.classList.add("dragging"); }
-      velocity = e.clientX - lastX; lastX = e.clientX;
-      if (moved) target = startTarget - dx * 1.4;
+      const d = travel(e);
+      if (Math.abs(d) > 6) { moved = true; strip.classList.add("dragging"); }
+      velocity = d - last; last = d;
+      if (moved) target = startTarget - d * 1.4;
     };
     const onUp = () => {
       if (!down) return;
@@ -409,6 +423,8 @@
       removeEventListener("keydown", onKey);
       removeEventListener("resize", onResize);
       removeEventListener("pointermove", onMove);
+      removeEventListener("pointermove", onPointer);
+      document.removeEventListener("pointerleave", onLeave);
       removeEventListener("pointerup", onUp);
       removeEventListener("pointercancel", onUp);
       stopStrip = () => {};
@@ -453,7 +469,7 @@
 
   document.getElementById("links").innerHTML = Object.entries(site.links).filter(([, u]) => u)
     .map(([k, url]) => `<a href="${esc(url)}"${external(url)} aria-label="${esc(linkName(k))}" title="${esc(linkName(k))}">${ICONS[k] ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[k]}"/></svg>` : esc(linkName(k))}</a>`).join("");
-  document.getElementById("copy").innerHTML = `© ${new Date().getFullYear()} ${esc(site.name)}<br><a href="#/privacy">Privacy &amp; terms</a>`;
+  document.getElementById("copy").textContent = `© ${new Date().getFullYear()} ${site.name}`;
 
   // "Get in touch" scrambles into the email address on hover and focus
   const GLYPHS = "!<>-_\\/[]{}=+*^?#@%&$";
