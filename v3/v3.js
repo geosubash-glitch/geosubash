@@ -329,9 +329,10 @@
     let ease = .085;
     let raf = 0;
     let shrink = 1;
-    // resting the pointer on a card for a moment keeps it full size and sends the others back;
-    // any scrolling or dragging cancels it
+    // resting the pointer on a card for a moment (or holding a finger on it) brings it forward
+    // and sends the others back out of focus; any scrolling or dragging cancels it
     let hot = -1;
+    let held = false, holdTimer = 0;
     let mouse = null;          // last mouse position over the strip
     let stillSince = performance.now();
     const DWELL = 700;
@@ -356,7 +357,7 @@
       shrink += ((reducedMotion ? 1 : 1 - Math.min(.14, Math.abs(delta) * .006)) - shrink) * .12;
       track.style.transform = `translate3d(${offset}px,0,0)`;
       const now = performance.now();
-      if (Math.abs(target - current) > 25 || down) { stillSince = now; setHot(-1); }
+      if (Math.abs(target - current) > 25 || (down && !held)) { stillSince = now; setHot(-1); }
       else if (mouse && now - stillSince > DWELL && hot < 0) {
         const t = document.elementFromPoint(mouse.x, mouse.y)?.closest(".tile");
         if (t) setHot(tiles.indexOf(t));
@@ -364,8 +365,11 @@
       if (!document.body.classList.contains("is-intro")) {
         tiles.forEach((t, i) => {
           const want = hot < 0 ? 1 : i === hot ? 1.03 : .7;
-          sizes[i] += ((reducedMotion ? 1 : want) - sizes[i]) * .1;
+          sizes[i] += ((reducedMotion ? 1 : want) - sizes[i]) * .045;
           t.style.transform = `scale(${(sizes[i] * shrink).toFixed(4)})`;
+          // the cards sent back go soft, like a shallow depth of field
+          const blur = Math.max(0, 1 - sizes[i]) * 20;
+          frames[i].style.filter = blur > .05 ? `blur(${blur.toFixed(2)}px)` : "";
         });
       }
       if (!reducedMotion) {
@@ -409,17 +413,23 @@
     view.addEventListener("pointerdown", (e) => {
       if (!document.body.classList.contains("home")) return;
       down = true; moved = false; startX = e.clientX; startY = e.clientY; last = 0; startTarget = target; velocity = 0;
+      // no cursor on touch screens, so holding a finger on a card brings it forward instead
+      const tile = e.pointerType !== "mouse" && e.target.closest(".tile");
+      if (tile) holdTimer = setTimeout(() => { if (down && !moved) { held = true; target = current; setHot(tiles.indexOf(tile)); } }, 450);
     });
     const onMove = (e) => {
       if (!down) return;
       const d = travel(e);
-      if (Math.abs(d) > 6) { moved = true; strip.classList.add("dragging"); }
+      if (Math.abs(d) > 6 && !held) { moved = true; clearTimeout(holdTimer); strip.classList.add("dragging"); }
       velocity = d - last; last = d;
       if (moved) target = startTarget - d * 1.4;
     };
     const onUp = () => {
       if (!down) return;
       down = false;
+      clearTimeout(holdTimer);
+      // letting go after a hold lets the card settle back without opening it
+      if (held) { held = false; setHot(-1); moved = true; velocity = 0; }
       if (moved) target -= velocity * 12;
       strip.classList.remove("dragging");
     };
@@ -441,6 +451,7 @@
       if (tile && !reducedMotion) startFly(e, tile);
     });
     strip.addEventListener("dragstart", (e) => e.preventDefault());
+    strip.addEventListener("contextmenu", (e) => { if (e.pointerType !== "mouse") e.preventDefault(); });
 
     stopStrip = () => {
       cancelAnimationFrame(raf);

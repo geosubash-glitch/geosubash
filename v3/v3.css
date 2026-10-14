@@ -64,7 +64,7 @@ body.home #view { touch-action: none; }
 }
 .strip.dragging { cursor: grabbing; }
 .track { display: flex; gap: var(--gap); padding-left: var(--pad); will-change: transform; }
-.tile { position: relative; flex: none; width: var(--w); }
+.tile { position: relative; flex: none; width: var(--w); -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 .tile > .label { position: absolute; top: 14px; left: 16px; right: 16px; z-index: 1; display: flex; gap: 8px; color: #fff; mix-blend-mode: difference; white-space: nowrap; overflow: hidden; }
 .tile > .label .n { opacity: .6; }
 .tile .frame { position: relative; display: block; width: var(--w); height: var(--h); overflow: hidden; background: var(--panel); }
@@ -90,7 +90,7 @@ body.home #view { touch-action: none; }
 /* during the intro the cards cast soft shadows like prints on a white table */
 .tile .frame { transition: box-shadow 1s ease; }
 .tile.on-table .frame { box-shadow: 0 2px 3px rgba(0,0,0,.10), 0 12px 24px rgba(0,0,0,.14), 0 40px 80px rgba(0,0,0,.18); }
-.tile > .label { transition: opacity .5s ease; }
+.tile > .label { transition: opacity .9s ease; }
 .strip.focus .tile:not(.hot) > .label { opacity: 0; }
 .is-intro .tile > .label { opacity: 0; }
 .bar > * > span { transition: transform .9s var(--ease-out); }
