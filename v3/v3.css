@@ -113,6 +113,7 @@ body.home #view { touch-action: none; }
 /* short note that appears in the room opened beside the card in focus (below it on phones) */
 .info { position: absolute; top: 0; left: calc(100% + 24px); width: 260px; display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateX(-12px); transition: opacity .9s ease, transform 1.4s var(--ease-out); pointer-events: none; }
 .tile.before .info { left: auto; right: calc(100% + 24px); transform: translateX(12px); }
+.strip.handover .info { transition: none; }
 .tile.hot .info { opacity: 1; transform: none; transition-delay: .5s; }
 .info-sub { font-family: var(--wide); font-stretch: 150%; font-size: 17px; line-height: 1.2; text-transform: uppercase; }
 .info-text { font-size: 15px; line-height: 1.4; color: var(--ink); }
