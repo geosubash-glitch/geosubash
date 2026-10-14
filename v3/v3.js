@@ -342,7 +342,19 @@
       tiles.forEach((x, k) => x.classList.toggle("hot", k === hot));
       strip.classList.toggle("focus", hot >= 0);
     };
-    const sizes = tiles.map(() => 1);
+    // each card's size and blur glide to their new values on a slow ease-in-out, like a focus pull,
+    // starting from wherever they are so a change of mind mid-way stays smooth
+    const PULL = 1700;
+    const inOut = (k) => (k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+    const glide = (v) => ({ from: v, to: v, at: 0, now: v });
+    const glideTo = (g, want, now, ms) => {
+      if (want !== g.to) { g.from = g.now; g.to = want; g.at = now; }
+      const k = Math.min(1, (now - g.at) / ms);
+      g.now = g.from + (g.to - g.from) * inOut(k);
+      return g.now;
+    };
+    const sizes = tiles.map(() => glide(1));
+    const blurs = tiles.map(() => glide(0));
 
     const pans = tiles.map((t) => t.querySelector(".pan"));
     const frames = tiles.map((t) => t.querySelector(".frame"));
@@ -364,12 +376,15 @@
       }
       if (!document.body.classList.contains("is-intro")) {
         tiles.forEach((t, i) => {
-          const want = hot < 0 ? 1 : i === hot ? 1.03 : .7;
-          sizes[i] += ((reducedMotion ? 1 : want) - sizes[i]) * .045;
-          t.style.transform = `scale(${(sizes[i] * shrink).toFixed(4)})`;
-          // the cards sent back go soft, like a shallow depth of field
-          const blur = Math.max(0, 1 - sizes[i]) * 20;
-          frames[i].style.filter = blur > .05 ? `blur(${blur.toFixed(2)}px)` : "";
+          const want = reducedMotion || hot < 0 ? 1 : i === hot ? 1.03 : .7;
+          // shallow depth of field: the further a card is from the one in focus, the softer it gets
+          const away = hot < 0 || reducedMotion ? 0 : Math.abs(i - hot);
+          const wantBlur = away ? Math.min(10, 3 + away * 3) : 0;
+          const size = glideTo(sizes[i], want, now, PULL);
+          // the blur trails the size a little, the way a lens catches up
+          const blur = glideTo(blurs[i], wantBlur, now, PULL + 400);
+          t.style.transform = `scale(${(size * shrink).toFixed(4)})`;
+          frames[i].style.filter = blur > .05 ? `blur(${blur.toFixed(2)}px) brightness(${(1 - blur * .015).toFixed(3)})` : "";
         });
       }
       if (!reducedMotion) {
