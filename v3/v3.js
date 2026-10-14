@@ -328,16 +328,8 @@
     let current = 0;
     let ease = .085;
     let raf = 0;
-    let skew = 0;
     let shrink = 1;
-    // cards lean away from the side the pointer is on (mouse only)
-    let pointerTilt = 0;
-    const onPointer = (e) => {
-      if (e.pointerType === "mouse") pointerTilt = (e.clientX / innerWidth - .5) * -6;
-    };
-    const onLeave = () => (pointerTilt = 0);
-    addEventListener("pointermove", onPointer);
-    document.addEventListener("pointerleave", onLeave);
+
     const pans = tiles.map((t) => t.querySelector(".pan"));
     const frames = tiles.map((t) => t.querySelector(".frame"));
 
@@ -347,11 +339,10 @@
       if (Math.abs(target - current) < .1) current = target;
       const x = ((current % width) + width) % width;
       const offset = -(x + width);
-      // cards lean with the pointer and shrink a little when moving fast; pictures drift inside their frames
-      skew += ((reducedMotion ? 0 : pointerTilt) - skew) * .1;
+      // cards shrink a little when moving fast; pictures drift inside their frames
       shrink += ((reducedMotion ? 1 : 1 - Math.min(.14, Math.abs(delta) * .006)) - shrink) * .12;
       track.style.transform = `translate3d(${offset}px,0,0)`;
-      frames.forEach((f) => (f.style.transform = `skewX(${skew.toFixed(2)}deg) scale(${shrink.toFixed(4)})`));
+      frames.forEach((f) => (f.style.transform = `scale(${shrink.toFixed(4)})`));
       if (!reducedMotion) {
         const mid = innerWidth / 2;
         tiles.forEach((t, i) => {
@@ -423,8 +414,6 @@
       removeEventListener("keydown", onKey);
       removeEventListener("resize", onResize);
       removeEventListener("pointermove", onMove);
-      removeEventListener("pointermove", onPointer);
-      document.removeEventListener("pointerleave", onLeave);
       removeEventListener("pointerup", onUp);
       removeEventListener("pointercancel", onUp);
       stopStrip = () => {};
@@ -533,9 +522,11 @@
       const r = t.getBoundingClientRect();
       const turn = ((i * 37) % 11) - 5;
       t.style.transition = "none";
-      t.style.opacity = "0";
-      t.style.transform = `translate(${cx - (r.left + r.width / 2)}px, ${cy - (r.top + r.height / 2)}px) rotate(${turn}deg) scale(.46)`;
-      t.classList.add("stacked");
+      // each card waits above the window, then drops onto the pile
+      const pile = `translate(${cx - (r.left + r.width / 2)}px, ${cy - (r.top + r.height / 2)}px) rotate(${turn}deg) scale(.46)`;
+      t.dataset.pile = pile;
+      t.style.transform = `translate(${cx - (r.left + r.width / 2)}px, ${-innerHeight}px) rotate(${turn * 3}deg) scale(.5)`;
+      t.classList.add("stacked", "on-table");
       if (r.right > -40 && r.left < innerWidth + 40) onScreen.push(t);
     });
     const PILE = 260, DEAL = 1500;
@@ -545,8 +536,8 @@
       new Promise((r) => setTimeout(r, 1500)),
     ]).then(() => {
       onScreen.forEach((t, k) => setTimeout(() => {
-        t.style.transition = "opacity .6s ease";
-        t.style.opacity = "1";
+        t.style.transition = "transform .9s cubic-bezier(.2,.9,.25,1.02)";
+        t.style.transform = t.dataset.pile;
       }, 200 + k * PILE));
       const dealAt = 200 + onScreen.length * PILE + 500;
       setTimeout(() => {
@@ -559,6 +550,7 @@
           t.classList.remove("stacked");
         });
       }, dealAt);
+      setTimeout(() => tiles.forEach((t) => t.classList.remove("on-table")), dealAt + DEAL - 200);
       setTimeout(() => document.body.classList.remove("is-intro"), dealAt + DEAL + 200);
       setTimeout(() => tiles.forEach((t) => { t.style.transition = ""; t.style.transitionDelay = ""; }), dealAt + DEAL + 1200);
     });

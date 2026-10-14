@@ -55,6 +55,7 @@ body.home #view { touch-action: none; }
   --gap: var(--pad);
   position: relative;
   overflow: hidden;
+  padding: 48px 0;   /* room for the intro shadows */
   touch-action: none;
   cursor: grab;
   user-select: none;
@@ -84,6 +85,9 @@ body.home #view { touch-action: none; }
 /* first visit: pictures start close up on the pile and settle as they deal out */
 .tile .frame img { transition: transform 1.8s var(--ease-out); }
 .tile.stacked .frame img { transform: scale(1.35); }
+/* during the intro the cards cast soft shadows like prints on a white table */
+.tile .frame { transition: box-shadow 1s ease; }
+.tile.on-table .frame { box-shadow: 0 2px 3px rgba(0,0,0,.10), 0 12px 24px rgba(0,0,0,.14), 0 40px 80px rgba(0,0,0,.18); }
 .tile > .label { transition: opacity .8s ease; }
 .is-intro .tile > .label { opacity: 0; }
 .bar > * > span { transition: transform .9s var(--ease-out); }
@@ -101,8 +105,8 @@ body.home #view { touch-action: none; }
   inset: -50%;
   z-index: 1;
   pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: .16;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.7 .7 .7 0 -.55 .7 .7 .7 0 -.55 .7 .7 .7 0 -.55 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .45;
   mix-blend-mode: overlay;
   animation: grain .9s steps(5) infinite;
 }
