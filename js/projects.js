@@ -84,6 +84,7 @@ window.PROJECTS = [
   },
   {
     slug: "latent",
+    other: true,      // listed under Other works, not on the home strip
     title: "Latent",
     subtitle: "Film emulation for CCD photos",
     year: "",
