@@ -374,6 +374,7 @@
       const x = ((current % width) + width) % width;
       const offset = -(x + width);
       // cards shrink a little when moving fast; pictures drift inside their frames
+      flow.speed = delta;
       shrink += ((reducedMotion ? 1 : 1 - Math.min(.14, Math.abs(delta) * .006)) - shrink) * .12;
       track.style.transform = vertical ? `translate3d(0,${offset}px,0)` : `translate3d(${offset}px,0,0)`;
       const now = performance.now();
@@ -504,6 +505,59 @@
     };
   }
 
+  // ---- live colour behind the page: two soft pools of light that drift on their own
+  // and are pushed along, and brighten, when the cards are scrolled fast ----
+
+  const flow = { speed: 0 };
+
+  function background() {
+    // grain: one small tile of light and dark specks, drawn once and repeated over the whole page
+    const tile = document.createElement("canvas");
+    tile.width = tile.height = 200;
+    const tctx = tile.getContext("2d");
+    const dots = tctx.createImageData(200, 200);
+    for (let i = 0; i < dots.data.length; i += 4) {
+      const v = Math.random() < .5 ? 0 : 255;
+      dots.data[i] = dots.data[i + 1] = dots.data[i + 2] = v;
+      dots.data[i + 3] = Math.random() * (v ? 22 : 34);
+    }
+    tctx.putImageData(dots, 0, 0);
+    const grain = document.createElement("div");
+    grain.className = "grain";
+    grain.setAttribute("aria-hidden", "true");
+    grain.style.backgroundImage = `url(${tile.toDataURL()})`;
+    document.body.append(grain);
+
+    const el = document.createElement("div");
+    el.className = "bg";
+    el.setAttribute("aria-hidden", "true");
+    document.body.prepend(el);
+    let phase = Math.random() * 10, push = 0, energy = 0, last = 0;
+    const tick = (now) => {
+      if (now - last > 33) {
+        const dt = last ? Math.min(.1, (now - last) / 1000) : 0;
+        last = now;
+        const speed = Math.min(60, Math.abs(flow.speed));
+        energy += (speed / 60 - energy) * .06;
+        push += flow.speed * .0006;
+        flow.speed *= .9;
+        phase += dt * (.04 + energy * .5);
+        // scrolling forward or back swings the pools one way or the other
+        const ax = 35 + Math.sin(phase * .7 - push) * 28;
+        const ay = 35 + Math.cos(phase * .5 + push * .5) * 18;
+        const bx = 65 + Math.cos(phase * .6 + 2 - push * .8) * 28;
+        const by = 68 + Math.sin(phase * .45 + 1 + push * .4) * 16;
+        const a = (.16 + energy * .3).toFixed(3), b = (.16 + energy * .3).toFixed(3);
+        const size = 55 + energy * 15;
+        el.style.background =
+          `radial-gradient(${size}vmax ${size * .8}vmax at ${ax.toFixed(2)}% ${ay.toFixed(2)}%, rgb(120 72 38 / ${a}), transparent 70%),` +
+          `radial-gradient(${size}vmax ${size * .8}vmax at ${bx.toFixed(2)}% ${by.toFixed(2)}%, rgb(38 62 104 / ${b}), transparent 70%)`;
+      }
+      if (!reducedMotion) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
   // ---- the clicked cover grows into the project page's cover ----
 
   function startFly(e, tile) {
@@ -587,6 +641,7 @@
 
   // first visit to the home page: the projects drop onto a pile in the middle one by one,
   // then deal out into the strip; the header and the rest of the text arrive last
+  background();
   const first = route();
   if (first.home && !reducedMotion) {
     document.body.classList.add("is-intro", "is-white");
@@ -609,9 +664,10 @@
       // each card waits above the window, then drops onto the pile
       const pile = `translate(${cx - (r.left + r.width / 2)}px, ${cy - (r.top + r.height / 2)}px) rotate(${turn}deg) scale(.46)`;
       t.dataset.pile = pile;
-      t.style.transform = `translate(${cx - (r.left + r.width / 2)}px, ${-innerHeight}px) rotate(${turn * 3}deg) scale(.5)`;
+      t.style.transform = `translate(${cx - (r.left + r.width / 2)}px, ${-r.bottom - 60}px) rotate(${turn * 3}deg) scale(.5)`;
       t.classList.add("stacked", "on-table");
-      if (r.right > -40 && r.left < innerWidth + 40) onScreen.push(t);
+      const visible = r.right > -40 && r.left < innerWidth + 40 && r.bottom > -40 && r.top < innerHeight + 40;
+      if (visible) onScreen.push(t);
     });
     const PILE = 260, DEAL = 1500;
     const imgs = onScreen.map((t) => t.querySelector("img")).filter(Boolean);
