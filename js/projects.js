@@ -7,7 +7,7 @@ window.SITE = {
   name: "Geo Subash",
   role: "Industrial Designer",
   school: "NID Andhra Pradesh",
-  location: "India",
+  location: "Kerala, India",
   email: "geosubash@gmail.com",
   links: {
     behance: "https://www.behance.net/geosubash",
