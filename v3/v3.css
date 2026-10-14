@@ -16,24 +16,18 @@ html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.4 var(--sans); transition: background-color 1.2s ease, color 1.2s ease; }
 /* the intro starts on a white table and turns dark as the cards deal out */
 body.is-white { --bg: #fff; --ink: #111; --mute: #75716a; --panel: #f1f1f1; }
-/* behind everything: a slow drifting wash between warm charcoals, with fine grain over it */
+/* fine grain over the backdrop */
 body { isolation: isolate; }
-body::before, body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; transition: opacity 1.2s ease; }
-body::before {
-  background: linear-gradient(115deg, #1b1a18 0%, #262420 30%, #1d1c1a 55%, #2a2722 80%, #1b1a18 100%);
-  background-size: 300% 300%;
-  animation: drift 40s ease-in-out infinite alternate;
-}
+body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; transition: opacity 1.2s ease; }
 body::after {
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 200px;
-  opacity: .07;
+  opacity: .16;
   animation: grain-bg 1s steps(4) infinite;
 }
-body.is-white::before, body.is-white::after { opacity: 0; }
-@keyframes drift { 0% { background-position: 0% 30%; } 100% { background-position: 100% 70%; } }
+body.is-white::after { opacity: 0; }
 @keyframes grain-bg { 0% { background-position: 0 0; } 25% { background-position: -60px 40px; } 50% { background-position: 50px -70px; } 75% { background-position: -30px -20px; } }
-@media (prefers-reduced-motion: reduce) { body::before, body::after { animation: none; } }
+@media (prefers-reduced-motion: reduce) { body::after { animation: none; } }
 img { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-decoration: none; }
 a:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
@@ -72,7 +66,7 @@ body.home #view { touch-action: none; }
   --w: calc(var(--h) * .91);
   --gap: var(--pad);
   position: relative;
-  overflow: hidden;
+  overflow-x: clip; overflow-y: visible;
   padding: 48px 0;   /* room for the intro shadows */
   touch-action: none;
   cursor: grab;
@@ -81,6 +75,9 @@ body.home #view { touch-action: none; }
 .strip.dragging { cursor: grabbing; }
 .track { display: flex; gap: var(--gap); padding-left: var(--pad); will-change: transform; }
 .tile { position: relative; flex: none; width: var(--w); -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+/* each card's own colours spill faintly onto the backdrop behind it and travel with it */
+.tile .glow { position: absolute; inset: 0; z-index: -1; background: center / cover; filter: blur(60px) saturate(1.4); opacity: .3; transition: opacity 1.2s ease; pointer-events: none; }
+.is-white .tile .glow { opacity: 0; }
 .tile > .label { position: absolute; top: 14px; left: 16px; right: 16px; z-index: 1; display: flex; gap: 8px; color: #fff; mix-blend-mode: difference; white-space: nowrap; overflow: hidden; }
 .tile > .label .n { opacity: .6; }
 .tile .frame { position: relative; display: block; width: var(--w); height: var(--h); overflow: hidden; background: var(--panel); }
