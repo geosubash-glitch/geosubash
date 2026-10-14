@@ -78,7 +78,7 @@ body.home #view { touch-action: none; }
 .dot { display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: #d43; vertical-align: 1px; animation: pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: .25; } }
 
-.home-foot { padding: 0 var(--pad) 18px; align-items: baseline; }
+.home-foot { padding: 0 var(--pad) 18px; align-items: baseline; font-size: 13px; }
 .home-foot > :nth-child(1) { grid-column: 1; }
 .home-foot > :nth-child(2) { grid-column: 2; }
 .home-foot > :nth-child(3) { grid-column: 4; justify-self: end; color: var(--mute); font-variant-numeric: tabular-nums; }
