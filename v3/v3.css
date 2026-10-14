@@ -3,7 +3,8 @@
   --ink: #f2f0ea;
   --mute: #9c9a94;
   --panel: #2a2926;
-  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --sans: "Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --wide: "Anybody", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --pad: 16px;
   --gap: 20px;
   --ease: cubic-bezier(.7, 0, .2, 1);
@@ -23,7 +24,9 @@ ul { list-style: none; }
 #view:focus { outline: none; }
 
 .grid { display: grid; grid-template-columns: repeat(4, 1fr); column-gap: var(--gap); padding: 0 var(--pad); }
-.label, .bar, .foot { font-size: 20px; line-height: 1.2; text-transform: uppercase; letter-spacing: .01em; }
+.label, .bar, .foot { font-size: 17px; line-height: 1.2; text-transform: uppercase; letter-spacing: .01em; }
+/* names, nav and headings in the extra wide face; reading text stays in the plain one */
+.bar, .label, .title, #cta { font-family: var(--wide); font-stretch: 150%; }
 
 /* header: name, time, work, about on one line */
 .bar { padding-top: 18px; align-items: baseline; }
@@ -141,10 +144,10 @@ body.home #view { touch-action: none; }
 .title {
   grid-column: 1 / 3;
   margin-top: 88px;
-  font-size: clamp(46px, 7.4vw, 116px);
+  font-size: clamp(34px, 5vw, 80px);
   font-weight: 400;
-  line-height: .9;
-  letter-spacing: -.045em;
+  line-height: .95;
+  letter-spacing: -.02em;
   text-transform: lowercase;
 }
 .intro { grid-column: 3 / 5; margin-top: 88px; font-size: clamp(22px, 2.5vw, 36px); line-height: 1.14; letter-spacing: -.02em; }
@@ -199,7 +202,7 @@ body.home #view { touch-action: none; }
 
 /* footer */
 .foot { margin-top: 160px; padding-bottom: 20px; align-items: end; }
-#cta { grid-column: 1 / 3; font-size: clamp(28px, 3.4vw, 50px); line-height: 1; letter-spacing: -.03em; text-transform: none; }
+#cta { grid-column: 1 / 3; font-size: clamp(24px, 2.8vw, 42px); line-height: 1; letter-spacing: -.01em; text-transform: none; }
 #cta .x { color: var(--mute); }
 #links { grid-column: 3; align-self: center; }
 #links { display: flex; gap: 18px; align-items: center; }
@@ -223,7 +226,7 @@ body.home #view { touch-action: none; }
 
 @media (max-width: 760px) {
   .grid { grid-template-columns: 1fr 1fr; }
-  .bar { display: flex; gap: 10px; font-size: 12px; }
+  .bar { display: flex; gap: 10px; font-size: 10px; }
   .bar > * { flex: none; }
   .bar a > span { padding-left: 10px; }
   .bar a > span::before { width: 5px; height: 5px; margin-top: -3px; }
