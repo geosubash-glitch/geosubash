@@ -50,7 +50,7 @@
         <div class="home-foot grid label">
           <span>${esc(site.role)}</span>
           <a id="cta-home" href="mailto:${esc(site.email)}">Get in touch</a>
-          <span id="pos">01/${String(count).padStart(2, "0")}</span>
+          <span><span id="pos">01</span><span class="of">/${String(count).padStart(2, "0")}</span></span>
         </div>`,
     };
   }
@@ -320,7 +320,7 @@
       if (pos) {
         const step = width / perSet;
         const i = Math.round(x / step) % perSet;
-        pos.textContent = `${String(i + 1).padStart(2, "0")}/${String(perSet).padStart(2, "0")}`;
+        pos.textContent = String(i + 1).padStart(2, "0");
       }
       raf = requestAnimationFrame(frame);
     };

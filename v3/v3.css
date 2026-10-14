@@ -75,7 +75,7 @@ body.home .foot { display: none; }
 
 /* project page */
 .hero { row-gap: 0; margin-top: 28px; }
-.hero-img { grid-column: 1 / 5; height: clamp(320px, 50vh, 560px); overflow: hidden; background: var(--panel); }
+.hero-img { grid-column: 1 / 5; height: clamp(300px, 43vh, 520px); overflow: hidden; background: var(--panel); }
 .hero-img img { width: 100%; height: 100%; object-fit: cover; }
 .title {
   grid-column: 1 / 3;
@@ -164,7 +164,7 @@ body.home .foot { display: none; }
   .strip { --w: 84vw; --h: min(calc(100svh - 146px), 105vw); }
   body.home #view { justify-content: center; }
   .home-foot { display: flex; justify-content: space-between; }
-  .home-foot > :nth-child(1) { display: none; }
+  .home-foot > :nth-child(1), .home-foot .of { display: none; }
   .hero-img, .title, .intro, .meta, .quote, .boards, .chapter, .chapter .label, .chapter .text, .chapter pre,
   .about-text, .plain, .row, .row > .label, .row > .content, .pics, .board iframe { grid-column: 1 / -1; }
   .meta, .chapter, .row { grid-template-columns: 1fr 1fr; }
