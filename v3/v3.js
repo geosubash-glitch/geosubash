@@ -329,8 +329,18 @@
     let ease = .085;
     let raf = 0;
     let shrink = 1;
-    // pointing at a card keeps it full size and sends the others back
+    // resting the pointer on a card for a moment keeps it full size and sends the others back;
+    // any scrolling or dragging cancels it
     let hot = -1;
+    let mouse = null;          // last mouse position over the strip
+    let stillSince = performance.now();
+    const DWELL = 700;
+    const setHot = (i) => {
+      if (i === hot) return;
+      hot = i;
+      tiles.forEach((x, k) => x.classList.toggle("hot", k === hot));
+      strip.classList.toggle("focus", hot >= 0);
+    };
     const sizes = tiles.map(() => 1);
 
     const pans = tiles.map((t) => t.querySelector(".pan"));
@@ -345,6 +355,12 @@
       // cards shrink a little when moving fast; pictures drift inside their frames
       shrink += ((reducedMotion ? 1 : 1 - Math.min(.14, Math.abs(delta) * .006)) - shrink) * .12;
       track.style.transform = `translate3d(${offset}px,0,0)`;
+      const now = performance.now();
+      if (Math.abs(target - current) > 25 || down) { stillSince = now; setHot(-1); }
+      else if (mouse && now - stillSince > DWELL && hot < 0) {
+        const t = document.elementFromPoint(mouse.x, mouse.y)?.closest(".tile");
+        if (t) setHot(tiles.indexOf(t));
+      }
       if (!document.body.classList.contains("is-intro")) {
         tiles.forEach((t, i) => {
           const want = hot < 0 ? 1 : i === hot ? 1.03 : .7;
@@ -410,18 +426,15 @@
     addEventListener("pointermove", onMove);
     addEventListener("pointerup", onUp);
     addEventListener("pointercancel", onUp);
-    strip.addEventListener("pointerover", (e) => {
-      if (e.pointerType !== "mouse" || down) return;
-      const t = e.target.closest(".tile");
-      hot = t ? tiles.indexOf(t) : -1;
-      tiles.forEach((x, i) => x.classList.toggle("hot", i === hot));
-      strip.classList.toggle("focus", hot >= 0);
+    strip.addEventListener("pointermove", (e) => {
+      if (e.pointerType !== "mouse") return;
+      const t = document.elementFromPoint(e.clientX, e.clientY)?.closest(".tile");
+      const i = t ? tiles.indexOf(t) : -1;
+      mouse = { x: e.clientX, y: e.clientY };
+      // moving onto a different card restarts the wait
+      if (i !== hot) { setHot(-1); stillSince = performance.now(); }
     });
-    strip.addEventListener("pointerleave", () => {
-      hot = -1;
-      tiles.forEach((x) => x.classList.remove("hot"));
-      strip.classList.remove("focus");
-    });
+    strip.addEventListener("pointerleave", () => { mouse = null; setHot(-1); });
     strip.addEventListener("click", (e) => {
       if (moved) { e.preventDefault(); moved = false; return; }
       const tile = e.target.closest(".tile[data-slug]");
