@@ -76,7 +76,7 @@ body.home #view { touch-action: none; }
 .track { display: flex; gap: var(--gap); padding-left: var(--pad); will-change: transform; }
 .tile { position: relative; flex: none; width: var(--w); -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 /* each card's own colours spill faintly onto the backdrop behind it and travel with it */
-.tile .glow { position: absolute; inset: 0; z-index: -1; background: center / cover; filter: blur(60px) saturate(1.4); opacity: .3; transition: opacity 1.2s ease; pointer-events: none; }
+.tile .glow { --tint: 60 58 54; position: absolute; inset: -30% -25%; z-index: -1; background: radial-gradient(closest-side, rgb(var(--tint) / .22), rgb(var(--tint) / .08) 55%, transparent); transition: opacity 1.2s ease; pointer-events: none; }
 .is-white .tile .glow { opacity: 0; }
 .tile > .label { position: absolute; top: 14px; left: 16px; right: 16px; z-index: 1; display: flex; gap: 8px; color: #fff; mix-blend-mode: difference; white-space: nowrap; overflow: hidden; }
 .tile > .label .n { opacity: .6; }

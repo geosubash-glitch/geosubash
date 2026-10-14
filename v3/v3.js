@@ -39,7 +39,7 @@
     const count = main.length;
     const tiles = main.map((p, i) => `
       <a class="tile" href="#/work/${p.slug}" data-slug="${p.slug}">
-        ${p.cover ? `<span class="glow" aria-hidden="true" style="background-image:url('${esc(asset(p.cover))}')"></span>` : ""}
+        <span class="glow" aria-hidden="true"></span>
         <span class="label"><span class="n">${String(i + 1).padStart(2, "0")}</span><span>${esc(p.title)}</span></span>
         <span class="frame"><span class="pan">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: `object-position:${FOCUS[p.slug] ?? 50}% 50%` })}</span></span>
       </a>`);
@@ -361,6 +361,7 @@
     const pans = tiles.map((t) => t.querySelector(".pan"));
     const frames = tiles.map((t) => t.querySelector(".frame"));
     const labels = tiles.map((t) => t.querySelector(".label"));
+    tiles.forEach(tint);
 
     const frame = () => {
       const delta = (target - current) * ease;
@@ -494,6 +495,29 @@
       removeEventListener("pointercancel", onUp);
       stopStrip = () => {};
     };
+  }
+
+  // a soft light in the cover's strongest colour, behind the card. Read from a tiny copy of the
+  // picture, favouring saturated pixels so mostly white or grey covers don't come out muddy
+  function tint(tile) {
+    const img = tile.querySelector(".frame img"), glow = tile.querySelector(".glow");
+    if (!img || !glow) return;
+    const read = () => {
+      const c = document.createElement("canvas");
+      c.width = c.height = 24;
+      const ctx = c.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, 24, 24);
+      let r = 0, g = 0, b = 0, sum = 0;
+      const d = ctx.getImageData(0, 0, 24, 24).data;
+      for (let i = 0; i < d.length; i += 4) {
+        const max = Math.max(d[i], d[i + 1], d[i + 2]), min = Math.min(d[i], d[i + 1], d[i + 2]);
+        const w = ((max - min) / 255) ** 2 + .002;
+        r += d[i] * w; g += d[i + 1] * w; b += d[i + 2] * w; sum += w;
+      }
+      glow.style.setProperty("--tint", `${Math.round(r / sum)} ${Math.round(g / sum)} ${Math.round(b / sum)}`);
+    };
+    if (img.complete && img.naturalWidth) read();
+    else img.addEventListener("load", read, { once: true });
   }
 
   // ---- the clicked cover grows into the project page's cover ----
