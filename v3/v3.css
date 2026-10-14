@@ -88,7 +88,8 @@ body.home #view { touch-action: none; }
 /* during the intro the cards cast soft shadows like prints on a white table */
 .tile .frame { transition: box-shadow 1s ease; }
 .tile.on-table .frame { box-shadow: 0 2px 3px rgba(0,0,0,.10), 0 12px 24px rgba(0,0,0,.14), 0 40px 80px rgba(0,0,0,.18); }
-.tile > .label { transition: opacity .8s ease; }
+.tile > .label { transition: opacity .5s ease; }
+.strip.focus .tile:not(.hot) > .label { opacity: 0; }
 .is-intro .tile > .label { opacity: 0; }
 .bar > * > span { transition: transform .9s var(--ease-out); }
 .bar > :nth-child(2) > span { transition-delay: .05s; }
@@ -102,7 +103,8 @@ body.home #view { touch-action: none; }
 .tile .frame::after {
   content: "";
   position: absolute;
-  inset: -50%;
+  inset: 0;
+  background-size: 220px 220px;
   z-index: 1;
   pointer-events: none;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.7 .7 .7 0 -.55 .7 .7 .7 0 -.55 .7 .7 .7 0 -.55 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -111,13 +113,14 @@ body.home #view { touch-action: none; }
   animation: grain .9s steps(5) infinite;
 }
 @keyframes grain {
-  0% { transform: translate(0, 0); }
-  20% { transform: translate(-6%, 4%); }
-  40% { transform: translate(5%, -7%); }
-  60% { transform: translate(-3%, 8%); }
-  80% { transform: translate(7%, 2%); }
-  100% { transform: translate(0, 0); }
+  0% { background-position: 0 0; }
+  20% { background-position: -37px 23px; }
+  40% { background-position: 51px -61px; }
+  60% { background-position: -19px 88px; }
+  80% { background-position: 73px 11px; }
+  100% { background-position: 0 0; }
 }
+
 
 /* other works */
 .cards { margin-top: 64px; row-gap: 48px; }

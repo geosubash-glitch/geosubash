@@ -329,6 +329,9 @@
     let ease = .085;
     let raf = 0;
     let shrink = 1;
+    // pointing at a card keeps it full size and sends the others back
+    let hot = -1;
+    const sizes = tiles.map(() => 1);
 
     const pans = tiles.map((t) => t.querySelector(".pan"));
     const frames = tiles.map((t) => t.querySelector(".frame"));
@@ -342,7 +345,13 @@
       // cards shrink a little when moving fast; pictures drift inside their frames
       shrink += ((reducedMotion ? 1 : 1 - Math.min(.14, Math.abs(delta) * .006)) - shrink) * .12;
       track.style.transform = `translate3d(${offset}px,0,0)`;
-      frames.forEach((f) => (f.style.transform = `scale(${shrink.toFixed(4)})`));
+      if (!document.body.classList.contains("is-intro")) {
+        tiles.forEach((t, i) => {
+          const want = hot < 0 ? 1 : i === hot ? 1.03 : .7;
+          sizes[i] += ((reducedMotion ? 1 : want) - sizes[i]) * .1;
+          t.style.transform = `scale(${(sizes[i] * shrink).toFixed(4)})`;
+        });
+      }
       if (!reducedMotion) {
         const mid = innerWidth / 2;
         tiles.forEach((t, i) => {
@@ -401,6 +410,18 @@
     addEventListener("pointermove", onMove);
     addEventListener("pointerup", onUp);
     addEventListener("pointercancel", onUp);
+    strip.addEventListener("pointerover", (e) => {
+      if (e.pointerType !== "mouse" || down) return;
+      const t = e.target.closest(".tile");
+      hot = t ? tiles.indexOf(t) : -1;
+      tiles.forEach((x, i) => x.classList.toggle("hot", i === hot));
+      strip.classList.toggle("focus", hot >= 0);
+    });
+    strip.addEventListener("pointerleave", () => {
+      hot = -1;
+      tiles.forEach((x) => x.classList.remove("hot"));
+      strip.classList.remove("focus");
+    });
     strip.addEventListener("click", (e) => {
       if (moved) { e.preventDefault(); moved = false; return; }
       const tile = e.target.closest(".tile[data-slug]");
