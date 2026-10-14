@@ -67,9 +67,9 @@
         <span class="card-sub">${esc(it.sub)}</span>
       </a>`).join("");
     return {
-      title: "Other works",
+      title: "Archive",
       html: `
-        <section class="hero grid"><h1 class="title lines">Other works</h1></section>
+        <section class="hero grid"><h1 class="title lines">Archive</h1></section>
         <section class="cards grid">${cards}</section>`,
     };
   }
@@ -333,12 +333,14 @@
     // and sends the others back out of focus; any scrolling or dragging cancels it
     let hot = -1;
     let held = false, holdTimer = 0;
+    let anchor = 0;            // the card the others close up around while sizes change
     let mouse = null;          // last mouse position over the strip
     let stillSince = performance.now();
     const DWELL = 700;
     const setHot = (i) => {
       if (i === hot) return;
       hot = i;
+      if (i >= 0) anchor = i;
       tiles.forEach((x, k) => x.classList.toggle("hot", k === hot));
       strip.classList.toggle("focus", hot >= 0);
     };
@@ -376,15 +378,26 @@
         if (t) setHot(tiles.indexOf(t));
       }
       if (!document.body.classList.contains("is-intro")) {
+        tiles.forEach((t, i) => glideTo(sizes[i], reducedMotion || hot < 0 ? 1 : i === hot ? 1.03 : .86, now, PULL));
+        // slide the cards towards the one in focus so the gaps between them stay the same as they shrink
+        const shifts = tiles.map(() => 0);
+        const half = (k) => (tiles[k].offsetWidth * sizes[k].now) / 2;
+        for (let k = anchor + 1; k < tiles.length; k++) {
+          const grew = half(k - 1) - tiles[k - 1].offsetWidth / 2 + half(k) - tiles[k].offsetWidth / 2;
+          shifts[k] = shifts[k - 1] + grew;
+        }
+        for (let k = anchor - 1; k >= 0; k--) {
+          const grew = half(k + 1) - tiles[k + 1].offsetWidth / 2 + half(k) - tiles[k].offsetWidth / 2;
+          shifts[k] = shifts[k + 1] - grew;
+        }
         tiles.forEach((t, i) => {
-          const want = reducedMotion || hot < 0 ? 1 : i === hot ? 1.03 : .7;
           // shallow depth of field: the further a card is from the one in focus, the softer it gets
           const away = hot < 0 || reducedMotion ? 0 : Math.abs(i - hot);
           const wantBlur = away ? Math.min(10, 3 + away * 3) : 0;
-          const size = glideTo(sizes[i], want, now, PULL);
+          const size = sizes[i].now;
           // the blur trails the size a little, the way a lens catches up
           const blur = glideTo(blurs[i], wantBlur, now, PULL + 400);
-          t.style.transform = `scale(${(size * shrink).toFixed(4)})`;
+          t.style.transform = `translate3d(${shifts[i].toFixed(2)}px,0,0) scale(${(size * shrink).toFixed(4)})`;
           frames[i].style.filter = blur > .05 ? `blur(${blur.toFixed(2)}px) brightness(${(1 - blur * .015).toFixed(3)})` : "";
           // the name sits a little in front of the picture, nearer the lens, so it goes less soft
           if (labels[i]) labels[i].style.filter = blur > .05 ? `blur(${(blur * .35).toFixed(2)}px)` : "";
