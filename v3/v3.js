@@ -32,6 +32,11 @@
   const LINK_NAMES = { linkedin: "LinkedIn", github: "GitHub", behance: "Behance", instagram: "Instagram" };
   const linkName = (key) => LINK_NAMES[key] || key[0].toUpperCase() + key.slice(1);
   const lines = (...rows) => rows.filter(Boolean).map(esc).join("<br>");
+  // tags that only repeat the category ("Research" under "Product design · Research") are left out
+  const extraTags = (tags, category = "") => {
+    const parts = String(category).toLowerCase().split(/[·,]/).map((t) => t.trim());
+    return list(tags).filter((t) => !parts.includes(t.toLowerCase().trim())).join(", ");
+  };
 
   // ---- pages ----
 
@@ -96,7 +101,7 @@
           <div class="intro lines">${paragraphs(p.summary)}</div>
           <div class="meta label">
             <div>${lines(p.team || site.name, p.year)}</div>
-            <div>${lines(p.category, list(p.tags).filter((t) => t.toLowerCase() !== String(p.category).toLowerCase()).join(", "))}</div>
+            <div>${lines(p.category, extraTags(p.tags, p.category))}</div>
             <div>${[...details, ...linkHtml].join("<br>")}</div>
           </div>
         </section>
@@ -144,7 +149,7 @@
           <div class="intro lines">${paragraphs(o.summary)}</div>
           <div class="meta label">
             <div><span class="dot" aria-hidden="true"></span>${esc(o.status || "In progress")}<br>${esc(o.year || "")}</div>
-            <div>${lines(o.category, list(o.tags).join(", "))}</div>
+            <div>${lines(o.category, extraTags(o.tags, o.category))}</div>
             <div>${o.board ? `<a href="${esc(o.board)}" target="_blank" rel="noopener">Open the board in Figma</a>` : ""}</div>
           </div>
         </section>
@@ -320,15 +325,19 @@
       if (i < perSet || i >= perSet * 2) { t.setAttribute("tabindex", "-1"); t.setAttribute("aria-hidden", "true"); }
     });
 
-    // phones scroll the cards up and down, wider screens left and right
-    let vertical = matchMedia("(max-width: 760px)").matches;
-    const along = (el) => (vertical ? el.offsetTop : el.offsetLeft);
-    const length = (el) => (vertical ? el.offsetHeight : el.offsetWidth);
-    const setWidth = () => along(tiles[perSet]) - along(tiles[0]);
+    // phones scroll the cards up and down, wider screens left and right. Positions are measured
+    // once (and again on resize) so the animation loop never has to read the layout
+    const phone = matchMedia("(max-width: 760px)");
+    let vertical, width, geo;
+    const measure = () => {
+      vertical = phone.matches;
+      geo = tiles.map((t) => ({ at: vertical ? t.offsetTop : t.offsetLeft, len: vertical ? t.offsetHeight : t.offsetWidth }));
+      width = geo[perSet].at - geo[0].at;
+    };
+    measure();
     const pos = document.getElementById("pos");
-    let width = setWidth();
     // on phones start with the first card in the middle of the screen rather than under the header
-    const lead = () => (vertical ? (innerHeight - length(tiles[0])) / 2 : 0);
+    const lead = () => (vertical ? (innerHeight - geo[0].len) / 2 : 0);
     let target = -lead();
     let current = target;
     let ease = .085;
@@ -342,6 +351,10 @@
     let mouse = null;          // last mouse position over the strip
     let stillSince = performance.now();
     const DWELL = 700;
+    // touch screens have no pointer to rest on a card, so when the strip sits still the card nearest
+    // the middle of the screen settles into place and comes into focus by itself
+    const touch = matchMedia("(hover: none)");
+    let settledAt = 0, snapped = false;
     const setHot = (i) => {
       if (i === hot) return;
       hot = i;
@@ -366,6 +379,15 @@
     const pans = tiles.map((t) => t.querySelector(".pan"));
     const frames = tiles.map((t) => t.querySelector(".frame"));
     const labels = tiles.map((t) => t.querySelector(".label"));
+    // write a style only when it actually changes
+    const written = new Map();
+    const put = (el, prop, value) => {
+      const key = written.get(el) || {};
+      if (key[prop] === value) return;
+      key[prop] = value;
+      written.set(el, key);
+      el.style[prop] = value;
+    };
 
     const frame = () => {
       const delta = (target - current) * ease;
@@ -376,9 +398,20 @@
       // cards shrink a little when moving fast; pictures drift inside their frames
       flow.speed = delta;
       shrink += ((reducedMotion ? 1 : 1 - Math.min(.14, Math.abs(delta) * .006)) - shrink) * .12;
-      track.style.transform = vertical ? `translate3d(0,${offset}px,0)` : `translate3d(${offset}px,0,0)`;
+      put(track, "transform", vertical ? `translate3d(0,${offset.toFixed(2)}px,0)` : `translate3d(${offset.toFixed(2)}px,0,0)`);
       const now = performance.now();
+      if (Math.abs(target - current) > .5 || down) { settledAt = now; if (!held) snapped = false; }
       if (Math.abs(target - current) > 25 || (down && !held)) { stillSince = now; setHot(-1); }
+      else if (touch.matches && !down && hot < 0 && !document.body.classList.contains("is-intro") && now - settledAt > 500) {
+        const span = vertical ? innerHeight : innerWidth;
+        let best = 0, gap = Infinity;
+        geo.forEach((g, i) => {
+          const d = g.at + offset + g.len / 2 - span / 2;
+          if (Math.abs(d) < Math.abs(gap)) { gap = d; best = i; }
+        });
+        if (!snapped && Math.abs(gap) > 2) { target += gap; snapped = true; }
+        else if (now - settledAt > 900) setHot(best);
+      }
       else if (mouse && now - stillSince > DWELL && hot < 0) {
         const t = document.elementFromPoint(mouse.x, mouse.y)?.closest(".tile");
         if (t) setHot(tiles.indexOf(t));
@@ -387,13 +420,13 @@
         tiles.forEach((t, i) => glideTo(sizes[i], reducedMotion || hot < 0 ? 1 : i === hot ? 1.03 : .86, now, PULL));
         // slide the cards towards the one in focus so the gaps between them stay the same as they shrink
         const shifts = tiles.map(() => 0);
-        const half = (k) => (length(tiles[k]) * sizes[k].now) / 2;
+        const half = (k) => (geo[k].len * sizes[k].now) / 2;
         for (let k = anchor + 1; k < tiles.length; k++) {
-          const grew = half(k - 1) - length(tiles[k - 1]) / 2 + half(k) - length(tiles[k]) / 2;
+          const grew = half(k - 1) - geo[k - 1].len / 2 + half(k) - geo[k].len / 2;
           shifts[k] = shifts[k - 1] + grew;
         }
         for (let k = anchor - 1; k >= 0; k--) {
-          const grew = half(k + 1) - length(tiles[k + 1]) / 2 + half(k) - length(tiles[k]) / 2;
+          const grew = half(k + 1) - geo[k + 1].len / 2 + half(k) - geo[k].len / 2;
           shifts[k] = shifts[k + 1] - grew;
         }
         tiles.forEach((t, i) => {
@@ -404,27 +437,28 @@
           // the blur trails the size a little, the way a lens catches up
           const blur = glideTo(blurs[i], wantBlur, now, PULL + 400);
           const shift = shifts[i].toFixed(2);
-          t.style.transform = `translate3d(${vertical ? `0,${shift}px` : `${shift}px,0`},0) scale(${(size * shrink).toFixed(4)})`;
+          put(t, "transform", `translate3d(${vertical ? `0,${shift}px` : `${shift}px,0`},0) scale(${(size * shrink).toFixed(4)})`);
           // and the cards sent back slowly dim, so the one in focus is the only one lit
           const dim = Math.min(1, blur / 6) * .55;
-          frames[i].style.filter = blur > .05 ? `blur(${blur.toFixed(2)}px) brightness(${(1 - dim).toFixed(3)})` : "";
+          put(frames[i], "filter", blur > .05 ? `blur(${blur.toFixed(2)}px) brightness(${(1 - dim).toFixed(3)})` : "");
           // the name sits a little in front of the picture, nearer the lens, so it goes less soft
-          if (labels[i]) labels[i].style.filter = blur > .05 ? `blur(${(blur * .35).toFixed(2)}px)` : "";
+          if (labels[i]) put(labels[i], "filter", blur > .05 ? `blur(${(blur * .35).toFixed(2)}px)` : "");
         });
       }
       if (!reducedMotion) {
         const span = vertical ? innerHeight : innerWidth;
         tiles.forEach((t, i) => {
-          const start = along(t) + offset;
-          if (start > span + 50 || start + length(t) < -50) return;
-          const drift = (((start + length(t) / 2) - span / 2) / span) * -60;
-          pans[i].style.transform = `translate3d(${vertical ? `0,${drift}px` : `${drift}px,0`},0) scale(1.14)`;
+          const start = geo[i].at + offset;
+          if (start > span + 50 || start + geo[i].len < -50) return;
+          const drift = ((((start + geo[i].len / 2) - span / 2) / span) * -60).toFixed(2);
+          put(pans[i], "transform", `translate3d(${vertical ? `0,${drift}px` : `${drift}px,0`},0) scale(1.14)`);
         });
       }
       if (pos) {
         const step = width / perSet;
         const i = Math.round((x + lead()) / step) % perSet;
-        pos.textContent = String(i + 1).padStart(2, "0");
+        const label = String(i + 1).padStart(2, "0");
+        if (pos.textContent !== label) pos.textContent = label;
       }
       raf = requestAnimationFrame(frame);
     };
@@ -439,7 +473,7 @@
       if (e.key === "ArrowRight" || e.key === "ArrowDown") target += step;
       if (e.key === "ArrowLeft" || e.key === "ArrowUp") target -= step;
     };
-    const onResize = () => { vertical = matchMedia("(max-width: 760px)").matches; width = setWidth(); };
+    const onResize = () => measure();
     addEventListener("wheel", onWheel, { passive: false });
     addEventListener("keydown", onKey);
     addEventListener("resize", onResize);
@@ -450,13 +484,13 @@
       const dx = e.clientX - startX, dy = e.clientY - startY;
       return Math.abs(dx) >= Math.abs(dy) ? dx : dy;
     };
-    view.addEventListener("pointerdown", (e) => {
-      if (!document.body.classList.contains("home")) return;
+    const onDown = (e) => {
       down = true; moved = false; startX = e.clientX; startY = e.clientY; last = 0; startTarget = target; velocity = 0;
       // no cursor on touch screens, so holding a finger on a card brings it forward instead
       const tile = e.pointerType !== "mouse" && e.target.closest(".tile");
       if (tile) holdTimer = setTimeout(() => { if (down && !moved) { held = true; target = current; setHot(tiles.indexOf(tile)); } }, 450);
-    });
+    };
+    view.addEventListener("pointerdown", onDown);
     const onMove = (e) => {
       if (!down) return;
       const d = travel(e);
@@ -501,6 +535,8 @@
       removeEventListener("pointermove", onMove);
       removeEventListener("pointerup", onUp);
       removeEventListener("pointercancel", onUp);
+      view.removeEventListener("pointerdown", onDown);
+      clearTimeout(holdTimer);
       stopStrip = () => {};
     };
   }
@@ -519,7 +555,7 @@
     for (let i = 0; i < dots.data.length; i += 4) {
       const v = Math.random() < .5 ? 0 : 255;
       dots.data[i] = dots.data[i + 1] = dots.data[i + 2] = v;
-      dots.data[i + 3] = Math.random() * (v ? 22 : 34);
+      dots.data[i + 3] = Math.random() * (v ? 18 : 28);
     }
     tctx.putImageData(dots, 0, 0);
     const grain = document.createElement("div");
@@ -528,11 +564,18 @@
     grain.style.backgroundImage = `url(${tile.toDataURL()})`;
     document.body.append(grain);
 
-    const el = document.createElement("div");
-    el.className = "bg";
-    el.setAttribute("aria-hidden", "true");
-    document.body.prepend(el);
+    const bg = document.createElement("div");
+    bg.className = "bg";
+    bg.setAttribute("aria-hidden", "true");
+    bg.innerHTML = '<i class="pool warm"></i><i class="pool cool"></i>';
+    document.body.prepend(bg);
+    const [warm, cool] = bg.children;
     let phase = Math.random() * 10, push = 0, energy = 0, last = 0;
+    // place a pool centred on (x%, y%) of the window; the layers are painted once and only moved
+    const place = (el, x, y, scale, opacity) => {
+      el.style.transform = `translate3d(${(x / 100 * innerWidth).toFixed(1)}px,${(y / 100 * innerHeight).toFixed(1)}px,0) translate(-50%,-50%) scale(${scale.toFixed(3)})`;
+      el.style.opacity = opacity.toFixed(3);
+    };
     const tick = (now) => {
       if (now - last > 33) {
         const dt = last ? Math.min(.1, (now - last) / 1000) : 0;
@@ -542,16 +585,10 @@
         push += flow.speed * .0006;
         flow.speed *= .9;
         phase += dt * (.04 + energy * .5);
-        // scrolling forward or back swings the pools one way or the other
-        const ax = 35 + Math.sin(phase * .7 - push) * 28;
-        const ay = 35 + Math.cos(phase * .5 + push * .5) * 18;
-        const bx = 65 + Math.cos(phase * .6 + 2 - push * .8) * 28;
-        const by = 68 + Math.sin(phase * .45 + 1 + push * .4) * 16;
-        const a = (.16 + energy * .3).toFixed(3), b = (.16 + energy * .3).toFixed(3);
-        const size = 55 + energy * 15;
-        el.style.background =
-          `radial-gradient(${size}vmax ${size * .8}vmax at ${ax.toFixed(2)}% ${ay.toFixed(2)}%, rgb(120 72 38 / ${a}), transparent 70%),` +
-          `radial-gradient(${size}vmax ${size * .8}vmax at ${bx.toFixed(2)}% ${by.toFixed(2)}%, rgb(38 62 104 / ${b}), transparent 70%)`;
+        // scrolling forward or back swings the pools one way or the other, faster scrolling lights them up
+        const scale = 1 + energy * .27, glow = .16 + energy * .3;
+        place(warm, 35 + Math.sin(phase * .7 - push) * 28, 35 + Math.cos(phase * .5 + push * .5) * 18, scale, glow);
+        place(cool, 65 + Math.cos(phase * .6 + 2 - push * .8) * 28, 68 + Math.sin(phase * .45 + 1 + push * .4) * 16, scale, glow);
       }
       if (!reducedMotion) requestAnimationFrame(tick);
     };
