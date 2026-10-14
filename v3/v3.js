@@ -47,8 +47,7 @@
       home: true,
       html: `
         <div class="strip" id="strip"><div class="track" id="track">${tiles.join("")}</div></div>
-        <div class="home-foot grid label">
-          <span>${esc(site.role)}</span>
+        <div class="home-foot">
           <a id="cta-home" href="mailto:${esc(site.email)}">Get in touch</a>
           <span><span id="pos">01</span><span class="of">/${String(count).padStart(2, "0")}</span></span>
         </div>`,
