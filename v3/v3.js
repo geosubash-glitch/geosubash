@@ -25,26 +25,34 @@
   // ---- pages ----
 
   function homePage() {
-    const tiles = projects.map((p) => `
-      <a class="tile" href="#/work/${p.slug}" data-slug="${p.slug}">
-        <span class="label">${esc(p.title)}</span>
-        <span class="frame">${image(p.cover, p.title, { w: 1600, h: 900, style: `object-position:${FOCUS[p.slug] ?? 50}% 50%` })}</span>
-      </a>`).join("");
+    const count = projects.length + ongoing.length;
+    const num = (i) => String(i + 1).padStart(2, "0");
 
-    const now = ongoing.map((o) => `
+    const tiles = projects.map((p, i) => `
+      <a class="tile" href="#/work/${p.slug}" data-slug="${p.slug}">
+        <span class="label"><span class="n">${num(i)}</span><span>${esc(p.title)}</span></span>
+        <span class="frame">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: `object-position:${FOCUS[p.slug] ?? 50}% 50%` })}</span>
+      </a>`);
+
+    const now = ongoing.map((o, i) => `
       <a class="tile now" href="#/now/${o.slug}">
-        <span class="label">Now</span>
+        <span class="label"><span class="n">${num(projects.length + i)}</span><span>Now</span></span>
         <span class="frame">
-          <span class="label"><span class="dot" aria-hidden="true"></span>${esc(o.status || "In progress")}</span>
+          <span class="label"><span><span class="dot" aria-hidden="true"></span>${esc(o.status || "In progress")}</span></span>
           <span class="big">${esc(o.title)}<br>${esc(o.subtitle)}</span>
         </span>
-      </a>`).join("");
+      </a>`);
 
     return {
       home: true,
       html: `
-        <div class="strip" id="strip">${tiles}${now}</div>
-        <div class="strip-foot label"><span>${esc(site.role)}, ${esc(site.school)}</span><span>${String(projects.length).padStart(2, "0")} projects</span></div>`,
+        <div class="strip" id="strip"><div class="track" id="track">${[...tiles, ...now].join("")}</div></div>
+        <div class="home-foot grid label">
+          <span>${esc(site.role)}, ${esc(site.school)}</span>
+          <a id="cta-home" href="mailto:${esc(site.email)}">Get in touch</a>
+          <span id="pos">01/${String(count).padStart(2, "0")}</span>
+          <span>Scroll or drag</span>
+        </div>`,
     };
   }
 
@@ -70,7 +78,7 @@
           <div class="intro lines">${paragraphs(p.summary)}</div>
           <div class="meta label">
             <div>${lines(p.team || site.name, p.year)}</div>
-            <div>${lines(p.category, list(p.tags).join(", "))}</div>
+            <div>${lines(p.category, list(p.tags).filter((t) => t.toLowerCase() !== String(p.category).toLowerCase()).join(", "))}</div>
             <div>${[...details, ...linkHtml].join("<br>")}</div>
           </div>
         </section>
@@ -210,7 +218,8 @@
     return page;
   }
 
-  function show(page, { animate = true, scroll = true } = {}) {
+  function show(page, { animate = true, scroll = true, intro = false } = {}) {
+    stopStrip();
     view.innerHTML = page.html;
     document.body.classList.toggle("home", !!page.home);
     document.querySelectorAll("[data-nav]").forEach((a) => {
@@ -222,7 +231,8 @@
       window.scrollTo(0, 0);
       view.focus({ preventScroll: true });
     }
-    if (page.home) setUpStrip();
+    if (page.home) setUpStrip({ intro });
+    wireScramble(document.getElementById("cta-home"));
     revealLines(animate);
   }
 
@@ -276,41 +286,99 @@
     });
   }
 
-  // ---- home strip: scroll wheel and drag move it sideways ----
+  // ---- home strip: an endless loop moved by wheel, drag and swipe ----
 
-  function setUpStrip() {
+  let stopStrip = () => {};
+
+  function setUpStrip({ intro = false } = {}) {
+    stopStrip();
     const strip = document.getElementById("strip");
-    if (!strip) return;
+    const track = document.getElementById("track");
+    if (!strip || !track) return;
 
-    strip.addEventListener("wheel", (e) => {
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-      const max = strip.scrollWidth - strip.clientWidth;
-      if ((e.deltaY > 0 && strip.scrollLeft >= max) || (e.deltaY < 0 && strip.scrollLeft <= 0)) return;
-      e.preventDefault();
-      strip.scrollLeft += e.deltaY;
-    }, { passive: false });
-
-    let startX = 0, startScroll = 0, moved = false, down = false;
-    strip.addEventListener("pointerdown", (e) => {
-      if (e.pointerType !== "mouse") return;
-      down = true; moved = false; startX = e.clientX; startScroll = strip.scrollLeft;
+    // three copies so there is always something either side of the visible set
+    const original = track.innerHTML;
+    track.innerHTML = original + original + original;
+    const tiles = [...track.children];
+    const perSet = tiles.length / 3;
+    tiles.forEach((t, i) => {
+      if (i < perSet || i >= perSet * 2) { t.setAttribute("tabindex", "-1"); t.setAttribute("aria-hidden", "true"); }
     });
-    addEventListener("pointermove", (e) => {
+
+    const setWidth = () => tiles[perSet].offsetLeft - tiles[0].offsetLeft;
+    const pos = document.getElementById("pos");
+    let width = setWidth();
+    let target = 0;
+    let current = intro && !reducedMotion ? -innerWidth * .9 : 0;
+    let ease = intro ? .045 : .09;
+    let raf = 0;
+
+    const frame = () => {
+      current += (target - current) * ease;
+      if (Math.abs(target - current) < .1) current = target;
+      const x = ((current % width) + width) % width;
+      track.style.transform = `translate3d(${-(x + width)}px,0,0)`;
+      if (pos) {
+        const step = width / perSet;
+        const i = Math.round(x / step) % perSet;
+        pos.textContent = `${String(i + 1).padStart(2, "0")}/${String(perSet).padStart(2, "0")}`;
+      }
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+    if (intro) setTimeout(() => (ease = .09), 1400);
+
+    const onWheel = (e) => {
+      e.preventDefault();
+      target += Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    };
+    const onKey = (e) => {
+      const step = width / perSet;
+      if (e.key === "ArrowRight") target += step;
+      if (e.key === "ArrowLeft") target -= step;
+    };
+    const onResize = () => { width = setWidth(); };
+    addEventListener("wheel", onWheel, { passive: false });
+    addEventListener("keydown", onKey);
+    addEventListener("resize", onResize);
+
+    let down = false, moved = false, startX = 0, startTarget = 0, lastX = 0, velocity = 0;
+    strip.addEventListener("pointerdown", (e) => {
+      down = true; moved = false; startX = lastX = e.clientX; startTarget = target; velocity = 0;
+    });
+    const onMove = (e) => {
       if (!down) return;
       const dx = e.clientX - startX;
-      if (Math.abs(dx) > 5) { moved = true; strip.classList.add("dragging"); }
-      if (moved) strip.scrollLeft = startScroll - dx;
-    });
-    addEventListener("pointerup", () => {
+      if (Math.abs(dx) > 6) { moved = true; strip.classList.add("dragging"); }
+      velocity = e.clientX - lastX; lastX = e.clientX;
+      if (moved) target = startTarget - dx * 1.4;
+    };
+    const onUp = () => {
+      if (!down) return;
       down = false;
-      requestAnimationFrame(() => strip.classList.remove("dragging"));
-    });
+      if (moved) target -= velocity * 12;
+      strip.classList.remove("dragging");
+    };
+    addEventListener("pointermove", onMove);
+    addEventListener("pointerup", onUp);
+    addEventListener("pointercancel", onUp);
     strip.addEventListener("click", (e) => {
       if (moved) { e.preventDefault(); moved = false; return; }
       const tile = e.target.closest(".tile[data-slug]");
       if (tile && !reducedMotion) startFly(e, tile);
     });
     strip.addEventListener("dragstart", (e) => e.preventDefault());
+
+    stopStrip = () => {
+      cancelAnimationFrame(raf);
+      removeEventListener("wheel", onWheel);
+      removeEventListener("keydown", onKey);
+      removeEventListener("resize", onResize);
+      removeEventListener("pointermove", onMove);
+      removeEventListener("pointerup", onUp);
+      removeEventListener("pointercancel", onUp);
+      stopStrip = () => {};
+    };
   }
 
   // ---- the clicked cover grows into the project page's cover ----
@@ -347,17 +415,13 @@
     setTimeout(done, 1200);
   }
 
-  // ---- header: turnaround and local time ----
-
-  const sprite = new Image();
-  sprite.onload = () => document.documentElement.style.setProperty("--frames", Math.round(sprite.naturalWidth / sprite.naturalHeight));
-  sprite.src = "../assets/turnaround/turn.webp?v=4";
+  // ---- header: local time ----
 
   const clock = document.getElementById("clock");
   const tick = () => {
     const [h, m] = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: false })
       .format(new Date()).split(":");
-    clock.innerHTML = `${h}&nbsp;&nbsp;${m} IST`;
+    clock.textContent = `${h}:${m} IST`;
   };
   tick();
   setInterval(tick, 15000);
@@ -369,39 +433,63 @@
   document.getElementById("copy").innerHTML = `© ${new Date().getFullYear()} ${esc(site.name)}<br><a href="#/privacy">Privacy &amp; terms</a>`;
 
   // "Get in touch" scrambles into the email address on hover and focus
-  const cta = document.getElementById("cta");
-  const LABEL = "Get in touch";
   const GLYPHS = "!<>-_\\/[]{}=+*^?#@%&$";
-  let shown = LABEL;
-  let frame = 0;
-  cta.href = `mailto:${site.email}`;
 
-  function scrambleTo(text) {
-    if (text === shown) return;
-    shown = text;
-    cancelAnimationFrame(frame);
-    if (reducedMotion) { cta.textContent = text; return; }
-    const from = cta.textContent;
-    const chars = Array.from({ length: Math.max(from.length, text.length) }, (_, i) => {
-      const start = Math.floor(Math.random() * 8);
-      return { from: from[i] || "", to: text[i] || "", start, end: start + 6 + Math.floor(Math.random() * 10) + i };
-    });
-    let t = 0;
-    const step = () => {
-      let done = 0;
-      cta.innerHTML = chars.map((c) => {
-        if (t >= c.end) { done++; return esc(c.to); }
-        if (t >= c.start) return `<span class="x">${esc(GLYPHS[Math.floor(Math.random() * GLYPHS.length)])}</span>`;
-        return esc(c.from);
-      }).join("");
-      if (done < chars.length) { t++; frame = requestAnimationFrame(step); }
+  function wireScramble(link) {
+    if (!link || link.dataset.wired) return;
+    link.dataset.wired = "1";
+    const label = link.textContent;
+    let shown = label;
+    let frame = 0;
+    link.href = `mailto:${site.email}`;
+
+    const scrambleTo = (text) => {
+      if (text === shown) return;
+      shown = text;
+      cancelAnimationFrame(frame);
+      if (reducedMotion) { link.textContent = text; return; }
+      const from = link.textContent;
+      const chars = Array.from({ length: Math.max(from.length, text.length) }, (_, i) => {
+        const start = Math.floor(Math.random() * 8);
+        return { from: from[i] || "", to: text[i] || "", start, end: start + 6 + Math.floor(Math.random() * 10) + i };
+      });
+      let t = 0;
+      const step = () => {
+        let done = 0;
+        link.innerHTML = chars.map((c) => {
+          if (t >= c.end) { done++; return esc(c.to); }
+          if (t >= c.start) return `<span class="x">${esc(GLYPHS[Math.floor(Math.random() * GLYPHS.length)])}</span>`;
+          return esc(c.from);
+        }).join("");
+        if (done < chars.length) { t++; frame = requestAnimationFrame(step); }
+      };
+      step();
     };
-    step();
+    link.addEventListener("pointerenter", () => scrambleTo(site.email));
+    link.addEventListener("pointerleave", () => scrambleTo(label));
+    link.addEventListener("focus", () => scrambleTo(site.email));
+    link.addEventListener("blur", () => scrambleTo(label));
   }
-  cta.addEventListener("pointerenter", () => scrambleTo(site.email));
-  cta.addEventListener("pointerleave", () => scrambleTo(LABEL));
-  cta.addEventListener("focus", () => scrambleTo(site.email));
-  cta.addEventListener("blur", () => scrambleTo(LABEL));
 
-  show(route());
+  wireScramble(document.getElementById("cta"));
+
+  // first visit: play the intro
+  const first = route();
+  if (first.home && !reducedMotion) {
+    document.body.classList.add("intro");
+    show(first, { intro: true });
+    const imgs = [...view.querySelectorAll(".tile img")].slice(0, 6);
+    const ready = Promise.race([
+      Promise.all(imgs.map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; })))),
+      new Promise((r) => setTimeout(r, 1500)),
+    ]);
+    const frames = [...view.querySelectorAll(".tile .frame")];
+    frames.forEach((f, i) => (f.style.transitionDelay = `${(i % (frames.length / 3)) * 70}ms`));
+    ready.then(() => requestAnimationFrame(() => {
+      document.body.classList.remove("intro");
+      setTimeout(() => frames.forEach((f) => (f.style.transitionDelay = "")), 2200);
+    }));
+  } else {
+    show(first);
+  }
 })();
