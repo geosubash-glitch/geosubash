@@ -16,10 +16,6 @@ html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.4 var(--sans); transition: background-color 1.2s ease, color 1.2s ease; }
 /* the intro starts on a white table and turns dark as the cards deal out */
 body.is-white { --bg: #fff; --ink: #111; --mute: #75716a; --panel: #f1f1f1; }
-/* the moving backdrop (drawn in v3.js); hidden while the intro is on white */
-body { isolation: isolate; }
-.backdrop { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; transition: opacity 1.2s ease; }
-body.is-white .backdrop { opacity: 0; }
 img { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-decoration: none; }
 a:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
@@ -226,7 +222,27 @@ body.home #view { touch-action: none; }
   .grid { grid-template-columns: 1fr 1fr; }
   .bar { gap: 12px; font-size: 10px; }
   .cards { grid-template-columns: 1fr; }
-  .strip { --w: 84vw; --h: min(calc(100svh - 146px), 105vw); }
+  /* the cards run top to bottom behind the header and loop */
+  body.home .strip { position: fixed; inset: 0; margin: 0; padding: 0; overflow: clip; --w: 84vw; --h: 105vw; }
+  body.home .track { flex-direction: column; align-items: center; padding: 0; }
+  /* where the cards slide under the header and the bottom line they go soft and dark */
+  body.home .bar, body.home .home-foot { position: relative; z-index: 2; isolation: isolate; }
+  body.home .home-foot { margin-top: auto; }
+  .is-white .bar::before { opacity: 0; }
+  body.home .bar::before, body.home .home-foot::before {
+    content: ""; position: absolute; left: 0; right: 0; z-index: -1; pointer-events: none;
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  }
+  body.home .bar::before {
+    top: 0; height: 130px;
+    background: linear-gradient(#000 0%, rgb(0 0 0 / .7) 35%, transparent);
+    -webkit-mask-image: linear-gradient(#000 30%, transparent); mask-image: linear-gradient(#000 30%, transparent);
+  }
+  body.home .home-foot::before {
+    bottom: 0; height: 110px;
+    background: linear-gradient(transparent, rgb(0 0 0 / .7) 65%, #000);
+    -webkit-mask-image: linear-gradient(transparent, #000 70%); mask-image: linear-gradient(transparent, #000 70%);
+  }
   body.home #view { justify-content: center; }
   .home-foot .of { display: none; }
   .hero-img, .title, .intro, .meta, .quote, .boards, .chapter, .chapter .label, .chapter .text, .chapter pre,

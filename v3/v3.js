@@ -320,11 +320,17 @@
       if (i < perSet || i >= perSet * 2) { t.setAttribute("tabindex", "-1"); t.setAttribute("aria-hidden", "true"); }
     });
 
-    const setWidth = () => tiles[perSet].offsetLeft - tiles[0].offsetLeft;
+    // phones scroll the cards up and down, wider screens left and right
+    let vertical = matchMedia("(max-width: 760px)").matches;
+    const along = (el) => (vertical ? el.offsetTop : el.offsetLeft);
+    const length = (el) => (vertical ? el.offsetHeight : el.offsetWidth);
+    const setWidth = () => along(tiles[perSet]) - along(tiles[0]);
     const pos = document.getElementById("pos");
     let width = setWidth();
-    let target = 0;
-    let current = 0;
+    // on phones start with the first card in the middle of the screen rather than under the header
+    const lead = () => (vertical ? (innerHeight - length(tiles[0])) / 2 : 0);
+    let target = -lead();
+    let current = target;
     let ease = .085;
     let raf = 0;
     let shrink = 1;
@@ -369,7 +375,7 @@
       const offset = -(x + width);
       // cards shrink a little when moving fast; pictures drift inside their frames
       shrink += ((reducedMotion ? 1 : 1 - Math.min(.14, Math.abs(delta) * .006)) - shrink) * .12;
-      track.style.transform = `translate3d(${offset}px,0,0)`;
+      track.style.transform = vertical ? `translate3d(0,${offset}px,0)` : `translate3d(${offset}px,0,0)`;
       const now = performance.now();
       if (Math.abs(target - current) > 25 || (down && !held)) { stillSince = now; setHot(-1); }
       else if (mouse && now - stillSince > DWELL && hot < 0) {
@@ -380,13 +386,13 @@
         tiles.forEach((t, i) => glideTo(sizes[i], reducedMotion || hot < 0 ? 1 : i === hot ? 1.03 : .86, now, PULL));
         // slide the cards towards the one in focus so the gaps between them stay the same as they shrink
         const shifts = tiles.map(() => 0);
-        const half = (k) => (tiles[k].offsetWidth * sizes[k].now) / 2;
+        const half = (k) => (length(tiles[k]) * sizes[k].now) / 2;
         for (let k = anchor + 1; k < tiles.length; k++) {
-          const grew = half(k - 1) - tiles[k - 1].offsetWidth / 2 + half(k) - tiles[k].offsetWidth / 2;
+          const grew = half(k - 1) - length(tiles[k - 1]) / 2 + half(k) - length(tiles[k]) / 2;
           shifts[k] = shifts[k - 1] + grew;
         }
         for (let k = anchor - 1; k >= 0; k--) {
-          const grew = half(k + 1) - tiles[k + 1].offsetWidth / 2 + half(k) - tiles[k].offsetWidth / 2;
+          const grew = half(k + 1) - length(tiles[k + 1]) / 2 + half(k) - length(tiles[k]) / 2;
           shifts[k] = shifts[k + 1] - grew;
         }
         tiles.forEach((t, i) => {
@@ -396,24 +402,27 @@
           const size = sizes[i].now;
           // the blur trails the size a little, the way a lens catches up
           const blur = glideTo(blurs[i], wantBlur, now, PULL + 400);
-          t.style.transform = `translate3d(${shifts[i].toFixed(2)}px,0,0) scale(${(size * shrink).toFixed(4)})`;
-          frames[i].style.filter = blur > .05 ? `blur(${blur.toFixed(2)}px) brightness(${(1 - blur * .015).toFixed(3)})` : "";
+          const shift = shifts[i].toFixed(2);
+          t.style.transform = `translate3d(${vertical ? `0,${shift}px` : `${shift}px,0`},0) scale(${(size * shrink).toFixed(4)})`;
+          // and the cards sent back slowly dim, so the one in focus is the only one lit
+          const dim = Math.min(1, blur / 6) * .55;
+          frames[i].style.filter = blur > .05 ? `blur(${blur.toFixed(2)}px) brightness(${(1 - dim).toFixed(3)})` : "";
           // the name sits a little in front of the picture, nearer the lens, so it goes less soft
           if (labels[i]) labels[i].style.filter = blur > .05 ? `blur(${(blur * .35).toFixed(2)}px)` : "";
         });
       }
       if (!reducedMotion) {
-        const mid = innerWidth / 2;
+        const span = vertical ? innerHeight : innerWidth;
         tiles.forEach((t, i) => {
-          const left = t.offsetLeft + offset;
-          if (left > innerWidth + 50 || left + t.offsetWidth < -50) return;
-          const centre = left + t.offsetWidth / 2;
-          pans[i].style.transform = `translate3d(${((centre - mid) / innerWidth) * -60}px,0,0) scale(1.14)`;
+          const start = along(t) + offset;
+          if (start > span + 50 || start + length(t) < -50) return;
+          const drift = (((start + length(t) / 2) - span / 2) / span) * -60;
+          pans[i].style.transform = `translate3d(${vertical ? `0,${drift}px` : `${drift}px,0`},0) scale(1.14)`;
         });
       }
       if (pos) {
         const step = width / perSet;
-        const i = Math.round(x / step) % perSet;
+        const i = Math.round((x + lead()) / step) % perSet;
         pos.textContent = String(i + 1).padStart(2, "0");
       }
       raf = requestAnimationFrame(frame);
@@ -426,10 +435,10 @@
     };
     const onKey = (e) => {
       const step = width / perSet;
-      if (e.key === "ArrowRight") target += step;
-      if (e.key === "ArrowLeft") target -= step;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") target += step;
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") target -= step;
     };
-    const onResize = () => { width = setWidth(); };
+    const onResize = () => { vertical = matchMedia("(max-width: 760px)").matches; width = setWidth(); };
     addEventListener("wheel", onWheel, { passive: false });
     addEventListener("keydown", onKey);
     addEventListener("resize", onResize);
@@ -493,88 +502,6 @@
       removeEventListener("pointercancel", onUp);
       stopStrip = () => {};
     };
-  }
-
-  // ---- backdrop: slow flowing gradient drawn on the GPU, with grain and dithering so it never bands ----
-
-  function backdrop() {
-    const canvas = document.createElement("canvas");
-    canvas.className = "backdrop";
-    canvas.setAttribute("aria-hidden", "true");
-    document.body.prepend(canvas);
-    const gl = canvas.getContext("webgl", { antialias: false, premultipliedAlpha: false });
-    if (!gl) { canvas.remove(); return; }
-
-    const vert = "attribute vec2 p; void main() { gl_Position = vec4(p, 0., 1.); }";
-    const frag = `
-      #ifdef GL_FRAGMENT_PRECISION_HIGH
-      precision highp float;
-      #else
-      precision mediump float;
-      #endif
-      uniform vec2 res; uniform float t;
-      // hash without sine (sin-based hashes turn into stripes on many phone GPUs)
-      float h(vec2 p) { vec3 q = fract(vec3(p.xyx) * .1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }
-      float n(vec2 p) {
-        vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
-        return mix(mix(h(i), h(i + vec2(1, 0)), f.x), mix(h(i + vec2(0, 1)), h(i + vec2(1, 1)), f.x), f.y);
-      }
-      float fbm(vec2 p) { float v = 0., a = .5; for (int k = 0; k < 4; k++) { v += a * n(p); p *= 2.02; a *= .5; } return v; }
-      void main() {
-        vec2 uv = gl_FragCoord.xy / res.y * .8;
-        float s = t * .035;
-        // warp the field by itself so it flows like slow smoke instead of sliding
-        vec2 q = vec2(fbm(uv * 1.1 + s), fbm(uv * 1.1 - s + 4.7));
-        float f = fbm(uv * .9 + q * 1.6 + vec2(s * .6, -s * .4));
-        float g = fbm(uv * .7 + q.yx * 1.3 - s * .5 + 9.1);
-        vec3 base  = vec3(.100, .096, .090);   // charcoal
-        vec3 warm  = vec3(.330, .220, .130);   // amber
-        vec3 cool  = vec3(.140, .190, .270);   // slate blue
-        vec3 col = base;
-        col = mix(col, warm, smoothstep(.35, .8, f) * .8);
-        col = mix(col, cool, smoothstep(.4, .85, g) * .7);
-        // fine grain that changes each frame; it also dithers away banding
-        vec2 px = floor(gl_FragCoord.xy);
-        float grain = (h(px + floor(fract(t * 3.7) * 97.)) + h(px * 1.37 + 11.) - 1.) * .5;
-        col += grain * .03;
-        gl_FragColor = vec4(col, 1.);
-      }`;
-    const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return o; };
-    const prog = gl.createProgram();
-    gl.attachShader(prog, sh(gl.VERTEX_SHADER, vert));
-    gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, frag));
-    gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { canvas.remove(); return; }
-    gl.useProgram(prog);
-    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    const loc = gl.getAttribLocation(prog, "p");
-    gl.enableVertexAttribArray(loc);
-    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    const uRes = gl.getUniformLocation(prog, "res"), uT = gl.getUniformLocation(prog, "t");
-
-    const size = () => {
-      const k = Math.min(devicePixelRatio || 1, 2);
-      canvas.width = Math.round(innerWidth * k);
-      canvas.height = Math.round(innerHeight * k);
-      gl.viewport(0, 0, canvas.width, canvas.height);
-      gl.uniform2f(uRes, canvas.width, canvas.height);
-    };
-    size();
-    addEventListener("resize", size);
-
-    const t0 = performance.now();
-    let last = 0;
-    const draw = (now) => {
-      // about 30 frames a second is plenty for something this slow
-      if (now - last > 33) {
-        last = now;
-        gl.uniform1f(uT, (now - t0) / 1000);
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
-      }
-      if (!reducedMotion) requestAnimationFrame(draw);
-    };
-    requestAnimationFrame(draw);
   }
 
   // ---- the clicked cover grows into the project page's cover ----
@@ -660,7 +587,6 @@
 
   // first visit to the home page: the projects drop onto a pile in the middle one by one,
   // then deal out into the strip; the header and the rest of the text arrive last
-  backdrop();
   const first = route();
   if (first.home && !reducedMotion) {
     document.body.classList.add("is-intro", "is-white");
