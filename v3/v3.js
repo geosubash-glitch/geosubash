@@ -39,6 +39,7 @@
     const count = main.length;
     const tiles = main.map((p, i) => `
       <a class="tile" href="#/work/${p.slug}" data-slug="${p.slug}">
+        ${p.cover ? `<span class="glow" aria-hidden="true" style="background-image:url('${esc(asset(p.cover))}')"></span>` : ""}
         <span class="label"><span class="n">${String(i + 1).padStart(2, "0")}</span><span>${esc(p.title)}</span></span>
         <span class="frame"><span class="pan">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: `object-position:${FOCUS[p.slug] ?? 50}% 50%` })}</span></span>
       </a>`);
