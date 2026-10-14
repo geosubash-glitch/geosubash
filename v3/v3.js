@@ -539,7 +539,7 @@
   // then deal out into the strip; the header and the rest of the text arrive last
   const first = route();
   if (first.home && !reducedMotion) {
-    document.body.classList.add("is-intro");
+    document.body.classList.add("is-intro", "is-white");
     show(first, { intro: true });
     // wait one frame so the strip has moved into its looping position before measuring
     requestAnimationFrame(() => requestAnimationFrame(introPile));
@@ -575,6 +575,7 @@
       }, 200 + k * PILE));
       const dealAt = 200 + onScreen.length * PILE + 500;
       setTimeout(() => {
+        document.body.classList.remove("is-white");
         tiles.forEach((t) => {
           const k = Math.max(0, onScreen.indexOf(t));
           t.style.transition = `transform ${DEAL}ms var(--ease), opacity .6s ease`;
