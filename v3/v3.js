@@ -317,6 +317,7 @@
   // ---- home strip: an endless loop moved by wheel, drag and swipe ----
 
   let stopStrip = () => {};
+  let spinStrip = () => {};
 
   function setUpStrip({ intro = false } = {}) {
     stopStrip();
@@ -339,13 +340,15 @@
     let vertical, width, geo;
     const measure = () => {
       vertical = phone.matches;
-      geo = tiles.map((t) => ({ at: vertical ? t.offsetTop : t.offsetLeft, len: vertical ? t.offsetHeight : t.offsetWidth }));
+      geo = tiles.map((t) => ({ at: vertical ? t.offsetTop : t.offsetLeft, len: vertical ? t.offsetHeight : t.offsetWidth, note: t.querySelector(".info").offsetHeight }));
       width = geo[perSet].at - geo[0].at;
     };
     measure();
     const pos = document.getElementById("pos");
     // on phones start with the first card in the middle of the screen rather than under the header
-    const lead = () => (vertical ? (innerHeight - geo[0].len) / 2 : 0);
+    // and on phones a card sits a little above the middle, leaving room under it for its note
+    const lift = (i) => (vertical ? (geo[i].note + 24) / 2 : 0);
+    const lead = () => (vertical ? (innerHeight - geo[0].len) / 2 - lift(0) : 0);
     let target = -lead();
     let current = target;
     let ease = .085;
@@ -367,20 +370,47 @@
     let interacted = false;
     // when a card is in focus the cards after it move aside to open room for its note
     let lastOffset = 0;
-    // on phones the strip runs once round quickly after the intro, to show that it moves
-    let spun = !intro || reducedMotion, wasIntro = true;
-    let roomSize = 0, before = false;
+    let lastSet = Math.floor(target / (width || 1));
+    const handOver = (k) => {
+      const n = tiles.length;
+      const turn = (arr) => arr.map((_, j) => arr[(((j + k) % n) + n) % n]);
+      [sizes, blurs, rooms].forEach((arr) => { const moved = turn(arr); moved.forEach((g, j) => (arr[j] = g)); });
+      lastShifts = turn(lastShifts);
+      if (hot >= 0) hot = (((hot - k) % n) + n) % n;
+      anchor = (((anchor - k) % n) + n) % n;
+      strip.classList.add("handover");
+      tiles.forEach((t, j) => { t.classList.toggle("hot", j === hot); t.classList.toggle("before", j === hot && before); });
+      requestAnimationFrame(() => requestAnimationFrame(() => strip.classList.remove("handover")));
+    };
+    // on phones the strip runs once round as the intro deals the cards out, to show that it moves
+    let spin = null;
+    spinStrip = () => {
+      if (!vertical || reducedMotion) return;
+      spin = { from: target, at: performance.now() };
+    };
+    let roomSize = 0, before = false, nudging = false;
     const setHot = (i) => {
       if (i === hot) return;
       hot = i;
       if (i >= 0) {
+        // the others close up around the new card; carry over where it currently sits so nothing jumps
+        if (i !== anchor) {
+          const at = carry.now + (lastShifts[i] || 0);
+          Object.assign(carry, { from: at, to: 0, at: performance.now(), now: at });
+        }
         anchor = i;
-        // the note goes after the card, or before it on a wide screen when the card is near the right edge
+        // the note goes after the card, or before it on a wide screen when there is more room on the left
         const info = tiles[i].querySelector(".info");
-        const x = vertical ? 0 : geo[i].at + lastOffset;
-        before = !vertical && x + geo[i].len + info.offsetWidth + 60 > innerWidth;
-        tiles[i].classList.toggle("before", before);
         roomSize = vertical ? info.offsetHeight + 24 : info.offsetWidth + 40;
+        if (!vertical) {
+          const r = frames[i].getBoundingClientRect(), pad = 16;
+          before = innerWidth - r.right < roomSize + pad && r.left > innerWidth - r.right;
+          // then slide the strip just enough that the card and its note are both on screen
+          const left = r.left - (before ? roomSize : 0), right = r.right + (before ? 0 : roomSize);
+          const nudge = left < pad ? left - pad : right > innerWidth - pad ? right - (innerWidth - pad) : 0;
+          if (nudge) { target += nudge; nudging = true; }
+        } else before = false;
+        tiles[i].classList.toggle("before", before);
       }
       tiles.forEach((x, k) => x.classList.toggle("hot", k === hot));
       strip.classList.toggle("focus", hot >= 0);
@@ -397,7 +427,10 @@
       return g.now;
     };
     const sizes = tiles.map(() => glide(1));
-    const room = glide(0);
+    // extra space after each card (room for a note); each gap eases on its own so nothing jumps
+    const rooms = tiles.map(() => glide(0));
+    const carry = glide(0);
+    let lastShifts = [];
     const blurs = tiles.map(() => glide(0));
 
     const pans = tiles.map((t) => t.querySelector(".pan"));
@@ -414,11 +447,22 @@
     };
 
     const frame = () => {
-      const delta = (target - current) * ease;
+      if (spin) {
+        const k = Math.min(1, (performance.now() - spin.at) / 2600);
+        // starts with the deal, runs fast through the middle and eases to a stop on the first card
+        target = spin.from + width * (k < .5 ? 8 * k ** 4 : 1 - (-2 * k + 2) ** 4 / 2);
+        if (k === 1) spin = null;
+      }
+      // moves the site makes by itself (settling a card into view) glide slower than a scroll
+      const delta = (target - current) * (nudging ? .045 : ease);
       current += delta;
       if (Math.abs(target - current) < .1) current = target;
       const x = ((current % width) + width) % width;
       const offset = -(x + width);
+      // the loop jumps back a whole set when it wraps; hand every card's focus state to its twin
+      // in the set that now sits in the same place, so a card in focus doesn't vanish mid-way
+      const set = Math.floor(current / width);
+      if (set !== lastSet) { handOver((set - lastSet) * perSet); lastSet = set; }
       lastOffset = offset;
       // cards shrink a little when moving fast; pictures drift inside their frames
       flow.speed = delta;
@@ -426,7 +470,8 @@
       put(track, "transform", vertical ? `translate3d(0,${offset.toFixed(2)}px,0)` : `translate3d(${offset.toFixed(2)}px,0,0)`);
       const now = performance.now();
       if (Math.abs(target - current) > .5 || down) { settledAt = now; if (!held) snapped = false; }
-      if (Math.abs(target - current) > 25 || (down && !held)) { stillSince = now; setHot(-1); }
+      if (nudging && Math.abs(target - current) < 1) nudging = false;
+      if ((Math.abs(target - current) > 25 && !nudging) || (down && !held)) { stillSince = now; setHot(-1); }
       else if (interacted && touch.matches && !down && hot < 0 && !document.body.classList.contains("is-intro") && now - settledAt > 500) {
         const span = vertical ? innerHeight : innerWidth;
         let best = 0, gap = Infinity;
@@ -434,7 +479,8 @@
           const d = g.at + offset + g.len / 2 - span / 2;
           if (Math.abs(d) < Math.abs(gap)) { gap = d; best = i; }
         });
-        if (!snapped && Math.abs(gap) > 2) { target += gap; snapped = true; }
+        gap += lift(best);
+        if (!snapped && Math.abs(gap) > 2) { target += gap; snapped = true; nudging = true; }
         else if (now - settledAt > 900) setHot(best);
       }
       else if (mouse && now - stillSince > DWELL && hot < 0) {
@@ -442,22 +488,23 @@
         if (t) setHot(tiles.indexOf(t));
       }
       const inIntro = document.body.classList.contains("is-intro");
-      if (wasIntro && !inIntro && !spun) { spun = true; if (vertical) target += width; }
-      wasIntro = inIntro;
       if (!inIntro) {
         tiles.forEach((t, i) => glideTo(sizes[i], reducedMotion || hot < 0 ? 1 : i === hot ? 1.03 : .86, now, PULL));
-        const open = glideTo(room, hot < 0 || reducedMotion ? 0 : roomSize, now, PULL);
+        rooms.forEach((g, k) => glideTo(g, hot >= 0 && !reducedMotion && k === (before ? hot - 1 : hot) ? roomSize : 0, now, PULL));
         // slide the cards towards the one in focus so the gaps between them stay the same as they shrink
         const shifts = tiles.map(() => 0);
         const half = (k) => (geo[k].len * sizes[k].now) / 2;
         for (let k = anchor + 1; k < tiles.length; k++) {
           const grew = half(k - 1) - geo[k - 1].len / 2 + half(k) - geo[k].len / 2;
-          shifts[k] = shifts[k - 1] + grew + (k === anchor + 1 && !before ? open : 0);
+          shifts[k] = shifts[k - 1] + grew + rooms[k - 1].now;
         }
         for (let k = anchor - 1; k >= 0; k--) {
           const grew = half(k + 1) - geo[k + 1].len / 2 + half(k) - geo[k].len / 2;
-          shifts[k] = shifts[k + 1] - grew - (k === anchor - 1 && before ? open : 0);
+          shifts[k] = shifts[k + 1] - grew - rooms[k].now;
         }
+        const drift = glideTo(carry, 0, now, PULL);
+        for (let k = 0; k < shifts.length; k++) shifts[k] += drift;
+        lastShifts = shifts.map((v) => v - drift);
         tiles.forEach((t, i) => {
           // shallow depth of field: the further a card is from the one in focus, the softer it gets
           const away = hot < 0 || reducedMotion ? 0 : Math.abs(i - hot);
@@ -496,6 +543,7 @@
     const onWheel = (e) => {
       e.preventDefault();
       interacted = true;
+      nudging = false;
       target += Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     };
     const onKey = (e) => {
@@ -525,7 +573,7 @@
     const onMove = (e) => {
       if (!down) return;
       const d = travel(e);
-      if (Math.abs(d) > 6 && !held) { moved = true; interacted = true; clearTimeout(holdTimer); strip.classList.add("dragging"); }
+      if (Math.abs(d) > 6 && !held) { moved = true; interacted = true; nudging = false; clearTimeout(holdTimer); strip.classList.add("dragging"); }
       velocity = d - last; last = d;
       if (moved) target = startTarget - d * 1.4;
     };
@@ -541,13 +589,15 @@
     addEventListener("pointermove", onMove);
     addEventListener("pointerup", onUp);
     addEventListener("pointercancel", onUp);
+    const inside = (el, x, y) => { const r = el.getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; };
     strip.addEventListener("pointermove", (e) => {
       if (e.pointerType !== "mouse") return;
-      const t = document.elementFromPoint(e.clientX, e.clientY)?.closest(".tile");
-      const i = t ? tiles.indexOf(t) : -1;
       mouse = { x: e.clientX, y: e.clientY };
-      // moving onto a different card restarts the wait
-      if (i !== hot) { setHot(-1); stillSince = performance.now(); }
+      // a card in focus stays in focus while the pointer is on it or on its note
+      if (hot >= 0 && (inside(frames[hot], e.clientX, e.clientY) || inside(tiles[hot].querySelector(".info"), e.clientX, e.clientY))) return;
+      // anywhere else the focus lets go, and the wait starts again
+      if (hot >= 0) setHot(-1);
+      stillSince = performance.now();
     });
     strip.addEventListener("pointerleave", () => { mouse = null; setHot(-1); });
     strip.addEventListener("click", (e) => {
@@ -569,6 +619,7 @@
       view.removeEventListener("pointerdown", onDown);
       clearTimeout(holdTimer);
       stopStrip = () => {};
+      spinStrip = () => {};
     };
   }
 
@@ -749,6 +800,7 @@
       }, 200 + k * PILE));
       const dealAt = 200 + onScreen.length * PILE + 500;
       setTimeout(() => {
+        spinStrip();
         document.body.classList.remove("is-white");
         tiles.forEach((t) => {
           const k = Math.max(0, onScreen.indexOf(t));
