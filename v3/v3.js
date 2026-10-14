@@ -507,31 +507,36 @@
 
     const vert = "attribute vec2 p; void main() { gl_Position = vec4(p, 0., 1.); }";
     const frag = `
+      #ifdef GL_FRAGMENT_PRECISION_HIGH
       precision highp float;
+      #else
+      precision mediump float;
+      #endif
       uniform vec2 res; uniform float t;
-      // smooth value noise, layered
-      float h(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      // hash without sine (sin-based hashes turn into stripes on many phone GPUs)
+      float h(vec2 p) { vec3 q = fract(vec3(p.xyx) * .1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }
       float n(vec2 p) {
         vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
         return mix(mix(h(i), h(i + vec2(1, 0)), f.x), mix(h(i + vec2(0, 1)), h(i + vec2(1, 1)), f.x), f.y);
       }
       float fbm(vec2 p) { float v = 0., a = .5; for (int k = 0; k < 4; k++) { v += a * n(p); p *= 2.02; a *= .5; } return v; }
       void main() {
-        vec2 uv = gl_FragCoord.xy / res.y;
+        vec2 uv = gl_FragCoord.xy / res.y * .8;
         float s = t * .035;
         // warp the field by itself so it flows like slow smoke instead of sliding
         vec2 q = vec2(fbm(uv * 1.1 + s), fbm(uv * 1.1 - s + 4.7));
         float f = fbm(uv * .9 + q * 1.6 + vec2(s * .6, -s * .4));
         float g = fbm(uv * .7 + q.yx * 1.3 - s * .5 + 9.1);
-        vec3 base  = vec3(.106, .102, .094);   // #1b1a18
-        vec3 warm  = vec3(.205, .165, .120);   // muted amber
-        vec3 cool  = vec3(.118, .140, .170);   // slate blue
+        vec3 base  = vec3(.100, .096, .090);   // charcoal
+        vec3 warm  = vec3(.330, .220, .130);   // amber
+        vec3 cool  = vec3(.140, .190, .270);   // slate blue
         vec3 col = base;
-        col = mix(col, warm, smoothstep(.45, .85, f) * .85);
-        col = mix(col, cool, smoothstep(.5, .9, g) * .75);
-        // grain that changes every frame, plus a tiny dither to kill banding
-        float grain = h(gl_FragCoord.xy + fract(t * 7.3) * 113.) - .5;
-        col += grain * .045;
+        col = mix(col, warm, smoothstep(.35, .8, f) * .8);
+        col = mix(col, cool, smoothstep(.4, .85, g) * .7);
+        // fine grain that changes each frame; it also dithers away banding
+        vec2 px = floor(gl_FragCoord.xy);
+        float grain = (h(px + floor(fract(t * 3.7) * 97.)) + h(px * 1.37 + 11.) - 1.) * .5;
+        col += grain * .03;
         gl_FragColor = vec4(col, 1.);
       }`;
     const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return o; };
@@ -549,7 +554,7 @@
     const uRes = gl.getUniformLocation(prog, "res"), uT = gl.getUniformLocation(prog, "t");
 
     const size = () => {
-      const k = Math.min(devicePixelRatio || 1, 1.5);
+      const k = Math.min(devicePixelRatio || 1, 2);
       canvas.width = Math.round(innerWidth * k);
       canvas.height = Math.round(innerHeight * k);
       gl.viewport(0, 0, canvas.width, canvas.height);
