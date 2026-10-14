@@ -39,7 +39,6 @@
     const count = main.length;
     const tiles = main.map((p, i) => `
       <a class="tile" href="#/work/${p.slug}" data-slug="${p.slug}">
-        <span class="glow" aria-hidden="true"></span>
         <span class="label"><span class="n">${String(i + 1).padStart(2, "0")}</span><span>${esc(p.title)}</span></span>
         <span class="frame"><span class="pan">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: `object-position:${FOCUS[p.slug] ?? 50}% 50%` })}</span></span>
       </a>`);
@@ -361,7 +360,6 @@
     const pans = tiles.map((t) => t.querySelector(".pan"));
     const frames = tiles.map((t) => t.querySelector(".frame"));
     const labels = tiles.map((t) => t.querySelector(".label"));
-    tiles.forEach(tint);
 
     const frame = () => {
       const delta = (target - current) * ease;
@@ -497,27 +495,81 @@
     };
   }
 
-  // a soft light in the cover's strongest colour, behind the card. Read from a tiny copy of the
-  // picture, favouring saturated pixels so mostly white or grey covers don't come out muddy
-  function tint(tile) {
-    const img = tile.querySelector(".frame img"), glow = tile.querySelector(".glow");
-    if (!img || !glow) return;
-    const read = () => {
-      const c = document.createElement("canvas");
-      c.width = c.height = 24;
-      const ctx = c.getContext("2d", { willReadFrequently: true });
-      ctx.drawImage(img, 0, 0, 24, 24);
-      let r = 0, g = 0, b = 0, sum = 0;
-      const d = ctx.getImageData(0, 0, 24, 24).data;
-      for (let i = 0; i < d.length; i += 4) {
-        const max = Math.max(d[i], d[i + 1], d[i + 2]), min = Math.min(d[i], d[i + 1], d[i + 2]);
-        const w = ((max - min) / 255) ** 2 + .002;
-        r += d[i] * w; g += d[i + 1] * w; b += d[i + 2] * w; sum += w;
+  // ---- backdrop: slow flowing gradient drawn on the GPU, with grain and dithering so it never bands ----
+
+  function backdrop() {
+    const canvas = document.createElement("canvas");
+    canvas.className = "backdrop";
+    canvas.setAttribute("aria-hidden", "true");
+    document.body.prepend(canvas);
+    const gl = canvas.getContext("webgl", { antialias: false, premultipliedAlpha: false });
+    if (!gl) { canvas.remove(); return; }
+
+    const vert = "attribute vec2 p; void main() { gl_Position = vec4(p, 0., 1.); }";
+    const frag = `
+      precision highp float;
+      uniform vec2 res; uniform float t;
+      // smooth value noise, layered
+      float h(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float n(vec2 p) {
+        vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
+        return mix(mix(h(i), h(i + vec2(1, 0)), f.x), mix(h(i + vec2(0, 1)), h(i + vec2(1, 1)), f.x), f.y);
       }
-      glow.style.setProperty("--tint", `${Math.round(r / sum)} ${Math.round(g / sum)} ${Math.round(b / sum)}`);
+      float fbm(vec2 p) { float v = 0., a = .5; for (int k = 0; k < 4; k++) { v += a * n(p); p *= 2.02; a *= .5; } return v; }
+      void main() {
+        vec2 uv = gl_FragCoord.xy / res.y;
+        float s = t * .035;
+        // warp the field by itself so it flows like slow smoke instead of sliding
+        vec2 q = vec2(fbm(uv * 1.1 + s), fbm(uv * 1.1 - s + 4.7));
+        float f = fbm(uv * .9 + q * 1.6 + vec2(s * .6, -s * .4));
+        float g = fbm(uv * .7 + q.yx * 1.3 - s * .5 + 9.1);
+        vec3 base  = vec3(.106, .102, .094);   // #1b1a18
+        vec3 warm  = vec3(.205, .165, .120);   // muted amber
+        vec3 cool  = vec3(.118, .140, .170);   // slate blue
+        vec3 col = base;
+        col = mix(col, warm, smoothstep(.45, .85, f) * .85);
+        col = mix(col, cool, smoothstep(.5, .9, g) * .75);
+        // grain that changes every frame, plus a tiny dither to kill banding
+        float grain = h(gl_FragCoord.xy + fract(t * 7.3) * 113.) - .5;
+        col += grain * .045;
+        gl_FragColor = vec4(col, 1.);
+      }`;
+    const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return o; };
+    const prog = gl.createProgram();
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, vert));
+    gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, frag));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { canvas.remove(); return; }
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, "p");
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const uRes = gl.getUniformLocation(prog, "res"), uT = gl.getUniformLocation(prog, "t");
+
+    const size = () => {
+      const k = Math.min(devicePixelRatio || 1, 1.5);
+      canvas.width = Math.round(innerWidth * k);
+      canvas.height = Math.round(innerHeight * k);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.uniform2f(uRes, canvas.width, canvas.height);
     };
-    if (img.complete && img.naturalWidth) read();
-    else img.addEventListener("load", read, { once: true });
+    size();
+    addEventListener("resize", size);
+
+    const t0 = performance.now();
+    let last = 0;
+    const draw = (now) => {
+      // about 30 frames a second is plenty for something this slow
+      if (now - last > 33) {
+        last = now;
+        gl.uniform1f(uT, (now - t0) / 1000);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      }
+      if (!reducedMotion) requestAnimationFrame(draw);
+    };
+    requestAnimationFrame(draw);
   }
 
   // ---- the clicked cover grows into the project page's cover ----
@@ -603,6 +655,7 @@
 
   // first visit to the home page: the projects drop onto a pile in the middle one by one,
   // then deal out into the strip; the header and the rest of the text arrive last
+  backdrop();
   const first = route();
   if (first.home && !reducedMotion) {
     document.body.classList.add("is-intro", "is-white");
