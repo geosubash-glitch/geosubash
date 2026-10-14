@@ -40,12 +40,20 @@
 
   // ---- pages ----
 
+  // the first sentence of a summary, for the short note beside a card in focus
+  const firstSentence = (text) => (list(text)[0] || "").match(/^.*?[.!?](\s|$)/)?.[0].trim() || list(text)[0] || "";
+
   function homePage() {
     const count = main.length;
     const tiles = main.map((p, i) => `
       <a class="tile" href="#/work/${p.slug}" data-slug="${p.slug}">
         <span class="label"><span class="n">${String(i + 1).padStart(2, "0")}</span><span>${esc(p.title)}</span></span>
         <span class="frame"><span class="pan">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: `object-position:${FOCUS[p.slug] ?? 50}% 50%` })}</span></span>
+        <span class="info" aria-hidden="true">
+          <span class="info-sub">${esc(p.subtitle || "")}</span>
+          <span class="info-text">${esc(firstSentence(p.summary))}</span>
+          <span class="info-meta label">${esc([p.category, p.year].filter(Boolean).join(", "))}</span>
+        </span>
       </a>`);
 
     return {
@@ -355,10 +363,25 @@
     // the middle of the screen settles into place and comes into focus by itself
     const touch = matchMedia("(hover: none)");
     let settledAt = 0, snapped = false;
+    // nothing comes into focus by itself until the visitor has moved the strip once
+    let interacted = false;
+    // when a card is in focus the cards after it move aside to open room for its note
+    let lastOffset = 0;
+    // on phones the strip runs once round quickly after the intro, to show that it moves
+    let spun = !intro || reducedMotion, wasIntro = true;
+    let roomSize = 0, before = false;
     const setHot = (i) => {
       if (i === hot) return;
       hot = i;
-      if (i >= 0) anchor = i;
+      if (i >= 0) {
+        anchor = i;
+        // the note goes after the card, or before it on a wide screen when the card is near the right edge
+        const info = tiles[i].querySelector(".info");
+        const x = vertical ? 0 : geo[i].at + lastOffset;
+        before = !vertical && x + geo[i].len + info.offsetWidth + 60 > innerWidth;
+        tiles[i].classList.toggle("before", before);
+        roomSize = vertical ? info.offsetHeight + 24 : info.offsetWidth + 40;
+      }
       tiles.forEach((x, k) => x.classList.toggle("hot", k === hot));
       strip.classList.toggle("focus", hot >= 0);
     };
@@ -374,6 +397,7 @@
       return g.now;
     };
     const sizes = tiles.map(() => glide(1));
+    const room = glide(0);
     const blurs = tiles.map(() => glide(0));
 
     const pans = tiles.map((t) => t.querySelector(".pan"));
@@ -395,6 +419,7 @@
       if (Math.abs(target - current) < .1) current = target;
       const x = ((current % width) + width) % width;
       const offset = -(x + width);
+      lastOffset = offset;
       // cards shrink a little when moving fast; pictures drift inside their frames
       flow.speed = delta;
       shrink += ((reducedMotion ? 1 : 1 - Math.min(.14, Math.abs(delta) * .006)) - shrink) * .12;
@@ -402,7 +427,7 @@
       const now = performance.now();
       if (Math.abs(target - current) > .5 || down) { settledAt = now; if (!held) snapped = false; }
       if (Math.abs(target - current) > 25 || (down && !held)) { stillSince = now; setHot(-1); }
-      else if (touch.matches && !down && hot < 0 && !document.body.classList.contains("is-intro") && now - settledAt > 500) {
+      else if (interacted && touch.matches && !down && hot < 0 && !document.body.classList.contains("is-intro") && now - settledAt > 500) {
         const span = vertical ? innerHeight : innerWidth;
         let best = 0, gap = Infinity;
         geo.forEach((g, i) => {
@@ -416,18 +441,22 @@
         const t = document.elementFromPoint(mouse.x, mouse.y)?.closest(".tile");
         if (t) setHot(tiles.indexOf(t));
       }
-      if (!document.body.classList.contains("is-intro")) {
+      const inIntro = document.body.classList.contains("is-intro");
+      if (wasIntro && !inIntro && !spun) { spun = true; if (vertical) target += width; }
+      wasIntro = inIntro;
+      if (!inIntro) {
         tiles.forEach((t, i) => glideTo(sizes[i], reducedMotion || hot < 0 ? 1 : i === hot ? 1.03 : .86, now, PULL));
+        const open = glideTo(room, hot < 0 || reducedMotion ? 0 : roomSize, now, PULL);
         // slide the cards towards the one in focus so the gaps between them stay the same as they shrink
         const shifts = tiles.map(() => 0);
         const half = (k) => (geo[k].len * sizes[k].now) / 2;
         for (let k = anchor + 1; k < tiles.length; k++) {
           const grew = half(k - 1) - geo[k - 1].len / 2 + half(k) - geo[k].len / 2;
-          shifts[k] = shifts[k - 1] + grew;
+          shifts[k] = shifts[k - 1] + grew + (k === anchor + 1 && !before ? open : 0);
         }
         for (let k = anchor - 1; k >= 0; k--) {
           const grew = half(k + 1) - geo[k + 1].len / 2 + half(k) - geo[k].len / 2;
-          shifts[k] = shifts[k + 1] - grew;
+          shifts[k] = shifts[k + 1] - grew - (k === anchor - 1 && before ? open : 0);
         }
         tiles.forEach((t, i) => {
           // shallow depth of field: the further a card is from the one in focus, the softer it gets
@@ -466,10 +495,12 @@
 
     const onWheel = (e) => {
       e.preventDefault();
+      interacted = true;
       target += Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     };
     const onKey = (e) => {
       const step = width / perSet;
+      if (/^Arrow/.test(e.key)) interacted = true;
       if (e.key === "ArrowRight" || e.key === "ArrowDown") target += step;
       if (e.key === "ArrowLeft" || e.key === "ArrowUp") target -= step;
     };
@@ -494,7 +525,7 @@
     const onMove = (e) => {
       if (!down) return;
       const d = travel(e);
-      if (Math.abs(d) > 6 && !held) { moved = true; clearTimeout(holdTimer); strip.classList.add("dragging"); }
+      if (Math.abs(d) > 6 && !held) { moved = true; interacted = true; clearTimeout(holdTimer); strip.classList.add("dragging"); }
       velocity = d - last; last = d;
       if (moved) target = startTarget - d * 1.4;
     };

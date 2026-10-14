@@ -110,6 +110,13 @@ body.home #view { touch-action: none; }
 .dot { display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: #d43; vertical-align: 1px; animation: pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: .25; } }
 
+/* short note that appears in the room opened beside the card in focus (below it on phones) */
+.info { position: absolute; top: 0; left: calc(100% + 24px); width: 260px; display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateX(-12px); transition: opacity .9s ease, transform 1.4s var(--ease-out); pointer-events: none; }
+.tile.before .info { left: auto; right: calc(100% + 24px); transform: translateX(12px); }
+.tile.hot .info { opacity: 1; transform: none; transition-delay: .5s; }
+.info-sub { font-family: var(--wide); font-stretch: 150%; font-size: 17px; line-height: 1.2; text-transform: uppercase; }
+.info-text { font-size: 15px; line-height: 1.4; color: var(--ink); }
+.info-meta { font-size: 12px; color: var(--mute); }
 .home-foot { display: flex; justify-content: space-between; align-items: baseline; padding: 0 var(--pad) 18px; font-size: 13px; color: var(--mute); }
 .home-foot > :last-child { font-variant-numeric: tabular-nums; }
 .home-foot a { transition: color .3s; }
@@ -236,6 +243,9 @@ body.home #view { touch-action: none; }
   /* the cards run top to bottom behind the header and loop */
   body.home .strip { position: fixed; inset: 0; margin: 0; padding: 0; overflow: clip; --w: 84vw; --h: 105vw; }
   body.home .track { flex-direction: column; align-items: center; padding: 0; }
+  .info { top: calc(100% + 14px); left: 0; width: 100%; transform: translateY(-10px); gap: 6px; }
+  .info-sub { font-size: 13px; }
+  .info-text { font-size: 14px; }
   /* where the cards slide under the header and the bottom line they go soft and dark */
   body.home .bar, body.home .home-foot { position: relative; z-index: 2; isolation: isolate; }
   body.home .home-foot { margin-top: auto; }
