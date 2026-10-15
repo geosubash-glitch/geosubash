@@ -349,6 +349,16 @@
     // and on phones a card sits a little above the middle, leaving room under it for its note
     const lift = (i) => (vertical ? (geo[i].note + 24) / 2 : 0);
     const lead = () => (vertical ? (innerHeight - geo[0].len) / 2 - lift(0) : 0);
+    // the nearest strip position at which a card sits in its resting place (a little above the middle)
+    const restingPlace = (t) => {
+      const off = -((((t % width) + width) % width) + width);
+      let best = Infinity;
+      geo.forEach((g, i) => {
+        const d = g.at + off + g.len / 2 - (innerHeight / 2 - lift(i));
+        if (Math.abs(d) < Math.abs(best)) best = d;
+      });
+      return t + best;
+    };
     let target = -lead();
     let current = target;
     let ease = .085;
@@ -583,7 +593,12 @@
       clearTimeout(holdTimer);
       // letting go after a hold lets the card settle back without opening it
       if (held) { held = false; setHot(-1); moved = true; velocity = 0; }
-      if (moved) target -= velocity * 12;
+      if (moved) {
+        target -= velocity * 12;
+        // phones: aim the throw straight at a resting place, so the card glides there and stops
+        // instead of stopping anywhere and then being nudged into position
+        if (vertical) target = restingPlace(target);
+      }
       strip.classList.remove("dragging");
     };
     addEventListener("pointermove", onMove);
