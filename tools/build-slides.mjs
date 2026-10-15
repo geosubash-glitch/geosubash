@@ -36,7 +36,7 @@ const COVER_FROM_SLIDE = new Set([]);
 const ROOT = new URL("..", import.meta.url).pathname;
 const IN = join(ROOT, "assets/projects");
 const OUT = join(ROOT, "assets/web");
-const COVER_W = 2000, COVER_H = 1125, SLIDE_W = 1600, CHUNK_H = 2000, GALLERY_W = 1600;
+const COVER_W = 2000, COVER_H = 1125, SLIDE_W = 1920, CHUNK_H = 2000, GALLERY_W = 1600;
 const CROP_TOLERANCE = 0.12;   // crop if within 12% of 16:9, otherwise letterbox
 // Where to anchor a crop when the subject isn't centred (default "centre").
 const COVER_FOCUS = { rebrush: "left" };
