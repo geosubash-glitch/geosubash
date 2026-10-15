@@ -199,7 +199,22 @@ window.ASSETS = {
       {
         "src": "assets/web/anchor/slide-08.webp",
         "w": 1400,
-        "h": 1650
+        "h": 2000
+      },
+      {
+        "src": "assets/web/anchor/slide-09.webp",
+        "w": 1400,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/anchor/slide-10.webp",
+        "w": 1400,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/anchor/slide-11.webp",
+        "w": 1400,
+        "h": 462
       }
     ],
     "gallery": []

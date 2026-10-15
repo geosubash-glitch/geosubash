@@ -41,17 +41,15 @@ window.PROJECTS = [
   {
     slug: "anchor",
     title: "Anchor",
-    subtitle: "Memory aid for older adults",
+    subtitle: "Voice wearable and tabletop light for one-off tasks in later life",
     year: "2026",
-    category: "Interactive Product Design",
-    tags: ["Interaction", "Product Design", "Research"],
-    team: "Geo Subash, Sarang V",
-    guide: "Lakshya",
-    tools: [],
+    category: "Interaction Design",
+    tags: ["Elderly care", "Assistive technology", "Physical computing"],
+    guide: "Lakshya Shrivastava",
+    tools: ["Figma", "ESP32", "Foam modelling", "AI renders"],
     summary: [
-      "Sarang V and I looked at how older adults in India keep track of one-off tasks, like a bank visit at 3 PM. Anchor is a clip-on recorder you say the task into, and a tray whose light fills in as the time gets close. The product images are concept renders.",
+      "Anchor helps older adults remember one-off tasks, such as a bank visit or a short course of medicine, that fall outside their daily routine. A clip-on wearable records the task by voice, and a tray by the door lights up gradually as the time approaches. A working prototype converts spoken Malayalam into a task and time on a round display.",
     ],
-    quote: {"text": "If I have to visit the bank at 3 PM, I spend the whole day stressing about not forgetting it.", "by": "Ashok, 68, retired teacher, from the interviews"},
     links: { "Spiral light simulation": "https://geosubash-glitch.github.io/smartlight/" },
   },
   {

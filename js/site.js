@@ -5,8 +5,10 @@
   const view = document.getElementById("view");
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // where to centre each cover when it is cropped to a tall frame on the home strip
+  // where to centre each cover when it is cropped to a tall frame on the home strip,
   const FOCUS = { anchor: 50, rebrush: 62, lapcare: 50, latent: 32, "audio-deck": 45, "creta-cmf": 76 };
+  // and how far down to centre it in the wide banner on its project page
+  const HERO_Y = { anchor: 20 };
 
   const main = projects.filter((p) => !p.other);
   const others = projects.filter((p) => p.other);
@@ -93,10 +95,9 @@
     const group = p.other ? others : main;
     const next = group[(group.indexOf(p) + 1) % group.length];
     const links = Object.entries(p.links || {}).filter(([, url]) => url);
-    // only what helps: who guided it, who it was made with, when, and where to see more
+    // only what helps: who guided it, when, and where to see more
     const facts = [
       p.guide && esc(`Guided by ${p.guide}`),
-      p.team && p.team !== site.name && esc(`With ${p.team.split(/,\s*/).filter((n) => n !== site.name).join(", ")}`),
       p.year && esc(p.year),
       ...links.map(([k, url]) => `<a href="${esc(url)}"${external(url)}>${esc(linkName(k))}</a>`),
     ].filter(Boolean);
@@ -105,7 +106,7 @@
       title: p.title,
       html: `
         <section class="hero case grid">
-          <figure class="hero-img">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900 })}</figure>
+          <figure class="hero-img">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: `object-position:50% ${HERO_Y[p.slug] ?? 50}%` })}</figure>
           <h1 class="title lines">${esc(p.title)}</h1>
           <div class="intro">${paragraphs(p.summary)}</div>
           <div class="facts">${facts.join("<br>")}</div>
@@ -720,7 +721,7 @@
     const r = target.getBoundingClientRect();
     requestAnimationFrame(() => {
       Object.assign(fly.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
-      fly.querySelector("img").style.objectPosition = "50% 50%";
+      fly.querySelector("img").style.objectPosition = target.querySelector("img")?.style.objectPosition || "50% 50%";
     });
     const done = () => { target.style.visibility = ""; fly.remove(); };
     fly.addEventListener("transitionend", done, { once: true });
