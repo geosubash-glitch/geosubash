@@ -193,7 +193,7 @@ window.PROJECTS = [
     slug: "creta-cmf",
     title: "Creta CMF",
     subtitle: "Colour, material and finish study for the Hyundai Creta",
-    year: "",
+    year: "2025",
     category: "Product Design",
     tags: ["CMF", "Automotive", "Trend research"],
     guide: "Nimesh Bhushan",
