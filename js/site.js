@@ -23,7 +23,7 @@
 
   const esc = (s = "") =>
     String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-  const asset = (path) => (!path || /^(https?:|data:)/.test(path) ? path || "" : `../${path}`);
+  const asset = (path) => path || "";
   const list = (v) => [].concat(v || []).filter(Boolean);
   const paragraphs = (text) => list(text).map((t) => `<p>${esc(t)}</p>`).join("");
   const external = (url) => (/^https?:/.test(url) ? ' target="_blank" rel="noopener"' : "");
@@ -203,7 +203,7 @@
     };
   }
 
-  fetch(`../data/shelf.json?v=${Date.now()}`)
+  fetch(`data/shelf.json?v=${Date.now()}`)
     .then((r) => (r.ok ? r.json() : null))
     .then((data) => {
       if (!data) return;

@@ -10,11 +10,14 @@
 - Content lives in `js/projects.js`. Uploads go in `assets/projects/<folder>/`
   (`face.*` cover, `slide*` long case-study board, anything else = gallery);
   run `node tools/build-slides.mjs` to rebuild `assets/web/` (folder → slug map at its top).
-- Design: deep ink navy (#0f1a2b), warm off-white text, one pale sky-blue highlight (#9fc5ff);
-  one typeface, Bricolage Grotesque (narrow width for labels, no mono). "Get in touch" in the
-  footer scrambles into the email on hover. A quieter "object catalogue" redesign was tried
-  and rejected by the owner; don't reintroduce it.
-- Work in progress lives in `window.ONGOING` (js/projects.js): shown as "Now" on the home page,
+- One site: `index.html` + `css/site.css` + `js/site.js` (the old v1/v2/v3 versions are gone; `/v2/` and
+  `/v3/` only forward to the root). `css/admin.css` is only for `/admin.html`.
+- Design: warm charcoal (#1d1c1a) with off-white text; Anybody at 150% width for the name, nav, card
+  names and titles, Instrument Sans for reading text. Live amber/blue light pools behind and one grain
+  layer over the page. Home is a looping strip (vertical on phones) with an intro that deals cards
+  from a pile on white; resting a card brings it into focus with a short note beside it.
+  "Get in touch" scrambles into the email on hover.
+- Work in progress lives in `window.ONGOING` (js/projects.js): listed under Archive,
   page at `#/now/<slug>` with the FigJam board embedded live.
 - About-page shelf (music, books, photos) is `data/shelf.json` + `assets/shelf/`, edited by the
   owner at `/admin.html` with a GitHub fine-grained token (Contents: read & write, this repo
@@ -44,4 +47,4 @@ the hero name reveal, the scrolling skills bar (slash separators, no sparkles), 
 scramble. Don't strip these in the name of the list above.
 - **No taglines.** The owner finds slogan-style one-liners cringe ("I build X with Y inside",
   "Objects with…", clever section headlines). Keep subtitles as plain descriptions
-  ("Motorcycle chain cleaner"), no intro tagline, the share image (assets/og.jpg) is just the name plus "Industrial design portfolio", no photo.
+  ("Motorcycle chain cleaner"), no intro tagline, the share image (assets/og.jpg, bump `?v=` in index.html when it changes) is just the name plus "Industrial design portfolio", no photo.

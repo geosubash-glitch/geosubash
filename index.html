@@ -1,59 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Geo Subash, Industrial Design</title>
-  <meta name="description" content="Industrial design portfolio of Geo Subash: products, mechanisms and phygital objects." />
-  <!-- link previews (WhatsApp, LinkedIn, Instagram, Slack, X). Image: assets/og.jpg, 1200x630 -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Geo Subash" />
-  <meta property="og:title" content="Geo Subash, Industrial Design Portfolio" />
-  <meta property="og:description" content="Industrial design portfolio of Geo Subash, NID Andhra Pradesh." />
-  <meta property="og:url" content="https://geosubash-glitch.github.io/geosubash/" />
-  <meta property="og:image" content="https://geosubash-glitch.github.io/geosubash/assets/og.jpg" />
-  <meta property="og:image:type" content="image/jpeg" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Geo Subash, industrial design portfolio" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <link rel="canonical" href="https://geosubash-glitch.github.io/geosubash/" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230f1a2b'/><circle cx='16' cy='16' r='7' fill='%239fc5ff'/></svg>" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1d1c1a">
+  <meta name="description" content="Industrial design portfolio of Geo Subash, NID Andhra Pradesh.">
+  <title>Geo Subash, Industrial Design Portfolio</title>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Geo Subash">
+  <meta property="og:title" content="Geo Subash, Industrial Design Portfolio">
+  <meta property="og:description" content="Industrial design portfolio of Geo Subash, NID Andhra Pradesh.">
+  <meta property="og:url" content="https://geosubash-glitch.github.io/geosubash/">
+  <meta property="og:image" content="https://geosubash-glitch.github.io/geosubash/assets/og.jpg?v=2">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:alt" content="Geo Subash, industrial design portfolio">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://geosubash-glitch.github.io/geosubash/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%231d1c1a'/><rect x='5' y='5' width='6' height='6' fill='%23f2f0ea'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,400..700&family=Instrument+Sans:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/site.css">
 </head>
 <body>
-  <header class="site-header">
-    <a href="#/" class="brand" data-link>GEO SUBASH<span class="brand-dot"></span></a>
-    <nav class="nav">
-      <a href="#/" data-nav="home">Index</a>
-      <a href="#/work" data-nav="work">Work</a>
-      <a href="#/about" data-nav="about">About</a>
-    </nav>
-    <div class="header-meta">
-      <span class="clock" id="clock">IN --:--</span>
-      <a href="#contact" class="contact-link" id="header-contact">Contact ↗</a>
-    </div>
+  <header class="bar grid">
+    <span class="name"><span>Geo Subash</span></span>
+    <a class="nav-work" href="#/" data-nav="work"><span data-label="Works">Works</span></a>
+    <a class="nav-other" href="#/other" data-nav="other"><span data-label="Archive">Archive</span></a>
+    <a class="nav-about" href="#/about" data-nav="about"><span data-label="About">About</span></a>
   </header>
 
   <main id="view" tabindex="-1"></main>
 
-  <footer class="site-footer" id="contact">
-    <p class="label">Contact</p>
-    <a class="footer-cta" id="footer-email" href="#"><span class="scramble" id="scramble">Get in touch</span></a>
-    <div class="footer-row">
-      <div class="footer-links" id="footer-links"></div>
-      <span class="label" id="footer-copy"></span>
-    </div>
+  <footer class="foot grid" id="foot">
+    <a id="cta" href="mailto:geosubash@gmail.com">Get in touch</a>
+    <p id="links"></p>
+    <p id="copy"></p>
+    <a id="privacy" href="#/privacy">Privacy &amp; terms</a>
   </footer>
-
-  <div class="preview" id="preview" aria-hidden="true"><img alt="" referrerpolicy="no-referrer" /></div>
-  <div class="wipe" id="wipe" aria-hidden="true"></div>
 
   <script src="js/assets.generated.js"></script>
   <script src="js/projects.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/site.js"></script>
 </body>
 </html>

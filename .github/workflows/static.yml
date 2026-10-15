@@ -34,15 +34,15 @@ jobs:
       # Browsers keep the CSS/JS for a while, so give every deploy its own version:
       # src="js/main.js" -> src="js/main.js?v=<commit>" in each page, so visitors always get the new files.
       - name: Leave source-only files out of the site
-        run: rm -rf CLAUDE.md .claude tools raw v2/DESIGN.md
+        run: rm -rf CLAUDE.md .claude tools raw
       - name: Stamp asset versions
         run: |
           v="${GITHUB_SHA::7}"
-          for f in index.html v2/index.html v3/index.html admin.html; do
+          for f in index.html admin.html; do
             [ -f "$f" ] || continue
             sed -i -E "s#(src=\"[^\"?:]+\.js)\"#\1?v=$v\"#g; s#(href=\"[^\"?:]+\.css)\"#\1?v=$v\"#g" "$f"
           done
-          grep -hoE '(src|href)="[^"]+\?v=[^"]+"' index.html v2/index.html
+          grep -hoE '(src|href)="[^"]+\?v=[^"]+"' index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
