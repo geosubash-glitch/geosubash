@@ -152,7 +152,7 @@ body.home #view { touch-action: none; }
 
 /* project page */
 .hero { row-gap: 0; margin-top: 28px; }
-.hero-img { grid-column: 1 / 5; height: clamp(300px, 43vh, 520px); overflow: hidden; background: var(--panel); }
+.hero-img { grid-column: 1 / 5; height: clamp(360px, 68vh, 820px); overflow: hidden; background: var(--panel); }
 .hero-img img { width: 100%; height: 100%; object-fit: cover; }
 .title {
   grid-column: 1 / 3;
@@ -241,8 +241,8 @@ body.home #view { touch-action: none; }
 .lines.in .ln > span { transform: none; }
 
 /* image that grows from the strip into the project page */
-.fly { position: fixed; z-index: 30; margin: 0; overflow: hidden; pointer-events: none; transition: all .85s var(--ease); }
-.fly img { width: 100%; height: 100%; object-fit: cover; }
+.fly { position: fixed; z-index: 30; margin: 0; overflow: hidden; pointer-events: none; contain: strict; will-change: left, top, width, height; }
+.fly img { width: 100%; height: 100%; object-fit: cover; will-change: transform; }
 
 @media (max-width: 760px) {
   .grid { grid-template-columns: 1fr 1fr; }
@@ -280,6 +280,7 @@ body.home #view { touch-action: none; }
   .meta, .chapter, .row { grid-template-columns: 1fr 1fr; }
   .meta > div:nth-child(3) { grid-column: 1 / -1; margin-top: 16px; }
   .title, .intro, .about-text { margin-top: 36px; }
+  .hero-img { height: auto; aspect-ratio: 4 / 3; }
   .case .title { margin-top: 32px; }
   .case .intro, .case .facts { grid-column: 1 / -1; font-size: 16px; }
   .case .intro { margin-top: 20px; }

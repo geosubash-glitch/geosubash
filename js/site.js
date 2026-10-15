@@ -108,7 +108,7 @@
       html: `
         <section class="hero case grid">
           <figure class="hero-img">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: `object-position:50% ${HERO_Y[p.slug] ?? 50}%` })}</figure>
-          <h1 class="title lines">${esc(p.title)}</h1>
+          <h1 class="title lines">${esc(p.title).replace(/-/g, "\u2011")}</h1>
           <div class="intro">${paragraphs(p.summary)}</div>
           <div class="facts">${facts.join("<br>")}</div>
           ${chips(p.tags, p.category)}
@@ -704,7 +704,9 @@
     const r = (tile.querySelector(".frame") || img).getBoundingClientRect();
     const fly = document.createElement("figure");
     fly.className = "fly";
-    fly.innerHTML = `<img src="${img.currentSrc || img.src}" alt="" style="object-position:${img.style.objectPosition}">`;
+    // start exactly as the card looks: same crop, same drift and zoom of the picture inside it
+    const pan = getComputedStyle(tile.querySelector(".pan") || img).transform;
+    fly.innerHTML = `<img src="${img.currentSrc || img.src}" alt="" style="object-position:${img.style.objectPosition};transform:${pan === "none" ? "none" : pan}">`;
     Object.assign(fly.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
     document.body.appendChild(fly);
     view.classList.add("leaving");
@@ -719,14 +721,19 @@
     const target = view.querySelector(".hero-img");
     if (!target) return fly.remove();
     target.style.visibility = "hidden";
-    const r = target.getBoundingClientRect();
-    requestAnimationFrame(() => {
-      Object.assign(fly.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
-      fly.querySelector("img").style.objectPosition = target.querySelector("img")?.style.objectPosition || "50% 50%";
-    });
-    const done = () => { target.style.visibility = ""; fly.remove(); };
-    fly.addEventListener("transitionend", done, { once: true });
-    setTimeout(done, 1200);
+    // let the new page settle for two frames so the flight starts on a quiet main thread
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const from = fly.getBoundingClientRect(), to = target.getBoundingClientRect();
+      const img = fly.querySelector("img");
+      const timing = { duration: 950, easing: "cubic-bezier(.65, 0, .25, 1)", fill: "forwards" };
+      const box = (r) => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
+      const flight = fly.animate([box(from), box(to)], timing);
+      img.animate([
+        { objectPosition: img.style.objectPosition || "50% 50%", transform: img.style.transform || "none" },
+        { objectPosition: target.querySelector("img")?.style.objectPosition || "50% 50%", transform: "none" },
+      ], timing);
+      flight.onfinish = () => { target.style.visibility = ""; fly.remove(); };
+    }));
   }
 
   // ---- footer ----
