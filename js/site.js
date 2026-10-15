@@ -32,10 +32,10 @@
   const LINK_NAMES = { linkedin: "LinkedIn", github: "GitHub", behance: "Behance", instagram: "Instagram" };
   const linkName = (key) => LINK_NAMES[key] || key[0].toUpperCase() + key.slice(1);
   const lines = (...rows) => rows.filter(Boolean).map(esc).join("<br>");
-  // tags that only repeat the category ("Research" under "Product design · Research") are left out
-  const extraTags = (tags, category = "") => {
-    const parts = String(category).toLowerCase().split(/[·,]/).map((t) => t.trim());
-    return list(tags).filter((t) => !parts.includes(t.toLowerCase().trim())).join(", ");
+  // outlined tags under a project's summary
+  const chips = (tags, category) => {
+    const all = list(tags).length ? list(tags) : list(category);
+    return all.length ? `<ul class="chips">${all.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>` : "";
   };
 
   // ---- pages ----
@@ -93,25 +93,23 @@
     const group = p.other ? others : main;
     const next = group[(group.indexOf(p) + 1) % group.length];
     const links = Object.entries(p.links || {}).filter(([, url]) => url);
-    const details = [
-      p.guide && `Guided by ${p.guide}`,
-      p.duration,
-      list(p.tools).length && list(p.tools).join(", "),
-    ].filter(Boolean).map(esc);
-    const linkHtml = links.map(([k, url]) => `<a href="${esc(url)}"${external(url)}>${esc(linkName(k))}</a>`);
+    // only what helps: who guided it, who it was made with, when, and where to see more
+    const facts = [
+      p.guide && esc(`Guided by ${p.guide}`),
+      p.team && p.team !== site.name && esc(`With ${p.team.split(/,\s*/).filter((n) => n !== site.name).join(", ")}`),
+      p.year && esc(p.year),
+      ...links.map(([k, url]) => `<a href="${esc(url)}"${external(url)}>${esc(linkName(k))}</a>`),
+    ].filter(Boolean);
 
     return {
       title: p.title,
       html: `
-        <section class="hero grid">
+        <section class="hero case grid">
           <figure class="hero-img">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900 })}</figure>
           <h1 class="title lines">${esc(p.title)}</h1>
-          <div class="intro lines">${paragraphs(p.summary)}</div>
-          <div class="meta label">
-            <div>${lines(p.team || site.name, p.year)}</div>
-            <div>${lines(p.category, extraTags(p.tags, p.category))}</div>
-            <div>${[...details, ...linkHtml].join("<br>")}</div>
-          </div>
+          <div class="intro">${paragraphs(p.summary)}</div>
+          <div class="facts">${facts.join("<br>")}</div>
+          ${chips(p.tags, p.category)}
         </section>
         <section class="body grid">
           ${p.quote ? `<figure class="quote"><blockquote>“${esc(p.quote.text)}”</blockquote><figcaption class="label">${esc(p.quote.by)}</figcaption></figure>` : ""}
@@ -152,14 +150,11 @@
     return {
       title: o.title,
       html: `
-        <section class="hero grid">
+        <section class="hero case grid">
           <h1 class="title lines">${esc(o.title)}</h1>
-          <div class="intro lines">${paragraphs(o.summary)}</div>
-          <div class="meta label">
-            <div><span class="dot" aria-hidden="true"></span>${esc(o.status || "In progress")}<br>${esc(o.year || "")}</div>
-            <div>${lines(o.category, extraTags(o.tags, o.category))}</div>
-            <div>${o.board ? `<a href="${esc(o.board)}" target="_blank" rel="noopener">Open the board in Figma</a>` : ""}</div>
-          </div>
+          <div class="intro">${paragraphs(o.summary)}</div>
+          <div class="facts"><span class="dot" aria-hidden="true"></span>${esc(o.status || "In progress")}${o.year ? `<br>${esc(o.year)}` : ""}${o.board ? `<br><a href="${esc(o.board)}" target="_blank" rel="noopener">Open the board in Figma</a>` : ""}</div>
+          ${chips(o.tags, o.category)}
         </section>
         ${o.board ? `<section class="body grid board"><iframe src="${esc(figmaEmbed(o.board))}" title="${esc(o.title)} research board" loading="lazy" allowfullscreen></iframe></section>` : ""}`,
     };

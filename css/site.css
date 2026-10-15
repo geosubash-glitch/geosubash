@@ -169,6 +169,14 @@ body.home #view { touch-action: none; }
 .meta > div:nth-child(2) { grid-column: 2; }
 .meta > div:nth-child(3) { grid-column: 3 / 5; }
 .meta a { text-decoration: underline; text-underline-offset: 2px; }
+/* project header: cover, then a big name, the summary with its facts beside it, and the tags */
+.case .title { grid-column: 1 / -1; margin-top: 56px; font-size: clamp(48px, 9vw, 150px); line-height: .9; }
+.case .intro { grid-column: 1 / 3; margin-top: 32px; font-size: 18px; line-height: 1.45; letter-spacing: 0; max-width: 62ch; }
+.case .intro p + p { margin-top: .7em; }
+.case .facts { grid-column: 4; margin-top: 32px; font-size: 18px; line-height: 1.6; }
+.case .facts a { text-decoration: underline; text-underline-offset: 3px; }
+.chips { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+.chips li { padding: 5px 9px 4px; border: 1px solid currentColor; font-size: 13px; line-height: 1.2; text-transform: uppercase; letter-spacing: .03em; }
 
 .body { margin-top: 120px; row-gap: 56px; }
 .quote { grid-column: 1 / 4; font-size: clamp(26px, 3.4vw, 50px); line-height: 1.08; letter-spacing: -.03em; }
@@ -272,6 +280,10 @@ body.home #view { touch-action: none; }
   .meta, .chapter, .row { grid-template-columns: 1fr 1fr; }
   .meta > div:nth-child(3) { grid-column: 1 / -1; margin-top: 16px; }
   .title, .intro, .about-text { margin-top: 36px; }
+  .case .title { margin-top: 32px; }
+  .case .intro, .case .facts { grid-column: 1 / -1; font-size: 16px; }
+  .case .intro { margin-top: 20px; }
+  .case .facts { margin-top: 16px; }
   .body { margin-top: 64px; }
   .pics { flex-direction: column; }
   .movies { grid-template-columns: repeat(3, 1fr); }
