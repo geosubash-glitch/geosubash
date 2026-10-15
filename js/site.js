@@ -6,7 +6,7 @@
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // where to centre each cover when it is cropped to a tall frame on the home strip
-  const FOCUS = { anchor: 50, rebrush: 62, lapcare: 50, latent: 32, "audio-deck": 45, "creta-cmf": 70 };
+  const FOCUS = { anchor: 50, rebrush: 62, lapcare: 50, latent: 32, "audio-deck": 45, "creta-cmf": 76 };
 
   const main = projects.filter((p) => !p.other);
   const others = projects.filter((p) => p.other);
