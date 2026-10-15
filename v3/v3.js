@@ -350,11 +350,12 @@
     const lift = (i) => (vertical ? (geo[i].note + 24) / 2 : 0);
     const lead = () => (vertical ? (innerHeight - geo[0].len) / 2 - lift(0) : 0);
     // the nearest strip position at which a card sits in its resting place (a little above the middle)
+    // (on wider screens, a card's left edge lined up with the page margin)
     const restingPlace = (t) => {
       const off = -((((t % width) + width) % width) + width);
       let best = Infinity;
       geo.forEach((g, i) => {
-        const d = g.at + off + g.len / 2 - (innerHeight / 2 - lift(i));
+        const d = vertical ? g.at + off + g.len / 2 - (innerHeight / 2 - lift(i)) : g.at + off - geo[0].at;
         if (Math.abs(d) < Math.abs(best)) best = d;
       });
       return t + best;
@@ -398,7 +399,7 @@
       if (!vertical || reducedMotion) return;
       spin = { from: target, at: performance.now() };
     };
-    let roomSize = 0, before = false, nudging = false;
+    let roomSize = 0, before = false, nudging = false, carryWant = 0;
     const setHot = (i) => {
       if (i === hot) return;
       hot = i;
@@ -406,22 +407,21 @@
         // the others close up around the new card; carry over where it currently sits so nothing jumps
         if (i !== anchor) {
           const at = carry.now + (lastShifts[i] || 0);
-          Object.assign(carry, { from: at, to: 0, at: performance.now(), now: at });
+          Object.assign(carry, { from: at, to: at, at: performance.now(), now: at });
         }
         anchor = i;
-        // the note goes after the card, or before it on a wide screen when there is more room on the left
         const info = tiles[i].querySelector(".info");
         roomSize = vertical ? info.offsetHeight + 24 : info.offsetWidth + 40;
+        before = false;
         if (!vertical) {
-          const r = frames[i].getBoundingClientRect(), pad = 16;
-          before = innerWidth - r.right < roomSize + pad && r.left > innerWidth - r.right;
-          // then slide the strip just enough that the card and its note are both on screen
-          const left = r.left - (before ? roomSize : 0), right = r.right + (before ? 0 : roomSize);
-          const nudge = left < pad ? left - pad : right > innerWidth - pad ? right - (innerWidth - pad) : 0;
-          if (nudge) { target += nudge; nudging = true; }
-        } else before = false;
-        tiles[i].classList.toggle("before", before);
-      }
+          // the note always opens on the right: as part of the same focus pull, the row slides
+          // just far enough that the card (at its focused size) and its note both fit on screen
+          const r = frames[i].getBoundingClientRect(), pad = 16, w = geo[i].len * 1.03;
+          const left = r.left + r.width / 2 - w / 2;
+          const want = Math.max(pad, Math.min(left, innerWidth - pad - w - roomSize));
+          carryWant = carry.now + (want - left);
+        }
+      } else carryWant = 0;
       tiles.forEach((x, k) => x.classList.toggle("hot", k === hot));
       strip.classList.toggle("focus", hot >= 0);
     };
@@ -483,13 +483,12 @@
       if (nudging && Math.abs(target - current) < 1) nudging = false;
       if ((Math.abs(target - current) > 25 && !nudging) || (down && !held)) { stillSince = now; setHot(-1); }
       else if (interacted && touch.matches && !down && hot < 0 && !document.body.classList.contains("is-intro") && now - settledAt > 500) {
-        const span = vertical ? innerHeight : innerWidth;
+        // the card sitting in the resting place comes into focus (settling it there first if needed)
         let best = 0, gap = Infinity;
         geo.forEach((g, i) => {
-          const d = g.at + offset + g.len / 2 - span / 2;
+          const d = vertical ? g.at + offset + g.len / 2 - (innerHeight / 2 - lift(i)) : g.at + offset - geo[0].at;
           if (Math.abs(d) < Math.abs(gap)) { gap = d; best = i; }
         });
-        gap += lift(best);
         if (!snapped && Math.abs(gap) > 2) { target += gap; snapped = true; nudging = true; }
         else if (now - settledAt > 900) setHot(best);
       }
@@ -512,7 +511,7 @@
           const grew = half(k + 1) - geo[k + 1].len / 2 + half(k) - geo[k].len / 2;
           shifts[k] = shifts[k + 1] - grew - rooms[k].now;
         }
-        const drift = glideTo(carry, 0, now, PULL);
+        const drift = glideTo(carry, carryWant, now, PULL);
         for (let k = 0; k < shifts.length; k++) shifts[k] += drift;
         lastShifts = shifts.map((v) => v - drift);
         tiles.forEach((t, i) => {
@@ -542,7 +541,8 @@
       }
       if (pos) {
         const step = width / perSet;
-        const i = Math.round((x + lead()) / step) % perSet;
+        // the card in focus, otherwise the card in the resting place
+        const i = hot >= 0 ? hot % perSet : Math.round((x + lead()) / step) % perSet;
         const label = String(i + 1).padStart(2, "0");
         if (pos.textContent !== label) pos.textContent = label;
       }
@@ -555,7 +555,12 @@
       interacted = true;
       nudging = false;
       target += Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      // when the wheel goes quiet, point the strip at the nearest resting place; it is still gliding,
+      // so this bends the end of the same motion rather than starting a new one
+      clearTimeout(wheelRest);
+      wheelRest = setTimeout(() => { target = restingPlace(target); }, 90);
     };
+    let wheelRest = 0;
     const onKey = (e) => {
       const step = width / perSet;
       if (/^Arrow/.test(e.key)) interacted = true;
@@ -595,9 +600,9 @@
       if (held) { held = false; setHot(-1); moved = true; velocity = 0; }
       if (moved) {
         target -= velocity * 12;
-        // phones: aim the throw straight at a resting place, so the card glides there and stops
+        // aim the throw straight at a resting place, so the cards glide there and stop
         // instead of stopping anywhere and then being nudged into position
-        if (vertical) target = restingPlace(target);
+        target = restingPlace(target);
       }
       strip.classList.remove("dragging");
     };
@@ -633,6 +638,7 @@
       removeEventListener("pointercancel", onUp);
       view.removeEventListener("pointerdown", onDown);
       clearTimeout(holdTimer);
+      clearTimeout(wheelRest);
       stopStrip = () => {};
       spinStrip = () => {};
     };
