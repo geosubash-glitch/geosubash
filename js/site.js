@@ -9,6 +9,9 @@
   const FOCUS = { anchor: 50, rebrush: 62, lapcare: 50, latent: 32, "audio-deck": 45, "creta-cmf": 76 };
   // and how far down to centre it in the wide banner on its project page
   const HERO_Y = { anchor: 20 };
+  // covers shown whole (never cropped or zoomed), on a matching background colour
+  const FIT = { latent: "#080808", rebrush: "#fdfdfd" };
+  const fitStyle = (slug) => (FIT[slug] ? `object-fit:contain;background:${FIT[slug]}` : "");
 
   const main = projects.filter((p) => !p.other);
   const others = projects.filter((p) => p.other);
@@ -48,9 +51,9 @@
   function homePage() {
     const count = main.length;
     const tiles = main.map((p, i) => `
-      <a class="tile" href="#/work/${p.slug}" data-slug="${p.slug}">
+      <a class="tile${FIT[p.slug] ? " fit" : ""}" href="#/work/${p.slug}" data-slug="${p.slug}">
         <span class="label"><span class="n">${String(i + 1).padStart(2, "0")}</span><span>${esc(p.title)}</span></span>
-        <span class="frame"><span class="pan">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: `object-position:${FOCUS[p.slug] ?? 50}% 50%` })}</span></span>
+        <span class="frame"${FIT[p.slug] ? ` style="background:${FIT[p.slug]}"` : ""}><span class="pan">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: FIT[p.slug] ? fitStyle(p.slug) : `object-position:${FOCUS[p.slug] ?? 50}% 50%` })}</span></span>
         <span class="info" aria-hidden="true">
           <span class="info-sub">${esc(p.subtitle || "")}</span>
           <span class="info-text">${esc(firstSentence(p.summary))}</span>
@@ -72,11 +75,11 @@
   function otherPage() {
     const items = [
       ...ongoing.map((o) => ({ href: `#/now/${o.slug}`, title: o.title, sub: o.subtitle, meta: o.status || "In progress", live: true })),
-      ...others.map((p) => ({ href: `#/work/${p.slug}`, title: p.title, sub: p.subtitle, meta: [p.category, p.year].filter(Boolean).join(", "), cover: p.cover })),
+      ...others.map((p) => ({ href: `#/work/${p.slug}`, title: p.title, sub: p.subtitle, meta: [p.category, p.year].filter(Boolean).join(", "), cover: p.cover, style: fitStyle(p.slug) })),
     ];
     const cards = items.map((it, i) => `
       <a class="card" href="${it.href}">
-        <span class="card-img">${it.cover ? image(it.cover, it.title, { w: 1600, h: 900 }) : `<span class="card-empty label">${it.live ? '<span class="dot" aria-hidden="true"></span>' : ""}${esc(it.meta)}</span>`}</span>
+        <span class="card-img">${it.cover ? image(it.cover, it.title, { w: 1600, h: 900, style: it.style || "" }) : `<span class="card-empty label">${it.live ? '<span class="dot" aria-hidden="true"></span>' : ""}${esc(it.meta)}</span>`}</span>
         <span class="label"><span class="n">${String(i + 1).padStart(2, "0")}</span>${esc(it.title)}</span>
         <span class="card-sub">${esc(it.sub)}</span>
       </a>`).join("");
@@ -107,7 +110,7 @@
       title: p.title,
       html: `
         <section class="hero case grid">
-          <figure class="hero-img">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: `object-position:50% ${HERO_Y[p.slug] ?? 50}%` })}</figure>
+          <figure class="hero-img">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: FIT[p.slug] ? fitStyle(p.slug) : `object-position:50% ${HERO_Y[p.slug] ?? 50}%` })}</figure>
           <h1 class="title lines">${esc(p.title).replace(/-/g, "\u2011")}</h1>
           <div class="intro">${paragraphs(p.summary)}</div>
           <div class="facts">${facts.join("<br>")}</div>
@@ -115,13 +118,39 @@
         </section>
         <section class="body grid">
           ${p.quote ? `<figure class="quote"><blockquote>“${esc(p.quote.text)}”</blockquote><figcaption class="label">${esc(p.quote.by)}</figcaption></figure>` : ""}
-          ${p.slides.length ? `<div class="boards">${p.slides.map((s, k) =>
-            `<img src="${esc(asset(s.src))}" width="${s.w}" height="${s.h}" alt="${esc(p.title)} case study, part ${k + 1}" loading="lazy">`).join("")}</div>` : ""}
+          ${p.slides.length ? `<div class="boards">${boards(p)}</div>` : ""}
           ${p.story ? chapters(p) : ""}
         </section>
         <a class="next" href="#/work/${next.slug}"><span class="label">Next project</span><span class="title">${esc(next.title)}</span></a>`,
     };
   }
+
+  // the case-study board: image pieces stacked seamlessly, screen recordings as silent loops,
+  // and an optional short note before a part (p.notes, keyed by the uploaded part number)
+  function boards(p) {
+    const noted = new Set();
+    return p.slides.map((s, k) => {
+      const note = p.notes && p.notes[s.part] && !noted.has(s.part) ? p.notes[s.part] : null;
+      if (note) noted.add(s.part);
+      const head = note ? `<div class="board-note"><p class="label">${esc(note.label)}</p><p class="text">${esc(note.text)}</p></div>` : "";
+      const media = s.video
+        ? `<video data-src="${esc(asset(s.src))}"${s.webm ? ` data-webm="${esc(asset(s.webm))}"` : ""} width="${s.w}" height="${s.h}" muted loop playsinline preload="none" aria-label="${esc(note ? note.label : p.title)} screen recording"></video>`
+        : `<img src="${esc(asset(s.src))}" width="${s.w}" height="${s.h}" alt="${esc(p.title)} case study, part ${k + 1}" loading="lazy">`;
+      return head + media;
+    }).join("");
+  }
+
+  // clips load and play only while on screen
+  const clipWatch = "IntersectionObserver" in window ? new IntersectionObserver((entries) => entries.forEach(({ target: v, isIntersecting }) => {
+    if (isIntersecting) {
+      if (!v.src) v.src = v.dataset.webm && v.canPlayType("video/webm") ? v.dataset.webm : v.dataset.src;
+      v.play().catch(() => {});
+    } else v.pause();
+  }), { rootMargin: "200px 0px" }) : null;
+  const watchClips = () => view.querySelectorAll("video[data-src]").forEach((v) => {
+    if (clipWatch && !reducedMotion) clipWatch.observe(v);
+    else { v.src = v.dataset.src; v.controls = true; }
+  });
 
   function chapters(p) {
     const pic = (k) => p.gallery[k];
@@ -258,6 +287,7 @@
     }
     if (page.home) setUpStrip({ intro });
     wireScramble(document.getElementById("cta-home"));
+    watchClips();
     revealLines(animate);
   }
 
@@ -706,7 +736,7 @@
     fly.className = "fly";
     // start exactly as the card looks: same crop, same drift and zoom of the picture inside it
     const pan = getComputedStyle(tile.querySelector(".pan") || img).transform;
-    fly.innerHTML = `<img src="${img.currentSrc || img.src}" alt="" style="object-position:${img.style.objectPosition};transform:${pan === "none" ? "none" : pan}">`;
+    fly.innerHTML = `<img src="${img.currentSrc || img.src}" alt="" style="${img.getAttribute("style") || ""};transform:${pan === "none" ? "none" : pan}">`;
     Object.assign(fly.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
     document.body.appendChild(fly);
     view.classList.add("leaving");
