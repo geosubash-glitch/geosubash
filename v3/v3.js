@@ -800,7 +800,6 @@
       }, 200 + k * PILE));
       const dealAt = 200 + onScreen.length * PILE + 500;
       setTimeout(() => {
-        spinStrip();
         document.body.classList.remove("is-white");
         tiles.forEach((t) => {
           const k = Math.max(0, onScreen.indexOf(t));
@@ -812,6 +811,9 @@
         });
       }, dealAt);
       setTimeout(() => tiles.forEach((t) => t.classList.remove("on-table")), dealAt + DEAL - 200);
+      // phones: once every card has landed, the column runs one loop, starting and stopping gently,
+      // so the deal and the loop read as two clear moves instead of fighting each other
+      setTimeout(() => spinStrip(), dealAt + DEAL + onScreen.length * 90);
       setTimeout(() => document.body.classList.remove("is-intro"), dealAt + DEAL + 200);
       setTimeout(() => tiles.forEach((t) => { t.style.transition = ""; t.style.transitionDelay = ""; }), dealAt + DEAL + 1200);
     });
