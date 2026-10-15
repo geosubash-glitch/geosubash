@@ -95,9 +95,10 @@
     const group = p.other ? others : main;
     const next = group[(group.indexOf(p) + 1) % group.length];
     const links = Object.entries(p.links || {}).filter(([, url]) => url);
-    // only what helps: who guided it, when, and where to see more
+    // only what helps: who guided it, for which course, when, and where to see more
     const facts = [
       p.guide && esc(`Guided by ${p.guide}`),
+      p.course && esc(p.course),
       p.year && esc(p.year),
       ...links.map(([k, url]) => `<a href="${esc(url)}"${external(url)}>${esc(linkName(k))}</a>`),
     ].filter(Boolean);

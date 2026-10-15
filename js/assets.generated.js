@@ -46,7 +46,17 @@ window.ASSETS = {
       {
         "src": "assets/web/rebrush/slide-09.webp",
         "w": 1920,
-        "h": 954
+        "h": 2000
+      },
+      {
+        "src": "assets/web/rebrush/slide-10.webp",
+        "w": 1920,
+        "h": 2000
+      },
+      {
+        "src": "assets/web/rebrush/slide-11.webp",
+        "w": 1920,
+        "h": 1524
       }
     ],
     "gallery": []
