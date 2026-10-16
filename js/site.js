@@ -9,6 +9,8 @@
   const FOCUS = { anchor: 50, rebrush: 36, lapcare: 50, latent: 32, "audio-deck": 45, "creta-cmf": 76 };
   // and how far down to centre it in the wide banner on its project page
   const HERO_Y = { anchor: 20 };
+  // or the full position, for covers whose subject sits off-centre (Latent: logo left, empty black on top)
+  const HERO_POS = { latent: "0% 100%" };
   // covers shown whole (never cropped or zoomed), on a matching background colour
   const FIT = { latent: "#080808" };
   // covers that fill the card but without the extra zoom and drift (keeps them sharp)
@@ -112,7 +114,7 @@
       title: p.title,
       html: `
         <section class="hero case grid">
-          <figure class="hero-img${FIT[p.slug] ? " whole" : ""}">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: FIT[p.slug] ? fitStyle(p.slug) : `object-position:50% ${HERO_Y[p.slug] ?? 50}%` })}</figure>
+          <figure class="hero-img">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: `object-position:${HERO_POS[p.slug] || `50% ${HERO_Y[p.slug] ?? 50}%`}` })}</figure>
           <h1 class="title lines">${esc(p.title).replace(/-/g, "\u2011")}</h1>
           <div class="intro">${paragraphs(p.summary)}</div>
           <div class="facts">${facts.join("<br>")}</div>
