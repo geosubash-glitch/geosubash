@@ -112,7 +112,7 @@
       title: p.title,
       html: `
         <section class="hero case grid">
-          <figure class="hero-img">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: FIT[p.slug] ? fitStyle(p.slug) : `object-position:50% ${HERO_Y[p.slug] ?? 50}%` })}</figure>
+          <figure class="hero-img">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: `object-position:50% ${HERO_Y[p.slug] ?? 50}%` })}</figure>
           <h1 class="title lines">${esc(p.title).replace(/-/g, "\u2011")}</h1>
           <div class="intro">${paragraphs(p.summary)}</div>
           <div class="facts">${facts.join("<br>")}</div>
