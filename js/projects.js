@@ -95,6 +95,12 @@ window.PROJECTS = [
       "A photo editor for old CCD cameras that keeps the sensor's colour quirks instead of correcting them. Each photo is shown in 15 film looks side by side, and the grain is modelled on Ilford HP5. Code logic written with Gemini.",
     ],
     links: { github: "https://github.com/geosubash-glitch/latentworkspaces-v1.0.15-CCDera" },
+    // short notes shown before parts of the board (numbers are the uploaded slide-NN files)
+    notes: {
+      7: { label: "Stage 01, Discovery bay", text: "Local file mounting, directory scanning and clean metadata ingestion. The clip shows a folder of CCD photos being browsed." },
+      9: { label: "Stage 02, Evaluation matrix", text: "A parallel grid of 15 film stock looks, each previewed on the photo the moment the pointer moves over it." },
+      11: { label: "Stage 03, Workbench", text: "A calibration bay with custom tone curves, luma waveforms and geometric transforms. The clips show the geometry controls, then the colour wheels." },
+    },
   },
   {
     slug: "audio-deck",

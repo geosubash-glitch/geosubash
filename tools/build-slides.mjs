@@ -16,8 +16,14 @@
 //
 //   node tools/build-slides.mjs
 import sharp from "sharp";
-import { readdir, mkdir, rm, writeFile } from "node:fs/promises";
+import { readdir, readFile, mkdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
+
+// ffmpeg, if this machine has one, also writes a WebM copy of each clip for browsers without H.264
+const FFMPEG = [process.env.FFMPEG, "/usr/local/lib/python3.11/dist-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2", "ffmpeg"]
+  .find((f) => { try { return f && (existsSync(f) || execFileSync("which", [f]).length); } catch { return false; } });
 
 // upload folder -> project slug in js/projects.js
 const SOURCES = {
@@ -39,7 +45,9 @@ const OUT = join(ROOT, "assets/web");
 const COVER_W = 2000, COVER_H = 1125, SLIDE_W = 1920, CHUNK_H = 2000, GALLERY_W = 1600;
 const CROP_TOLERANCE = 0.12;   // crop if within 12% of 16:9, otherwise letterbox
 // Where to anchor a crop when the subject isn't centred (default "centre").
-const COVER_FOCUS = { rebrush: "left" };
+const COVER_FOCUS = {};
+// covers kept at their own shape (no crop to 16:9); the site shows these whole
+const KEEP_SHAPE = new Set([]);
 
 // Average colour of an image's outer edge, and how much it varies. A plain
 // edge (studio backdrop, black) can be letterboxed seamlessly; a busy one
@@ -90,19 +98,29 @@ async function writeCover(file, out, slug) {
   const off = Math.abs(box.width / box.height / (16 / 9) - 1);
   const img = open(file).rotate().extract(box);
   const e = off > CROP_TOLERANCE ? await edge(await img.clone().png().toBuffer()) : null;
-  if (!e || !e.plain) img.resize(COVER_W, COVER_H, { fit: "cover", position: COVER_FOCUS[slug] || "centre" });
+  if (KEEP_SHAPE.has(slug)) img.resize({ width: COVER_W, withoutEnlargement: true });
+  else if (!e || !e.plain) img.resize(COVER_W, COVER_H, { fit: "cover", position: COVER_FOCUS[slug] || "centre" });
   else img.resize(COVER_W, COVER_H, { fit: "contain", background: e.colour });
   await img.webp({ quality: 82 }).toFile(out);
   if (f.top || f.bottom || f.left || f.right) console.log(`  ${slug}: stripped frame t${f.top} b${f.bottom} l${f.left} r${f.right}`);
 }
 const IMG = /\.(jpe?g|png|webp|tiff?|avif)$/i;
+const VIDEO = /\.(mp4|webm)$/i;
+// a video's display size, read from its track header (tkhd) so no extra tools are needed
+const videoSize = (buf) => {
+  const at = buf.indexOf("tkhd");
+  if (at < 0) return { w: 1920, h: 1080 };
+  const version = buf[at + 4];
+  const off = at + (version === 1 ? 92 : 80);
+  return { w: buf.readUInt32BE(off) >>> 16, h: buf.readUInt32BE(off + 4) >>> 16 };
+};
 const byName = (a, b) => a.localeCompare(b, undefined, { numeric: true });
 const open = (f) => sharp(f, { limitInputPixels: false });
 
 const assets = {};
 for (const [folder, slug] of Object.entries(SOURCES)) {
   let files;
-  try { files = (await readdir(join(IN, folder))).filter((f) => IMG.test(f)).sort(byName); }
+  try { files = (await readdir(join(IN, folder))).filter((f) => IMG.test(f) || (VIDEO.test(f) && /^slide/i.test(f))).sort(byName); }
   catch { console.warn(`! missing folder assets/projects/${folder}`); continue; }
   const dest = join(OUT, slug);
   await rm(dest, { recursive: true, force: true });
@@ -133,13 +151,29 @@ for (const [folder, slug] of Object.entries(SOURCES)) {
 
   let n = 0;
   for (const f of files.filter((f) => /^slide/i.test(f))) {
+    // which uploaded part this piece came from (slide-07.png -> 7), so notes can sit before it
+    const part = Number((f.match(/(\d+)/) || [])[1]) || 0;
+    if (VIDEO.test(f)) {
+      // screen recordings play as silent looping clips in the board
+      const name = `slide-${String(++n).padStart(2, "0")}${f.slice(f.lastIndexOf(".")).toLowerCase()}`;
+      const data = await readFile(join(IN, folder, f));
+      await writeFile(join(dest, name), data);
+      const clip = { src: `assets/web/${slug}/${name}`, ...videoSize(data), video: true, part };
+      if (FFMPEG) {
+        const webm = name.replace(/\.\w+$/, ".webm");
+        execFileSync(FFMPEG, ["-v", "error", "-y", "-i", join(IN, folder, f), "-an", "-c:v", "libvpx-vp9", "-crf", "36", "-b:v", "0", "-row-mt", "1", "-deadline", "good", "-cpu-used", "4", join(dest, webm)]);
+        clip.webm = `assets/web/${slug}/${webm}`;
+      }
+      entry.slides.push(clip);
+      continue;
+    }
     const buf = await open(join(IN, folder, f)).rotate().resize({ width: SLIDE_W, withoutEnlargement: true }).png().toBuffer();
     const { width, height } = await sharp(buf, { limitInputPixels: false }).metadata();
     for (let top = 0; top < height; top += CHUNK_H) {
       const h = Math.min(CHUNK_H, height - top);
       const name = `slide-${String(++n).padStart(2, "0")}.webp`;
       await sharp(buf, { limitInputPixels: false }).extract({ left: 0, top, width, height: h }).webp({ quality: 80 }).toFile(join(dest, name));
-      entry.slides.push({ src: `assets/web/${slug}/${name}`, w: width, h });
+      entry.slides.push({ src: `assets/web/${slug}/${name}`, w: width, h, part });
     }
   }
   console.log(`${folder} -> ${slug}: cover ${entry.cover ? "yes" : "no"}, ${entry.slides.length} slide pieces, ${entry.gallery.length} gallery`);

@@ -103,6 +103,8 @@ body.home #view { touch-action: none; }
 .tile > .label .n { opacity: .6; }
 .tile .frame { position: relative; display: block; width: var(--w); height: var(--h); overflow: hidden; background: var(--panel); }
 .tile .pan { display: block; width: 100%; height: 100%; transform: scale(1.14); will-change: transform; }
+/* covers shown whole: no zoom and no drift inside the frame */
+.tile.fit .pan { transform: none !important; }
 .tile img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.1s var(--ease-out); pointer-events: none; }
 .tile:hover img { transform: scale(1.05); }
 .tile > .label > span:last-child { transition: transform .5s var(--ease-out); }
@@ -182,7 +184,11 @@ body.home #view { touch-action: none; }
 .quote { grid-column: 1 / 4; font-size: clamp(26px, 3.4vw, 50px); line-height: 1.08; letter-spacing: -.03em; }
 .quote figcaption { margin-top: 16px; }
 .boards { grid-column: 1 / 5; }
-.boards img { width: 100%; background: var(--panel); }
+.boards img, .boards video { display: block; width: 100%; height: auto; background: var(--panel); }
+/* a short note between board parts, in the site's own type */
+.board-note { display: grid; grid-template-columns: repeat(4, 1fr); column-gap: var(--gap); padding: 64px 0 40px; }
+.board-note .label { grid-column: 1 / 3; }
+.board-note .text { grid-column: 3 / 5; font-size: 18px; line-height: 1.45; max-width: 52ch; }
 .chapter { grid-column: 1 / 5; display: grid; grid-template-columns: subgrid; row-gap: 20px; }
 .chapter .label { grid-column: 1 / 3; }
 .chapter .text { grid-column: 3 / 5; font-size: 18px; line-height: 1.4; }
@@ -278,6 +284,8 @@ body.home #view { touch-action: none; }
   .hero-img, .title, .intro, .meta, .quote, .boards, .chapter, .chapter .label, .chapter .text, .chapter pre,
   .about-text, .plain, .row, .row > .label, .row > .content, .pics, .board iframe { grid-column: 1 / -1; }
   .meta, .chapter, .row { grid-template-columns: 1fr 1fr; }
+  .board-note { grid-template-columns: 1fr; row-gap: 8px; padding: 40px 0 24px; }
+  .board-note .label, .board-note .text { grid-column: 1; font-size: 16px; }
   .meta > div:nth-child(3) { grid-column: 1 / -1; margin-top: 16px; }
   .title, .intro, .about-text { margin-top: 36px; }
   .hero-img { height: auto; aspect-ratio: 4 / 3; }

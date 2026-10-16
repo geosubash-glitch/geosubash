@@ -6,57 +6,68 @@ window.ASSETS = {
       {
         "src": "assets/web/rebrush/slide-01.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/rebrush/slide-02.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/rebrush/slide-03.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/rebrush/slide-04.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/rebrush/slide-05.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/rebrush/slide-06.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/rebrush/slide-07.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/rebrush/slide-08.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/rebrush/slide-09.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/rebrush/slide-10.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/rebrush/slide-11.webp",
         "w": 1920,
-        "h": 1524
+        "h": 1524,
+        "part": 1
       }
     ],
     "gallery": []
@@ -67,52 +78,62 @@ window.ASSETS = {
       {
         "src": "assets/web/creta-cmf/slide-01.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/creta-cmf/slide-02.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/creta-cmf/slide-03.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/creta-cmf/slide-04.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/creta-cmf/slide-05.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/creta-cmf/slide-06.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/creta-cmf/slide-07.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/creta-cmf/slide-08.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/creta-cmf/slide-09.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/creta-cmf/slide-10.webp",
         "w": 1920,
-        "h": 1488
+        "h": 1488,
+        "part": 1
       }
     ],
     "gallery": []
@@ -123,47 +144,56 @@ window.ASSETS = {
       {
         "src": "assets/web/lapcare/slide-01.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 0
       },
       {
         "src": "assets/web/lapcare/slide-02.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 0
       },
       {
         "src": "assets/web/lapcare/slide-03.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 0
       },
       {
         "src": "assets/web/lapcare/slide-04.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 0
       },
       {
         "src": "assets/web/lapcare/slide-05.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 0
       },
       {
         "src": "assets/web/lapcare/slide-06.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 0
       },
       {
         "src": "assets/web/lapcare/slide-07.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 0
       },
       {
         "src": "assets/web/lapcare/slide-08.webp",
         "w": 1920,
-        "h": 2000
+        "h": 2000,
+        "part": 0
       },
       {
         "src": "assets/web/lapcare/slide-09.webp",
         "w": 1920,
-        "h": 1069
+        "h": 1069,
+        "part": 0
       }
     ],
     "gallery": []
@@ -174,57 +204,68 @@ window.ASSETS = {
       {
         "src": "assets/web/anchor/slide-01.webp",
         "w": 1400,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/anchor/slide-02.webp",
         "w": 1400,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/anchor/slide-03.webp",
         "w": 1400,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/anchor/slide-04.webp",
         "w": 1400,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/anchor/slide-05.webp",
         "w": 1400,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/anchor/slide-06.webp",
         "w": 1400,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/anchor/slide-07.webp",
         "w": 1400,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/anchor/slide-08.webp",
         "w": 1400,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/anchor/slide-09.webp",
         "w": 1400,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/anchor/slide-10.webp",
         "w": 1400,
-        "h": 2000
+        "h": 2000,
+        "part": 1
       },
       {
         "src": "assets/web/anchor/slide-11.webp",
         "w": 1400,
-        "h": 462
+        "h": 462,
+        "part": 1
       }
     ],
     "gallery": []
@@ -235,32 +276,94 @@ window.ASSETS = {
       {
         "src": "assets/web/latent/slide-01.webp",
         "w": 1920,
-        "h": 2000
+        "h": 1080,
+        "part": 1
       },
       {
         "src": "assets/web/latent/slide-02.webp",
         "w": 1920,
-        "h": 2000
+        "h": 1080,
+        "part": 2
       },
       {
         "src": "assets/web/latent/slide-03.webp",
         "w": 1920,
-        "h": 2000
+        "h": 1080,
+        "part": 3
       },
       {
         "src": "assets/web/latent/slide-04.webp",
         "w": 1920,
-        "h": 2000
+        "h": 1080,
+        "part": 4
       },
       {
         "src": "assets/web/latent/slide-05.webp",
         "w": 1920,
-        "h": 2000
+        "h": 1080,
+        "part": 5
       },
       {
         "src": "assets/web/latent/slide-06.webp",
         "w": 1920,
-        "h": 1016
+        "h": 1080,
+        "part": 6
+      },
+      {
+        "src": "assets/web/latent/slide-07.webp",
+        "w": 1920,
+        "h": 1080,
+        "part": 7
+      },
+      {
+        "src": "assets/web/latent/slide-08.mp4",
+        "w": 1920,
+        "h": 1080,
+        "video": true,
+        "part": 8,
+        "webm": "assets/web/latent/slide-08.webm"
+      },
+      {
+        "src": "assets/web/latent/slide-09.webp",
+        "w": 1920,
+        "h": 1080,
+        "part": 9
+      },
+      {
+        "src": "assets/web/latent/slide-10.mp4",
+        "w": 1920,
+        "h": 1080,
+        "video": true,
+        "part": 10,
+        "webm": "assets/web/latent/slide-10.webm"
+      },
+      {
+        "src": "assets/web/latent/slide-11.webp",
+        "w": 1920,
+        "h": 1080,
+        "part": 11
+      },
+      {
+        "src": "assets/web/latent/slide-12.mp4",
+        "w": 1920,
+        "h": 1080,
+        "video": true,
+        "part": 12,
+        "webm": "assets/web/latent/slide-12.webm"
+      },
+      {
+        "src": "assets/web/latent/slide-13.mp4",
+        "w": 1920,
+        "h": 1080,
+        "video": true,
+        "part": 13,
+        "webm": "assets/web/latent/slide-13.webm"
+      },
+      {
+        "src": "assets/web/latent/slide-14.webp",
+        "w": 1920,
+        "h": 1080,
+        "part": 14
       }
     ],
     "gallery": []
