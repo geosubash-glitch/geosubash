@@ -6,11 +6,13 @@
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // where to centre each cover when it is cropped to a tall frame on the home strip,
-  const FOCUS = { anchor: 50, rebrush: 62, lapcare: 50, latent: 32, "audio-deck": 45, "creta-cmf": 76 };
+  const FOCUS = { anchor: 50, rebrush: 36, lapcare: 50, latent: 32, "audio-deck": 45, "creta-cmf": 76 };
   // and how far down to centre it in the wide banner on its project page
   const HERO_Y = { anchor: 20 };
   // covers shown whole (never cropped or zoomed), on a matching background colour
-  const FIT = { latent: "#080808", rebrush: "#fdfdfd" };
+  const FIT = { latent: "#080808" };
+  // covers that fill the card but without the extra zoom and drift (keeps them sharp)
+  const STILL = new Set(["rebrush"]);
   const fitStyle = (slug) => (FIT[slug] ? `object-fit:contain;background:${FIT[slug]}` : "");
 
   const main = projects.filter((p) => !p.other);
@@ -51,7 +53,7 @@
   function homePage() {
     const count = main.length;
     const tiles = main.map((p, i) => `
-      <a class="tile${FIT[p.slug] ? " fit" : ""}" href="#/work/${p.slug}" data-slug="${p.slug}">
+      <a class="tile${FIT[p.slug] || STILL.has(p.slug) ? " fit" : ""}" href="#/work/${p.slug}" data-slug="${p.slug}">
         <span class="label"><span class="n">${String(i + 1).padStart(2, "0")}</span><span>${esc(p.title)}</span></span>
         <span class="frame"${FIT[p.slug] ? ` style="background:${FIT[p.slug]}"` : ""}><span class="pan">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: FIT[p.slug] ? fitStyle(p.slug) : `object-position:${FOCUS[p.slug] ?? 50}% 50%` })}</span></span>
         <span class="info" aria-hidden="true">
