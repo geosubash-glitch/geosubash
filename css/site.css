@@ -64,6 +64,7 @@ ul { list-style: none; }
 .bar > * { display: block; flex: none; overflow: hidden; white-space: nowrap; }
 .bar > * > span { display: block; }
 .name { margin-right: auto; }
+.bar a.name { color: var(--ink); }
 /* the current page is shown in bold */
 .bar a { color: var(--mute); transition: color .3s; }
 .bar a[aria-current] { color: var(--ink); font-weight: 700; }
@@ -156,6 +157,8 @@ body.home #view { touch-action: none; }
 .hero { row-gap: 0; margin-top: 28px; }
 .hero-img { grid-column: 1 / 5; height: clamp(360px, 68vh, 820px); overflow: hidden; background: var(--panel); }
 .hero-img img { width: 100%; height: 100%; object-fit: cover; }
+/* a cover shown whole takes its own 16:9 shape, so it fills the banner edge to edge */
+.hero-img.whole { height: auto; aspect-ratio: 16 / 9; }
 .title {
   grid-column: 1 / 3;
   margin-top: 88px;
