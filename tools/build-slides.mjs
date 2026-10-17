@@ -16,7 +16,7 @@
 //
 //   node tools/build-slides.mjs
 import sharp from "sharp";
-import { readdir, readFile, mkdir, rm, writeFile } from "node:fs/promises";
+import { readdir, readFile, mkdir, rm, writeFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
@@ -124,6 +124,11 @@ for (const [folder, slug] of Object.entries(SOURCES)) {
   try { files = (await readdir(join(IN, folder))).filter((f) => IMG.test(f) || (VIDEO.test(f) && /^slide/i.test(f))).sort(byName); }
   catch { console.warn(`! missing folder assets/projects/${folder}`); continue; }
   const dest = join(OUT, slug);
+  // keep already-encoded WebM clips whose source hasn't changed since, so rebuilds don't re-encode them
+  const keptClips = {};
+  for (const f of await readdir(dest).catch(() => [])) {
+    if (f.endsWith(".webm")) keptClips[f] = { data: await readFile(join(dest, f)), time: (await stat(join(dest, f))).mtimeMs };
+  }
   await rm(dest, { recursive: true, force: true });
   await mkdir(dest, { recursive: true });
   const entry = (assets[slug] = { cover: "", slides: [] });
@@ -162,7 +167,9 @@ for (const [folder, slug] of Object.entries(SOURCES)) {
       const clip = { src: `assets/web/${slug}/${name}`, ...videoSize(data), video: true, part };
       if (FFMPEG) {
         const webm = name.replace(/\.\w+$/, ".webm");
-        execFileSync(FFMPEG, ["-v", "error", "-y", "-i", join(IN, folder, f), "-an", "-c:v", "libvpx-vp9", "-crf", "36", "-b:v", "0", "-row-mt", "1", "-deadline", "good", "-cpu-used", "4", join(dest, webm)]);
+        const kept = keptClips[webm];
+        if (kept && kept.time > (await stat(join(IN, folder, f))).mtimeMs) await writeFile(join(dest, webm), kept.data);
+        else execFileSync(FFMPEG, ["-v", "error", "-y", "-i", join(IN, folder, f), "-an", "-c:v", "libvpx-vp9", "-crf", "36", "-b:v", "0", "-row-mt", "1", "-deadline", "good", "-cpu-used", "4", join(dest, webm)]);
         clip.webm = `assets/web/${slug}/${webm}`;
       }
       entry.slides.push(clip);
