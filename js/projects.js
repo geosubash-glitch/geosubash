@@ -71,6 +71,7 @@ window.PROJECTS = [
   },
   {
     slug: "lapcare",
+    other: true,      // listed under Archive, not on the home strip
     title: "Lapcare WL-102",
     subtitle: "Keyboard teardown and redesign",
     year: "",
@@ -218,6 +219,7 @@ window.ONGOING = [
     title: "Patient transfers",
     subtitle: "Research on moving patients",
     status: "In research",
+    course: "Technically Complex Product Design",
     year: "2026",
     category: "Product Design · Research",
     tags: ["Research", "Product Design"],

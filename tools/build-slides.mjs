@@ -33,6 +33,7 @@ const SOURCES = {
   "interactive product design": "anchor",
   "latent": "latent",
   "Tactile Audio Deck": "audio-deck",
+  "ongoing/patient-transfers": "patient-transfers",
 };
 
 // Projects whose face image isn't ready yet: crop the cover from the top of

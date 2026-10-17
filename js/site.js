@@ -51,9 +51,11 @@
   const firstSentence = (text) => (list(text)[0] || "").match(/^.*?[.!?](\s|$)/)?.[0].trim() || list(text)[0] || "";
 
   function homePage() {
-    const count = main.length;
-    const tiles = main.map((p, i) => `
-      <a class="tile${FIT[p.slug] || STILL.has(p.slug) ? " fit" : ""}" href="#/work/${p.slug}" data-slug="${p.slug}">
+    // finished projects, then work in progress (which opens its own research page)
+    const items = [...main, ...ongoing.map((o) => ({ ...o, href: `#/now/${o.slug}`, category: o.status || "In progress" }))];
+    const count = items.length;
+    const tiles = items.map((p, i) => `
+      <a class="tile${FIT[p.slug] || STILL.has(p.slug) ? " fit" : ""}" href="${p.href || `#/work/${p.slug}`}" data-slug="${p.slug}">
         <span class="label"><span class="n">${String(i + 1).padStart(2, "0")}</span><span>${esc(p.title)}</span></span>
         <span class="frame"${FIT[p.slug] ? ` style="background:${FIT[p.slug]}"` : ""}><span class="pan">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: FIT[p.slug] ? fitStyle(p.slug) : `object-position:${FOCUS[p.slug] ?? 50}% 50%` })}</span></span>
         <span class="info" aria-hidden="true">
@@ -76,7 +78,6 @@
 
   function otherPage() {
     const items = [
-      ...ongoing.map((o) => ({ href: `#/now/${o.slug}`, title: o.title, sub: o.subtitle, meta: o.status || "In progress", live: true })),
       ...others.map((p) => ({ href: `#/work/${p.slug}`, title: p.title, sub: p.subtitle, meta: [p.category, p.year].filter(Boolean).join(", "), cover: p.cover, style: fitStyle(p.slug) })),
     ];
     const cards = items.map((it, i) => `
@@ -184,9 +185,10 @@
       title: o.title,
       html: `
         <section class="hero case grid">
+          ${o.cover ? `<figure class="hero-img">${image(o.cover, o.title, { lazy: false, w: 1600, h: 900 })}</figure>` : ""}
           <h1 class="title lines">${esc(o.title)}</h1>
           <div class="intro">${paragraphs(o.summary)}</div>
-          <div class="facts"><span class="dot" aria-hidden="true"></span>${esc(o.status || "In progress")}${o.year ? `<br>${esc(o.year)}` : ""}${o.board ? `<br><a href="${esc(o.board)}" target="_blank" rel="noopener">Open the board in Figma</a>` : ""}</div>
+          <div class="facts"><span class="dot" aria-hidden="true"></span>${esc(o.status || "In progress")}${o.course ? `<br>${esc(o.course)}` : ""}${o.year ? `<br>${esc(o.year)}` : ""}${o.board ? `<br><a href="${esc(o.board)}" target="_blank" rel="noopener">Open the board in Figma</a>` : ""}</div>
           ${chips(o.tags, o.category)}
         </section>
         ${o.board ? `<section class="body grid board"><iframe src="${esc(figmaEmbed(o.board))}" title="${esc(o.title)} research board" loading="lazy" allowfullscreen></iframe></section>` : ""}`,
@@ -266,7 +268,7 @@
     let page;
     if (!section || (section === "work" && !slug)) page = { name: "work", ...homePage() };
     else if (section === "work") page = { name: projects.find((p) => p.slug === slug)?.other ? "other" : "work", ...projectPage(slug) };
-    else if (section === "now" && slug) page = { name: "other", ...ongoingPage(slug) };
+    else if (section === "now" && slug) page = { name: "work", ...ongoingPage(slug) };
     else if (section === "other") page = { name: "other", ...otherPage() };
     else if (section === "about") page = { name: "about", ...aboutPage() };
     else if (section === "privacy") page = { name: "", ...privacyPage() };

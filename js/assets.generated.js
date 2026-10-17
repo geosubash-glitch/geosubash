@@ -388,5 +388,10 @@ window.ASSETS = {
         "h": 1410
       }
     ]
+  },
+  "patient-transfers": {
+    "cover": "assets/web/patient-transfers/cover.webp",
+    "slides": [],
+    "gallery": []
   }
 };
