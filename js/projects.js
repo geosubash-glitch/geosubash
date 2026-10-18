@@ -84,6 +84,20 @@ window.PROJECTS = [
     links: {},
   },
   {
+    slug: "daybook",
+    other: true,      // listed under Archive, not on the home strip
+    title: "Daybook",
+    subtitle: "A private journal app, Android and web",
+    year: "",
+    category: "App design",
+    tags: ["App design", "Systems", "Privacy"],
+    tools: ["Firebase", "GitHub Actions", "Capacitor"],
+    summary: [
+      "A private journal app built to study how an app system works: accounts, storage, sync, a screen lock, optional encryption, backup and numbered updates. Each part changed how the screens had to behave. It runs on Android and the web, with Firebase behind it, and was built with an AI coding assistant.",
+    ],
+    links: {},
+  },
+  {
     slug: "latent",
     other: true,      // listed under Archive, not on the home strip
     title: "Latent",
