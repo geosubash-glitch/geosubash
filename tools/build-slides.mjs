@@ -166,11 +166,13 @@ for (const [folder, slug] of Object.entries(SOURCES)) {
       const data = await readFile(join(IN, folder, f));
       await writeFile(join(dest, name), data);
       const clip = { src: `assets/web/${slug}/${name}`, ...videoSize(data), video: true, part };
+      // a clip with a sound track is a talk or pitch: shown with controls and sound instead of as a silent loop
+      if (data.includes("soun")) clip.audio = true;
       if (FFMPEG) {
         const webm = name.replace(/\.\w+$/, ".webm");
         const kept = keptClips[webm];
         if (kept && kept.time > (await stat(join(IN, folder, f))).mtimeMs) await writeFile(join(dest, webm), kept.data);
-        else execFileSync(FFMPEG, ["-v", "error", "-y", "-i", join(IN, folder, f), "-an", "-c:v", "libvpx-vp9", "-crf", "36", "-b:v", "0", "-row-mt", "1", "-deadline", "good", "-cpu-used", "4", join(dest, webm)]);
+        else execFileSync(FFMPEG, ["-v", "error", "-y", "-i", join(IN, folder, f), ...(clip.audio ? ["-c:a", "libopus", "-b:a", "96k"] : ["-an"]), "-c:v", "libvpx-vp9", "-crf", "36", "-b:v", "0", "-row-mt", "1", "-deadline", "good", "-cpu-used", "4", join(dest, webm)]);
         clip.webm = `assets/web/${slug}/${webm}`;
       }
       entry.slides.push(clip);

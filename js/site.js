@@ -136,7 +136,9 @@
       const note = p.notes && p.notes[s.part] && !noted.has(s.part) ? p.notes[s.part] : null;
       if (note) noted.add(s.part);
       const head = note ? `<div class="board-note"><p class="label">${esc(note.label)}</p><p class="text">${esc(note.text)}</p></div>` : "";
-      const media = s.video
+      const media = s.video && s.audio
+        ? `<video class="pitch" width="${s.w}" height="${s.h}" controls playsinline preload="metadata" aria-label="${esc(p.title)} video">${s.webm ? `<source src="${esc(asset(s.webm))}" type="video/webm">` : ""}<source src="${esc(asset(s.src))}" type="video/mp4"></video>`
+        : s.video
         ? `<video data-src="${esc(asset(s.src))}"${s.webm ? ` data-webm="${esc(asset(s.webm))}"` : ""} width="${s.w}" height="${s.h}" muted loop playsinline preload="none" aria-label="${esc(note ? note.label : p.title)} screen recording"></video>`
         : `<img src="${esc(asset(s.src))}" width="${s.w}" height="${s.h}" alt="${esc(p.title)} case study, part ${k + 1}" loading="lazy">`;
       return head + media;
