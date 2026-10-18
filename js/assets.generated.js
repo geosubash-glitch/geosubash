@@ -393,5 +393,59 @@ window.ASSETS = {
     "cover": "assets/web/patient-transfers/cover.webp?v=e3dbeedc",
     "slides": [],
     "gallery": []
+  },
+  "daybook": {
+    "cover": "assets/web/daybook/cover.webp?v=b47a89bf",
+    "slides": [
+      {
+        "src": "assets/web/daybook/slide-01.webp?v=f7982e7d",
+        "w": 1920,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/daybook/slide-02.webp?v=6768958e",
+        "w": 1920,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/daybook/slide-03.webp?v=9850ca06",
+        "w": 1920,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/daybook/slide-04.webp?v=fdf7d813",
+        "w": 1920,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/daybook/slide-05.webp?v=54840965",
+        "w": 1920,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/daybook/slide-06.webp?v=a1132414",
+        "w": 1920,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/daybook/slide-07.webp?v=242d8faa",
+        "w": 1920,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/daybook/slide-08.webp?v=fe67c180",
+        "w": 1920,
+        "h": 1120,
+        "part": 1
+      }
+    ],
+    "gallery": []
   }
 };
