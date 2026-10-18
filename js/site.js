@@ -8,7 +8,7 @@
   // where to centre each cover when it is cropped to a tall frame on the home strip,
   const FOCUS = { anchor: 50, rebrush: 36, lapcare: 50, latent: 32, "audio-deck": 45, "creta-cmf": 76 };
   // and how far down to centre it in the wide banner on its project page
-  const HERO_Y = { anchor: 20 };
+  const HERO_Y = { anchor: 20, daybook: 40 };
   // covers shown whole (never cropped or zoomed), on a matching background colour
   const FIT = { latent: "#080808" };
   // covers that fill the card but without the extra zoom and drift (keeps them sharp)
