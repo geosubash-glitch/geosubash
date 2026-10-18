@@ -75,3 +75,15 @@ but Y", "a testament to", "seamless", "elevate", "delve", "tapestry", "journey",
 - [ ] Not every section uses the same problem → process → solution → lesson shape.
 - [ ] Ending isn't a reflexive quiet epilogue.
 - [ ] Em-dashes rare; none of the stock phrases above.
+
+## Owner's rules for this portfolio (from feedback)
+
+- Card subtitle: a plain description of what the project is ("Motorcycle chain cleaner",
+  "Reminder device for older adults", "A study of how an app system works"). No feature lists.
+- Summary: say what the product is and who it is for in everyday words. Describe the product,
+  not one feature (e.g. Anchor's Malayalam voice input is a feature, leave it out). No part
+  names or mechanism jargon (slots, locking plates, sensors) unless that is the project.
+- Tags: the design fields the project belongs to (Product design, Interaction design,
+  Assistive technology, Automotive, Healthcare, CMF design). Never process steps (field
+  research, affinity mapping) or tech (Python, ESP32, encryption).
+- The course is the main tag on cards; tags appear only on the project page.
