@@ -271,7 +271,7 @@ window.ASSETS = {
     "gallery": []
   },
   "latent": {
-    "cover": "assets/web/latent/cover.webp?v=b3ea387a",
+    "cover": "assets/web/latent/cover.webp?v=55f550cb",
     "slides": [
       {
         "src": "assets/web/latent/slide-01.webp?v=c171cb5f",

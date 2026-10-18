@@ -48,3 +48,10 @@ scramble. Don't strip these in the name of the list above.
 - **No taglines.** The owner finds slogan-style one-liners cringe ("I build X with Y inside",
   "Objects with…", clever section headlines). Keep subtitles as plain descriptions
   ("Motorcycle chain cleaner"), no intro tagline, the share image (assets/og.jpg, bump `?v=` in index.html when it changes) is just the name plus "Industrial design portfolio", no photo.
+
+## Keep usage low (owner's request)
+
+- Commit messages: one short line. No Co-Authored-By or session/chat links.
+- PRs: title only, empty body; merge straight away. No status comments on GitHub.
+- No docs, notes or process write-ups unless asked. Only edit files the task needs.
+- Skip screenshot checks for small data/text changes; check visually only for layout work.
