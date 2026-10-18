@@ -88,15 +88,15 @@ window.PROJECTS = [
     slug: "daybook",
     other: true,      // listed under Archive, not on the home strip
     title: "Daybook",
-    subtitle: "Private journal app",
-    year: "",
+    subtitle: "A study of how an app system works",
+    year: "2026",
     category: "App design",
     tags: ["System design", "Encryption", "Firebase"],
     tools: ["Firebase", "GitHub Actions", "Capacitor"],
     summary: [
-      "A private journal app built to study how an app system works: accounts, storage, sync, a screen lock, optional encryption, backup and numbered updates. Each part changed how the screens had to behave. It runs on Android and the web, with Firebase behind it, and was built with an AI coding assistant.",
+      "A self-initiated study of how an app system works, using a personal journal as the subject. The journal is a private writing app for Android and the web, with sign-in, offline writing, encryption, backup and printing. I built the app and documented how its parts (accounts, storage, security, backup and updates) work together.",
     ],
-    links: {},
+    links: { "Source code": "https://github.com/geosubash-glitch/daybook", "Live app": "https://geosubash-glitch.github.io/daybook/" },
     notes: { 0: { label: "Video pitch", text: "A 22-second pitch for Daybook. Sound on." } },
   },
   {
@@ -111,7 +111,7 @@ window.PROJECTS = [
     summary: [
       "A photo editor for old CCD cameras that keeps the sensor's colour quirks instead of correcting them. Each photo is shown in 15 film looks side by side, and the grain is modelled on Ilford HP5. Code logic written with Gemini.",
     ],
-    links: { github: "https://github.com/geosubash-glitch/latentworkspaces-v1.0.15-CCDera" },
+    links: { "Source code": "https://github.com/geosubash-glitch/latentworkspaces-v1.0.15-CCDera" },
     // short notes shown before parts of the board (numbers are the uploaded slide-NN files)
     notes: {
       7: { label: "Stage 01, Discovery bay", text: "Local file mounting, directory scanning and clean metadata ingestion. The clip shows a folder of CCD photos being browsed." },
@@ -210,7 +210,7 @@ window.PROJECTS = [
         "text": "A Li-Po battery without charger noise in the audio, a synth mode, and a printed case."
       }
     ],
-    links: { github: "https://github.com/geosubash-glitch/ESP32-AUDIO-DECK" },
+    links: { "Source code": "https://github.com/geosubash-glitch/ESP32-AUDIO-DECK" },
   },
   {
     slug: "creta-cmf",
@@ -244,7 +244,7 @@ window.ONGOING = [
     summary: [
       "At Nirmal Hriday Bhavan, about a hundred residents, most over 80, are lifted between bed, chair and toilet entirely by hand. This research is looking for an aid that takes that load off carers' backs. The board below is where it stands.",
     ],
-    links: { "Open the research board": "https://www.figma.com/board/MXgtUhK8ImltCtHCKq468F/tcp-?node-id=0-1" },
+    links: { "Research board": "https://www.figma.com/board/MXgtUhK8ImltCtHCKq468F/tcp-?node-id=0-1" },
   },
 ];
 
