@@ -91,8 +91,7 @@ window.PROJECTS = [
     subtitle: "A study of how an app system works",
     year: "2026",
     category: "App design",
-    tags: ["System design", "Encryption", "Firebase"],
-    tools: ["Firebase", "GitHub Actions", "Capacitor"],
+    tags: ["User experience", "Interface design", "System mapping"],
     summary: [
       "A self-initiated study of how an app system works, using a personal journal as the subject. The journal is a private writing app for Android and the web, with sign-in, offline writing, encryption, backup and printing. I built the app and documented how its parts (accounts, storage, security, backup and updates) work together.",
     ],
