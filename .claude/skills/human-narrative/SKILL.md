@@ -87,3 +87,10 @@ but Y", "a testament to", "seamless", "elevate", "delve", "tapestry", "journey",
   Assistive technology, Automotive, Healthcare, CMF design). Never process steps (field
   research, affinity mapping) or tech (Python, ESP32, encryption).
 - The course is the main tag on cards; tags appear only on the project page.
+- How Behance does it: a project has Creative Fields from a fixed list (Industrial Design,
+  Product Design, Automotive Design, Interaction Design, UI/UX...) plus up to 10 free tags for
+  the subject and users (healthcare, elderly care, motorcycle). Follow that: 1–2 fields, then
+  1–2 subject tags.
+- How school showcases (RISD, Sheridan, Carleton, OCAD U) write a one-line brief: what it is,
+  who it is for, what it lets them do. E.g. "Drinking vessels that help older adults eat and
+  drink on their own." Then course and context. No feature list, no process steps.
