@@ -41,11 +41,11 @@ window.PROJECTS = [
   {
     slug: "anchor",
     title: "Anchor",
-    subtitle: "Voice wearable and tabletop light for one-off tasks in later life",
+    subtitle: "Voice wearable and tray light for one-off tasks",
     year: "2026",
     course: "Interactive Product Design",
     category: "Interaction Design",
-    tags: ["Elderly care", "Assistive technology", "Physical computing"],
+    tags: ["User interviews", "Voice interface", "Physical computing"],
     guide: "Lakshya Shrivastava",
     tools: ["Figma", "ESP32", "Foam modelling", "AI renders"],
     summary: [
@@ -56,11 +56,11 @@ window.PROJECTS = [
   {
     slug: "rebrush",
     title: "ReBrush",
-    subtitle: "Motorcycle chain cleaner made from old toothbrushes",
+    subtitle: "Motorcycle chain cleaner",
     year: "2025",
     course: "Simple Product Design",
     category: "Product Design",
-    tags: ["Safety", "Sustainability", "Prototyping"],
+    tags: ["Rapid prototyping", "Rider safety", "Upcycling"],
     duration: "6 weeks",
     guide: "Archana",
     tools: [],
@@ -75,8 +75,9 @@ window.PROJECTS = [
     title: "Lapcare WL-102",
     subtitle: "Keyboard teardown and redesign",
     year: "",
-    category: "Detailing & Assembly",
-    tags: ["Engineering", "Product Design"],
+    course: "Detailing and Assembly",
+    category: "Product Design",
+    tags: ["Teardown", "Part costing", "Redesign"],
     tools: [],
     summary: [
       "I took apart a Lapcare WL-102 wireless keyboard, priced every part, and redesigned it with USB-C charging and keys for volume and mic. The screw count went from 16 to 6.",
@@ -87,10 +88,10 @@ window.PROJECTS = [
     slug: "daybook",
     other: true,      // listed under Archive, not on the home strip
     title: "Daybook",
-    subtitle: "A private journal app, Android and web",
+    subtitle: "Private journal app",
     year: "",
     category: "App design",
-    tags: ["App design", "Systems", "Privacy"],
+    tags: ["System design", "Encryption", "Firebase"],
     tools: ["Firebase", "GitHub Actions", "Capacitor"],
     summary: [
       "A private journal app built to study how an app system works: accounts, storage, sync, a screen lock, optional encryption, backup and numbered updates. Each part changed how the screens had to behave. It runs on Android and the web, with Firebase behind it, and was built with an AI coding assistant.",
@@ -103,8 +104,8 @@ window.PROJECTS = [
     title: "Latent",
     subtitle: "Film emulation for CCD photos",
     year: "",
-    category: "Software & Interface",
-    tags: ["Software", "Interaction"],
+    category: "Software",
+    tags: ["Image processing", "Python", "Interface design"],
     tools: ["Python", "Code logic with Gemini"],
     summary: [
       "A photo editor for old CCD cameras that keeps the sensor's colour quirks instead of correcting them. Each photo is shown in 15 film looks side by side, and the grain is modelled on Ilford HP5. Code logic written with Gemini.",
@@ -123,7 +124,7 @@ window.PROJECTS = [
     subtitle: "ESP32 music player",
     year: "2026",
     category: "Electronics",
-    tags: ["Engineering", "Interaction"],
+    tags: ["ESP32", "Audio", "Embedded firmware"],
     tools: ["ESP32", "C++ / Arduino", "PCM5102A DAC", "SSD1306 OLED", "Code logic with Claude & Gemini"],
     summary: [
       "A music player and Bluetooth receiver with sixteen keys and no touchscreen.",
@@ -213,10 +214,11 @@ window.PROJECTS = [
   {
     slug: "creta-cmf",
     title: "Creta CMF",
-    subtitle: "Colour, material and finish study for the Hyundai Creta",
+    subtitle: "Colour and finish study for the Hyundai Creta",
     year: "2025",
-    category: "Product Design",
-    tags: ["CMF", "Automotive", "Trend research"],
+    course: "Colour, Material and Finish",
+    category: "CMF",
+    tags: ["Trend research", "Colour and finish", "Automotive"],
     guide: "Nimesh Bhushan",
     tools: ["Photoshop", "Illustrator", "AI renders"],
     summary: [
@@ -235,8 +237,8 @@ window.ONGOING = [
     status: "In research",
     course: "Technically Complex Product Design",
     year: "2026",
-    category: "Product Design · Research",
-    tags: ["Research", "Product Design"],
+    category: "Product Design",
+    tags: ["Field research", "Affinity mapping", "Anthropometrics"],
     board: "https://www.figma.com/board/MXgtUhK8ImltCtHCKq468F/tcp-?node-id=0-1",
     summary: [
       "At Nirmal Hriday Bhavan, about a hundred residents, most over 80, are lifted between bed, chair and toilet entirely by hand. This research is looking for an aid that takes that load off carers' backs. The board below is where it stands.",

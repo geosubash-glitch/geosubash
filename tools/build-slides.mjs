@@ -39,7 +39,7 @@ const SOURCES = {
 
 // Projects whose face image isn't ready yet: crop the cover from the top of
 // the slide instead. Remove a slug from here once its real face is uploaded.
-const COVER_FROM_SLIDE = new Set(["daybook"]);
+const COVER_FROM_SLIDE = new Set([]);
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const IN = join(ROOT, "assets/projects");
