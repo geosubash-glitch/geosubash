@@ -97,6 +97,7 @@ window.PROJECTS = [
       "A private journal app built to study how an app system works: accounts, storage, sync, a screen lock, optional encryption, backup and numbered updates. Each part changed how the screens had to behave. It runs on Android and the web, with Firebase behind it, and was built with an AI coding assistant.",
     ],
     links: {},
+    notes: { 0: { label: "Video pitch", text: "A 22-second pitch for Daybook. Sound on." } },
   },
   {
     slug: "latent",

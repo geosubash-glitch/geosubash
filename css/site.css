@@ -186,6 +186,7 @@ body.home #view { touch-action: none; }
 .quote figcaption { margin-top: 16px; }
 .boards { grid-column: 1 / 5; }
 .boards img, .boards video { display: block; width: 100%; height: auto; background: var(--panel); }
+.boards video.pitch { margin-bottom: 64px; background: #000; }
 /* a short note between board parts, in the site's own type */
 .board-note { display: grid; grid-template-columns: repeat(4, 1fr); column-gap: var(--gap); padding: 64px 0 40px; }
 .board-note .label { grid-column: 1 / 3; }

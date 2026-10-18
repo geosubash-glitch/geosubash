@@ -398,49 +398,58 @@ window.ASSETS = {
     "cover": "assets/web/daybook/cover.webp?v=5f29c77e",
     "slides": [
       {
-        "src": "assets/web/daybook/slide-01.webp?v=f7982e7d",
+        "src": "assets/web/daybook/slide-01.mp4?v=b3291a1c",
+        "w": 1920,
+        "h": 1080,
+        "video": true,
+        "part": 0,
+        "audio": true,
+        "webm": "assets/web/daybook/slide-01.webm?v=1766fb86"
+      },
+      {
+        "src": "assets/web/daybook/slide-02.webp?v=f7982e7d",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/daybook/slide-02.webp?v=6768958e",
+        "src": "assets/web/daybook/slide-03.webp?v=6768958e",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/daybook/slide-03.webp?v=9850ca06",
+        "src": "assets/web/daybook/slide-04.webp?v=9850ca06",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/daybook/slide-04.webp?v=fdf7d813",
+        "src": "assets/web/daybook/slide-05.webp?v=fdf7d813",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/daybook/slide-05.webp?v=54840965",
+        "src": "assets/web/daybook/slide-06.webp?v=54840965",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/daybook/slide-06.webp?v=a1132414",
+        "src": "assets/web/daybook/slide-07.webp?v=a1132414",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/daybook/slide-07.webp?v=242d8faa",
+        "src": "assets/web/daybook/slide-08.webp?v=242d8faa",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/daybook/slide-08.webp?v=fe67c180",
+        "src": "assets/web/daybook/slide-09.webp?v=fe67c180",
         "w": 1920,
         "h": 1120,
         "part": 1
