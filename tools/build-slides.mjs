@@ -34,6 +34,7 @@ const SOURCES = {
   "latent": "latent",
   "Tactile Audio Deck": "audio-deck",
   "ongoing/patient-transfers": "patient-transfers",
+  "daybook": "daybook",
 };
 
 // Projects whose face image isn't ready yet: crop the cover from the top of
