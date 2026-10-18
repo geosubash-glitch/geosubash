@@ -41,7 +41,7 @@ window.PROJECTS = [
   {
     slug: "anchor",
     title: "Anchor",
-    subtitle: "Voice wearable and tray light for one-off tasks",
+    subtitle: "Reminder device for older adults",
     year: "2026",
     course: "Interactive Product Design",
     category: "Interaction Design",
