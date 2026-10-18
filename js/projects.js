@@ -45,11 +45,11 @@ window.PROJECTS = [
     year: "2026",
     course: "Interactive Product Design",
     category: "Interaction Design",
-    tags: ["User interviews", "Voice interface", "Physical computing"],
+    tags: ["Product design", "Interaction design", "Assistive design"],
     guide: "Lakshya Shrivastava",
     tools: ["Figma", "ESP32", "Foam modelling", "AI renders"],
     summary: [
-      "Anchor helps older adults remember one-off tasks, such as a bank visit or a short course of medicine, that fall outside their daily routine. A clip-on wearable records the task by voice, and a tray by the door lights up gradually as the time approaches. A working prototype converts spoken Malayalam into a task and time on a round display.",
+      "Anchor helps older adults remember one-off tasks, such as a bank visit or a short course of medicine, that fall outside their daily routine. A clip-on wearable records the task by voice, and a tray by the door lights up gradually as the time approaches.",
     ],
     links: { "Spiral light simulation": "https://geosubash-glitch.github.io/smartlight/" },
   },
@@ -60,7 +60,7 @@ window.PROJECTS = [
     year: "2025",
     course: "Simple Product Design",
     category: "Product Design",
-    tags: ["Rapid prototyping", "Rider safety", "Upcycling"],
+    tags: ["Product design", "Mobility"],
     duration: "6 weeks",
     guide: "Archana",
     tools: [],
@@ -77,7 +77,7 @@ window.PROJECTS = [
     year: "",
     course: "Detailing and Assembly",
     category: "Product Design",
-    tags: ["Teardown", "Part costing", "Redesign"],
+    tags: ["Product design", "Design for assembly"],
     tools: [],
     summary: [
       "I took apart a Lapcare WL-102 wireless keyboard, priced every part, and redesigned it with USB-C charging and keys for volume and mic. The screw count went from 16 to 6.",
@@ -105,7 +105,7 @@ window.PROJECTS = [
     subtitle: "Film emulation for CCD photos",
     year: "",
     category: "Software",
-    tags: ["Image processing", "Python", "Interface design"],
+    tags: ["Interface design", "Photography"],
     tools: ["Python", "Code logic with Gemini"],
     summary: [
       "A photo editor for old CCD cameras that keeps the sensor's colour quirks instead of correcting them. Each photo is shown in 15 film looks side by side, and the grain is modelled on Ilford HP5. Code logic written with Gemini.",
@@ -124,7 +124,7 @@ window.PROJECTS = [
     subtitle: "ESP32 music player",
     year: "2026",
     category: "Electronics",
-    tags: ["ESP32", "Audio", "Embedded firmware"],
+    tags: ["Product design", "Electronics"],
     tools: ["ESP32", "C++ / Arduino", "PCM5102A DAC", "SSD1306 OLED", "Code logic with Claude & Gemini"],
     summary: [
       "A music player and Bluetooth receiver with sixteen keys and no touchscreen.",
@@ -218,7 +218,7 @@ window.PROJECTS = [
     year: "2025",
     course: "Colour, Material and Finish",
     category: "CMF",
-    tags: ["Trend research", "Colour and finish", "Automotive"],
+    tags: ["CMF design", "Automotive"],
     guide: "Nimesh Bhushan",
     tools: ["Photoshop", "Illustrator", "AI renders"],
     summary: [
@@ -238,7 +238,7 @@ window.ONGOING = [
     course: "Technically Complex Product Design",
     year: "2026",
     category: "Product Design",
-    tags: ["Field research", "Affinity mapping", "Anthropometrics"],
+    tags: ["Product design", "Assistive design", "Healthcare"],
     board: "https://www.figma.com/board/MXgtUhK8ImltCtHCKq468F/tcp-?node-id=0-1",
     summary: [
       "At Nirmal Hriday Bhavan, about a hundred residents, most over 80, are lifted between bed, chair and toilet entirely by hand. This research is looking for an aid that takes that load off carers' backs. The board below is where it stands.",
