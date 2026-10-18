@@ -59,9 +59,9 @@
         <span class="label"><span class="n">${String(i + 1).padStart(2, "0")}</span><span>${esc(p.title)}</span></span>
         <span class="frame"${FIT[p.slug] ? ` style="background:${FIT[p.slug]}"` : ""}><span class="pan">${image(p.cover, p.title, { lazy: false, w: 1600, h: 900, style: FIT[p.slug] ? fitStyle(p.slug) : `object-position:${FOCUS[p.slug] ?? 50}% 50%` })}</span></span>
         <span class="info" aria-hidden="true">
-          <span class="info-sub">${esc(p.subtitle || "")}</span>
-          <span class="info-text">${esc(firstSentence(p.summary))}</span>
-          <span class="info-meta label">${esc([p.category, p.year].filter(Boolean).join(", "))}</span>
+          <span class="info-sub">${esc(p.title)}</span>
+          <span class="info-text">${esc(p.subtitle || firstSentence(p.summary))}</span>
+          <span class="info-meta label">${esc([p.course || p.category, p.year].filter(Boolean).join(", "))}</span>
         </span>
       </a>`);
 

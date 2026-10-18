@@ -395,7 +395,7 @@ window.ASSETS = {
     "gallery": []
   },
   "daybook": {
-    "cover": "assets/web/daybook/cover.webp?v=b47a89bf",
+    "cover": "assets/web/daybook/cover.webp?v=5f29c77e",
     "slides": [
       {
         "src": "assets/web/daybook/slide-01.webp?v=f7982e7d",
