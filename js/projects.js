@@ -32,8 +32,8 @@ window.SITE = {
   ],
 
   skills: [
-    "SolidWorks", "Fusion 360", "KeyShot", "Arduino & embedded", "PCB design",
-    "3D printing", "Prototyping", "Sketching", "Figma", "CMF",
+    "Fusion 360", "Arduino & embedded", "PCB design",
+    "3D printing", "Prototyping", "Rapid sketching", "Adobe Creative Suite", "Figma", "CMF",
   ],
 };
 
@@ -49,7 +49,7 @@ window.PROJECTS = [
     guide: "Lakshya Shrivastava",
     tools: ["Figma", "ESP32", "Foam modelling", "AI renders"],
     summary: [
-      "Anchor is a reminder device for older adults, for one-off tasks that fall outside their daily routine, like a bank visit or a short course of medicine. They say the task out loud to a small clip-on device, and a tray by the door slowly lights up as the time gets closer.",
+      "A reminder device that helps older adults keep track of one-off tasks outside their daily routine, like a bank visit or a short course of medicine. They say the task out loud to a small clip-on device, and a tray by the door slowly lights up as the time gets closer.",
     ],
     links: { "Spiral light simulation": "https://geosubash-glitch.github.io/smartlight/" },
   },
@@ -65,7 +65,7 @@ window.PROJECTS = [
     guide: "Archana",
     tools: [],
     summary: [
-      "Many riders clean their chain with an old toothbrush, often with the engine running in gear and a hand close to the sprocket. ReBrush is a holder for two used toothbrushes that cleans both sides of the chain at once and keeps the hand away from it. It went through five rounds of hand-built prototypes, each tried on a bike.",
+      "A holder for two used toothbrushes that lets motorcycle riders clean both sides of the chain at once, with the hand kept away from the sprocket. Many riders clean the chain with an old toothbrush while the engine runs in gear. It went through five rounds of hand-built prototypes, each tried on a bike.",
     ],
     links: {},
   },
@@ -80,7 +80,7 @@ window.PROJECTS = [
     tags: ["Product design", "Design for assembly"],
     tools: [],
     summary: [
-      "I took apart a Lapcare WL-102 wireless keyboard, priced every part, and redesigned it with USB-C charging and keys for volume and mic. The screw count went from 16 to 6.",
+      "A teardown and redesign of the Lapcare WL-102 wireless keyboard. I took it apart, priced every part, and redesigned it with USB-C charging and keys for volume and mic. The screw count went from 16 to 6.",
     ],
     links: {},
   },
@@ -108,7 +108,7 @@ window.PROJECTS = [
     tags: ["Interface design", "Photography"],
     tools: ["Python", "Code logic with Gemini"],
     summary: [
-      "A photo editor for old CCD digital cameras. It keeps the colour quirks of these sensors instead of correcting them, and lets you compare a photo across 15 film looks at once.",
+      "A photo editor that lets people who shoot on old CCD digital cameras keep the colour quirks of these sensors instead of correcting them, and compare a photo across 15 film looks at once.",
     ],
     links: { "Source code": "https://github.com/geosubash-glitch/latentworkspaces-v1.0.15-CCDera" },
     // short notes shown before parts of the board (numbers are the uploaded slide-NN files)
@@ -127,7 +127,7 @@ window.PROJECTS = [
     tags: ["Product design", "Electronics"],
     tools: ["ESP32", "C++ / Arduino", "PCM5102A DAC", "SSD1306 OLED", "Code logic with Claude & Gemini"],
     summary: [
-      "A music player and Bluetooth receiver with sixteen keys and no touchscreen.",
+      "A music player and Bluetooth receiver with sixteen keys and no touchscreen, for listening to WAV files on in-ear monitors.",
     ],
     // image numbers index the gallery (0 = 01.png)
     story: [
@@ -241,7 +241,7 @@ window.ONGOING = [
     tags: ["Product design", "Assistive technology", "Healthcare"],
     board: "https://www.figma.com/board/MXgtUhK8ImltCtHCKq468F/tcp-?node-id=0-1",
     summary: [
-      "At Nirmal Hriday Bhavan, carers lift about a hundred residents, most over 80, between bed, chair and toilet by hand. This project is looking for a product that takes that load off them. The research so far is on the board below.",
+      "Research towards a product that helps carers move older residents between bed, chair and toilet. At Nirmal Hriday Bhavan they lift about a hundred residents, most over 80, entirely by hand. The research so far is on the board below.",
     ],
     links: { "Research board": "https://www.figma.com/board/MXgtUhK8ImltCtHCKq468F/tcp-?node-id=0-1" },
   },
