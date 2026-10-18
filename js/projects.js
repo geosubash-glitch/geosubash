@@ -6,8 +6,8 @@
 window.SITE = {
   name: "Geo Subash",
   role: "Industrial Designer",
-  school: "NID Andhra Pradesh",
-  location: "Kerala, India",
+  school: "NID",
+  location: "India",
   email: "geosubash@gmail.com",
   links: {
     behance: "https://www.behance.net/geosubash",
@@ -27,8 +27,7 @@ window.SITE = {
   intro: "",
 
   about: [
-    "I'm an industrial design student at NID Andhra Pradesh. I like objects that are part physical, part digital, and most of my time goes into the part you don't see: the electronics, mechanisms and code that make an idea actually work.",
-    "Most of what I build starts close to home, from a friction, a habit or a small everyday moment.",
+    "Hi, I'm Geo, an industrial design student at NID. I design products and build them far enough to test them: the form, the electronics inside and the code that runs them. Most of my projects start from something I've noticed in everyday life.",
   ],
 
   skills: [
