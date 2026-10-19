@@ -111,6 +111,7 @@
     // only what helps: who guided it, for which course, when, and where to see more
     const facts = [
       p.guide && esc(`Guided by ${p.guide}`),
+      p.team && esc(`With ${p.team}`),
       p.course && esc(p.course),
       p.year && esc(p.year),
       ...links.map(([k, url]) => linkWithIcon(k, url)),

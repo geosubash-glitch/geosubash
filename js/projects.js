@@ -212,6 +212,20 @@ window.PROJECTS = [
     links: { "Source code": "https://github.com/geosubash-glitch/ESP32-AUDIO-DECK" },
   },
   {
+    slug: "minecraft",
+    title: "Minecraft Progression Map",
+    subtitle: "A map of how Minecraft progression works",
+    year: "2026",
+    course: "Visualisation",
+    category: "Interaction Design",
+    tags: ["Interaction design", "Data visualisation", "Games"],
+    team: "Rishav and Adwaith",
+    summary: [
+      "An interactive map of Minecraft progression, for players who want to see how the game fits together. It lays out 106 key items, from the first oak log to the End, and shows what each one needs and what it unlocks. Trace path lists every step to an item, so the diamond pickaxe comes out as 14 steps back to a wood log.",
+    ],
+    links: { "Live map": "https://geosubash-glitch.github.io/minecraftmap/" },
+  },
+  {
     slug: "creta-cmf",
     title: "Creta CMF",
     subtitle: "Colour and finish study for the Hyundai Creta",
