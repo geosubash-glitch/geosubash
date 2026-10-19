@@ -91,7 +91,7 @@ window.PROJECTS = [
     subtitle: "A study of how an app system works",
     year: "2026",
     category: "App design",
-    tags: ["User experience", "Interface design", "System mapping"],
+    tags: ["User experience", "Interface design", "Systems design"],
     summary: [
       "A self-initiated study of how an app system works, using a personal journal as the subject. The journal is a private writing app for Android and the web, with sign-in, offline writing, encryption, backup and printing. I built the app and documented how its parts (accounts, storage, security, backup and updates) work together.",
     ],
@@ -219,7 +219,7 @@ window.PROJECTS = [
     year: "2026",
     course: "System Visualisation",
     category: "Interaction Design",
-    tags: ["Interaction design", "Data visualisation", "Games"],
+    tags: ["Interaction design", "Data visualisation", "Systems design", "Games"],
     team: "Rishav and Adwaith",
     summary: [
       "An interactive map of Minecraft progression, for players who want to see how the game fits together. It lays out 106 key items, from the first oak log to the End, and shows what each one needs and what it unlocks. Trace path lists every step to an item, so the diamond pickaxe comes out as 14 steps back to a wood log.",
