@@ -216,7 +216,7 @@ window.PROJECTS = [
     title: "Minecraft Progression Map",
     subtitle: "A map of how Minecraft progression works",
     year: "2026",
-    course: "Visualisation",
+    course: "System Visualisation",
     category: "Interaction Design",
     tags: ["Interaction design", "Data visualisation", "Games"],
     team: "Rishav and Adwaith",
