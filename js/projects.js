@@ -213,7 +213,8 @@ window.PROJECTS = [
   },
   {
     slug: "minecraft",
-    title: "Minecraft Progression Map",
+    other: true,      // listed under Archive, not on the home strip
+    title: "Minecraft Map",
     subtitle: "A map of how Minecraft progression works",
     year: "2026",
     course: "System Visualisation",
