@@ -94,3 +94,6 @@ but Y", "a testament to", "seamless", "elevate", "delve", "tapestry", "journey",
 - How school showcases (RISD, Sheridan, Carleton, OCAD U) write a one-line brief: what it is,
   who it is for, what it lets them do. E.g. "Drinking vessels that help older adults eat and
   drink on their own." Then course and context. No feature list, no process steps.
+- Summary is one or two sentences about the project as a whole: what it is, who it's for,
+  what the work covers. Never explain a detail inside it (what the logo means, how a feature
+  works, what happened during the project). Don't name teammates on the site.
