@@ -241,6 +241,21 @@ window.PROJECTS = [
     ],
     links: {},
   },
+  {
+    slug: "skyra",
+    title: "Skyra",
+    subtitle: "Brand identity for a rainwater harvesting company",
+    year: "2026",
+    course: "",
+    category: "Branding",
+    tags: ["Brand identity", "Graphic design", "Print"],
+    tools: ["Illustrator", "Figma", "Photoshop"],
+    summary: [
+      "A brand identity for Skyra, a rainwater harvesting and groundwater recharge company in Kalamassery, Kochi. The mark is an umbrella turned upside down, so the shape collects rain instead of shedding it, set in a block split into a navy sky and a green ground.",
+      "The identity covers a visiting card, an eight-page company profile, a 9 by 4 ft office sign, social posts and a guide for the team building the website. Halfway through, the client switched the wordmark to a capital R and then back, and every file had to be re-set each time. Skyra has no finished sites yet, so the profile uses stock photographs of rain, roofs and soil until real project photos exist.",
+    ],
+    links: {},
+  },
 ];
 
 // Work in progress. `board` is a FigJam link shared as "anyone with the link can view".
