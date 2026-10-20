@@ -45,6 +45,21 @@
   const linkIcon = (url) => (/github\.com/.test(url) ? "github" : /figma\.com/.test(url) ? "figma" : /behance\.net/.test(url) ? "behance" : "web");
   const linkWithIcon = (label, url) =>
     `<a class="plink" href="${esc(url)}"${external(url)}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[linkIcon(url)]}"/></svg><span>${esc(linkName(label))}</span></a>`;
+  // share/<slug>/ is a small page with the project's picture for link previews (WhatsApp etc.)
+  const shareLink = (slug) =>
+    `<a class="plink" href="share/${esc(slug)}/" data-share><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16a3 3 0 0 0-2.4 1.2l-6.7-3.4a3 3 0 0 0 0-1.6l6.7-3.4A3 3 0 1 0 15 7l-6.7 3.4a3 3 0 1 0 0 3.2L15 17a3 3 0 1 0 3-1z"/></svg><span>Share</span></a>`;
+  document.addEventListener("click", async (e) => {
+    const a = e.target.closest("a[data-share]");
+    if (!a) return;
+    e.preventDefault();
+    const url = a.href;
+    try {
+      if (navigator.share) return await navigator.share({ title: document.title, url });
+      await navigator.clipboard.writeText(url);
+      a.querySelector("span").textContent = "Link copied";
+      setTimeout(() => (a.querySelector("span").textContent = "Share"), 2000);
+    } catch {}
+  });
   const lines = (...rows) => rows.filter(Boolean).map(esc).join("<br>");
   // outlined tags under a project's summary
   const chips = (tags, category) => {
@@ -111,10 +126,10 @@
     // only what helps: who guided it, for which course, when, and where to see more
     const facts = [
       p.guide && esc(`Guided by ${p.guide}`),
-      p.team && esc(`With ${p.team}`),
       p.course && esc(p.course),
       p.year && esc(p.year),
       ...links.map(([k, url]) => linkWithIcon(k, url)),
+      shareLink(p.slug),
     ].filter(Boolean);
 
     return {
@@ -198,7 +213,7 @@
           ${o.cover ? `<figure class="hero-img">${image(o.cover, o.title, { lazy: false, w: 1600, h: 900 })}</figure>` : ""}
           <h1 class="title lines">${esc(o.title)}</h1>
           <div class="intro">${paragraphs(o.summary)}</div>
-          <div class="facts"><span class="dot" aria-hidden="true"></span>${esc(o.status || "In progress")}${o.course ? `<br>${esc(o.course)}` : ""}${o.year ? `<br>${esc(o.year)}` : ""}${o.board ? `<br>${linkWithIcon("Research board", o.board)}` : ""}</div>
+          <div class="facts"><span class="dot" aria-hidden="true"></span>${esc(o.status || "In progress")}${o.course ? `<br>${esc(o.course)}` : ""}${o.year ? `<br>${esc(o.year)}` : ""}${o.board ? `<br>${linkWithIcon("Research board", o.board)}` : ""}<br>${shareLink(o.slug)}</div>
           ${chips(o.tags, o.category)}
         </section>
         ${o.board ? `<section class="body grid board"><iframe src="${esc(figmaEmbed(o.board))}" title="${esc(o.title)} research board" loading="lazy" allowfullscreen></iframe></section>` : ""}`,
