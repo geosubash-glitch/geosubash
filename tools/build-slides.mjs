@@ -36,6 +36,7 @@ const SOURCES = {
   "ongoing/patient-transfers": "patient-transfers",
   "daybook": "daybook",
   "minecraft": "minecraft",
+  "skyra": "skyra",
 };
 
 // Projects whose face image isn't ready yet: crop the cover from the top of
