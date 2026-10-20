@@ -461,51 +461,39 @@ window.ASSETS = {
     "cover": "assets/web/minecraft/cover.webp?v=9888581f",
     "slides": [
       {
-        "src": "assets/web/minecraft/slide-01.webp?v=538c17bf",
+        "src": "assets/web/minecraft/slide-01.webp?v=b479f7a8",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/minecraft/slide-02.webp?v=e943ca60",
+        "src": "assets/web/minecraft/slide-02.webp?v=f1dba58c",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/minecraft/slide-03.webp?v=8007c16d",
+        "src": "assets/web/minecraft/slide-03.webp?v=33f030ce",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/minecraft/slide-04.webp?v=02f74352",
+        "src": "assets/web/minecraft/slide-04.webp?v=2a5ddeb4",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/minecraft/slide-05.webp?v=4849a1e8",
+        "src": "assets/web/minecraft/slide-05.webp?v=df93938f",
         "w": 1920,
         "h": 2000,
         "part": 1
       },
       {
-        "src": "assets/web/minecraft/slide-06.webp?v=1ad8b9f8",
+        "src": "assets/web/minecraft/slide-06.webp?v=e5d1266b",
         "w": 1920,
-        "h": 2000,
-        "part": 1
-      },
-      {
-        "src": "assets/web/minecraft/slide-07.webp?v=aabc9aa3",
-        "w": 1920,
-        "h": 2000,
-        "part": 1
-      },
-      {
-        "src": "assets/web/minecraft/slide-08.webp?v=bc2ac6f8",
-        "w": 1920,
-        "h": 723,
+        "h": 996,
         "part": 1
       }
     ],

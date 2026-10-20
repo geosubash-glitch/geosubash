@@ -9,7 +9,7 @@
 - Static site on GitHub Pages; `main` deploys automatically.
 - Content lives in `js/projects.js`. Uploads go in `assets/projects/<folder>/`
   (`face.*` cover, `slide*` long case-study board, anything else = gallery);
-  run `node tools/build-slides.mjs` to rebuild `assets/web/` (folder → slug map at its top).
+  run `node tools/build-slides.mjs` to rebuild `assets/web/` and the `share/<slug>/` link-preview pages (folder → slug map at its top).
 - One site: `index.html` + `css/site.css` + `js/site.js` (the old v1/v2/v3 versions are gone; `/v2/` and
   `/v3/` only forward to the root). `css/admin.css` is only for `/admin.html`.
 - Design: warm charcoal (#1d1c1a) with off-white text; Anybody at 150% width for the name, nav, card

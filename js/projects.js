@@ -220,7 +220,6 @@ window.PROJECTS = [
     course: "System Visualisation",
     category: "Interaction Design",
     tags: ["Interaction design", "Data visualisation", "Systems design", "Games"],
-    team: "Rishav and Adwaith",
     summary: [
       "An interactive map of Minecraft progression, for players who want to see how the game fits together. It lays out 106 key items, from the first oak log to the End, and shows what each one needs and what it unlocks. Trace path lists every step to an item, so the diamond pickaxe comes out as 14 steps back to a wood log.",
     ],
@@ -251,7 +250,7 @@ window.PROJECTS = [
     tags: ["Brand identity", "Graphic design"],
     tools: ["Illustrator", "Figma", "Photoshop"],
     summary: [
-      "A brand identity for Skyra, a rainwater harvesting company in Kochi. The logo is an umbrella turned upside down, so it collects rain instead of shedding it. The work covers the visiting card, company profile, office sign and social posts.",
+      "A brand identity for Skyra, a rainwater harvesting company in Kochi, covering the visiting card, company profile, office sign and social posts.",
     ],
     links: {},
   },
