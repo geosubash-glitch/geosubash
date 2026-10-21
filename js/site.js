@@ -273,7 +273,7 @@
       <section class="hero grid">
         <h1 class="title">Privacy &amp; terms</h1>
         <div class="plain">
-          <p>This site has no cookies, analytics, ads or sign-up forms, and it doesn't collect anything about you.</p>
+          <p>This site has no cookies, ads or sign-up forms. It counts page visits with GoatCounter, which keeps no personal data and doesn't track you across sites.</p>
           <p>It's hosted on GitHub Pages, which keeps standard server logs. The music players come from Spotify, the research board from Figma, and movie posters from Apple and Wikipedia; each of those follows its own privacy policy when it loads.</p>
           <p>If you email me, I'll only use your address to reply.</p>
           <p>All projects, images and text here are my own work unless credited. Please ask before reusing them, and credit me if you share them.</p>
@@ -318,6 +318,17 @@
     wireScramble(document.getElementById("cta-home"));
     watchClips();
     revealLines(animate);
+    countVisit();
+  }
+
+  // page views go to GoatCounter (no cookies, nothing personal); each hash route counts as a page
+  let counted = null;
+  function countVisit() {
+    const path = location.hash.replace(/^#/, "") || "/";
+    if (path === counted) return;
+    counted = path;
+    if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path });
+    else addEventListener("load", () => window.goatcounter?.count?.({ path }), { once: true });
   }
 
   // a fly-in from the strip skips the fade so the image can travel across
