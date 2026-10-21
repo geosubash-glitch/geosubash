@@ -27,8 +27,7 @@ window.SITE = {
   intro: "",
 
   about: [
-    "Hi, I'm Geo, an industrial design student at NID Andhra Pradesh. I work on products that sit between complex technology and the people who use it, from mechanical tools to interactive devices and CMF.",
-    "Every project starts with research: talking to users, watching how they work and mapping who they are. I want the technology inside a product to be useful and easy to use, so I prototype early and test with the people it's meant for.",
+    "Hi, I'm Geo, an industrial designer interested in how things work, how they're made, and how they could work better. I enjoy taking ideas from observation to working prototypes, exploring everything from form and mechanics to the technology behind them.",
   ],
 
   skills: [
