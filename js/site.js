@@ -250,6 +250,7 @@
           <div class="meta label"><div>${lines(...site.location.split(/,\s*/))}</div><div>${lines(site.role, site.school)}</div></div>
         </section>
         <section class="rows grid">
+          ${row("Resume", site.resume && `<p><a href="${esc(site.resume)}" target="_blank" rel="noopener">Download PDF</a></p>`)}
           ${row("Toolkit", `<p>${site.skills.map(esc).join(", ")}</p>`)}
           ${row("Certificates", certs && `<ul>${certs}</ul>`)}
           ${row("Photos", photos && `<div class="photos">${photos}</div>`)}

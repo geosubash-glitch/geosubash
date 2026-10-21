@@ -16,7 +16,7 @@ window.SITE = {
     github: "https://github.com/geosubash-glitch",
   },
   portrait: "assets/about/portrait.webp?v=3",
-  resume: "",                           // e.g. "assets/resume.pdf"
+  resume: "resume/Geo_Subash_Resume.pdf",
 
   // shown on the About page
   certifications: [
@@ -32,7 +32,7 @@ window.SITE = {
   ],
 
   skills: [
-    "Fusion 360", "Arduino & embedded", "PCB design",
+    "Fusion 360", "Rhino 3D", "Blender", "Arduino & embedded", "PCB design (KiCad)",
     "3D printing", "Prototyping", "Rapid sketching", "Adobe Creative Suite", "Figma", "CMF",
   ],
 };
