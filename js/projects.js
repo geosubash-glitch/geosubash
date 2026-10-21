@@ -27,8 +27,8 @@ window.SITE = {
   intro: "",
 
   about: [
-    "Hi, I'm Geo, an industrial design student at NID Andhra Pradesh. I'm drawn to electronics, interactive products and transportation, and to making technology easier for the people who have to live with it.",
-    "Most of my projects start from something I've noticed in everyday life. I spend time with the people who would use the product, then build it far enough to test: the form, the electronics inside and the code that runs it. I use AI tools along the way, mostly to get code and prototypes working sooner.",
+    "Hi, I'm Geo, an industrial design student at NID Andhra Pradesh. I design products with electronics and interaction at their core, and focus on making them simple for the people who use them.",
+    "My process starts with user research and observation, then moves quickly into working prototypes, so that form, mechanism and electronics are tested together.",
   ],
 
   skills: [
