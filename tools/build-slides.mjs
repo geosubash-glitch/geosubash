@@ -211,7 +211,7 @@ await writeFile(join(ROOT, "js/assets.generated.js"),
 const vm = await import("node:vm");
 const ctx = { window: {} };
 vm.runInNewContext(await readFile(join(ROOT, "js/projects.js"), "utf8"), ctx);
-const SITE_URL = "https://geosubash.in/";
+const SITE_URL = "https://geosubash-glitch.github.io/geosubash/";
 const attr = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 const shareDir = join(ROOT, "share");
 await rm(shareDir, { recursive: true, force: true });
