@@ -45,6 +45,10 @@
   const linkIcon = (url) => (/github\.com/.test(url) ? "github" : /figma\.com/.test(url) ? "figma" : /behance\.net/.test(url) ? "behance" : "web");
   const linkWithIcon = (label, url) =>
     `<a class="plink" href="${esc(url)}"${external(url)}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[linkIcon(url)]}"/></svg><span>${esc(linkName(label))}</span></a>`;
+  // no "Save image" menu on project pictures and clips
+  document.addEventListener("contextmenu", (e) => { if (e.target.closest("img, video")) e.preventDefault(); });
+  document.addEventListener("dragstart", (e) => { if (e.target.closest("img, video")) e.preventDefault(); });
+
   // share/<slug>/ is a small page with the project's picture for link previews (WhatsApp etc.)
   const shareLink = (slug) =>
     `<a class="plink" href="share/${esc(slug)}/" data-share><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16a3 3 0 0 0-2.4 1.2l-6.7-3.4a3 3 0 0 0 0-1.6l6.7-3.4A3 3 0 1 0 15 7l-6.7 3.4a3 3 0 1 0 0 3.2L15 17a3 3 0 1 0 3-1z"/></svg><span>Share</span></a>`;
@@ -160,7 +164,7 @@
       if (note) noted.add(s.part);
       const head = note ? `<div class="board-note"><p class="label">${esc(note.label)}</p><p class="text">${esc(note.text)}</p></div>` : "";
       const media = s.video && s.audio
-        ? `<video class="pitch" width="${s.w}" height="${s.h}" controls playsinline preload="metadata" aria-label="${esc(p.title)} video">${s.webm ? `<source src="${esc(asset(s.webm))}" type="video/webm">` : ""}<source src="${esc(asset(s.src))}" type="video/mp4"></video>`
+        ? `<video class="pitch" width="${s.w}" height="${s.h}" controls controlslist="nodownload" playsinline preload="metadata" aria-label="${esc(p.title)} video">${s.webm ? `<source src="${esc(asset(s.webm))}" type="video/webm">` : ""}<source src="${esc(asset(s.src))}" type="video/mp4"></video>`
         : s.video
         ? `<video data-src="${esc(asset(s.src))}"${s.webm ? ` data-webm="${esc(asset(s.webm))}"` : ""} width="${s.w}" height="${s.h}" muted loop playsinline preload="none" aria-label="${esc(note ? note.label : p.title)} screen recording"></video>`
         : `<img src="${esc(asset(s.src))}" width="${s.w}" height="${s.h}" alt="${esc(p.title)} case study, part ${k + 1}" loading="lazy">`;
