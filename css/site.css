@@ -319,3 +319,6 @@ body.home #view { touch-action: none; }
 .bar, .home-foot, .grid, .next { padding-left: calc(var(--pad) + env(safe-area-inset-left)); padding-right: calc(var(--pad) + env(safe-area-inset-right)); }
 .home-foot { padding-bottom: calc(18px + env(safe-area-inset-bottom)); }
 .foot { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+
+/* project images and clips can't be dragged out or long-pressed to save */
+img, video { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; }
