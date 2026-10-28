@@ -206,7 +206,9 @@ body.home #view { touch-action: none; }
 .pics img, .chapter img { width: 100%; background: var(--panel); }
 .caption { margin-top: 8px; color: var(--mute); }
 
-.next { display: block; margin-top: 160px; padding: 0 var(--pad); }
+.ends { display: flex; justify-content: space-between; gap: 24px; margin-top: 160px; padding: 0 var(--pad); }
+.next { display: block; }
+.next.to { text-align: right; }
 .next .title { display: block; margin-top: 6px; transition: color .3s; }
 .next:hover .title { color: var(--mute); }
 
@@ -316,7 +318,7 @@ body.home #view { touch-action: none; }
 
 /* the page runs under the notch and the home bar; keep the text clear of them */
 .bar { padding-top: calc(18px + env(safe-area-inset-top)); }
-.bar, .home-foot, .grid, .next { padding-left: calc(var(--pad) + env(safe-area-inset-left)); padding-right: calc(var(--pad) + env(safe-area-inset-right)); }
+.bar, .home-foot, .grid, .ends { padding-left: calc(var(--pad) + env(safe-area-inset-left)); padding-right: calc(var(--pad) + env(safe-area-inset-right)); }
 .home-foot { padding-bottom: calc(18px + env(safe-area-inset-bottom)); }
 .foot { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
 
