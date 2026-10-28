@@ -342,21 +342,26 @@
   // a fly-in from the strip skips the fade so the image can travel across
   let pendingFly = null;
 
+  // one page change at a time: a click during the fade just changes where it lands
+  let wipe = 0;
   addEventListener("hashchange", () => {
-    const page = route();
+    clearTimeout(wipe);
+    if (document.body.classList.contains("is-intro")) endIntro();
     if (pendingFly) {
       const fly = pendingFly;
       pendingFly = null;
-      show(page);
+      view.classList.remove("leaving");
+      show(route());
       landFly(fly);
       return;
     }
-    if (reducedMotion) return show(page);
+    document.querySelectorAll(".fly").forEach((f) => f.remove());
+    if (reducedMotion) return show(route());
     view.classList.add("leaving");
-    setTimeout(() => {
-      show(page);
+    wipe = setTimeout(() => {
+      show(route());
       view.classList.remove("leaving");
-    }, 350);
+    }, 300);
   });
 
   // ---- text that rises in line by line ----
@@ -783,6 +788,7 @@
     const img = tile.querySelector("img");
     if (!img) return;
     e.preventDefault();
+    if (pendingFly || document.querySelector(".fly")) return;
     const r = (tile.querySelector(".frame") || img).getBoundingClientRect();
     const fly = document.createElement("figure");
     fly.className = "fly";
@@ -794,8 +800,13 @@
     view.classList.add("leaving");
     pendingFly = fly;
     setTimeout(() => {
+      const href = tile.getAttribute("href");
+      // the visitor went somewhere else in the meantime: that choice wins
+      if (pendingFly !== fly) { fly.remove(); view.classList.remove("leaving"); return; }
+      // already on that page (no hashchange will come): just drop the picture and show it
+      if (location.hash === href) { pendingFly = null; fly.remove(); view.classList.remove("leaving"); return; }
       view.classList.remove("leaving");
-      location.hash = tile.getAttribute("href");
+      location.hash = href;
     }, 300);
   }
 
@@ -807,7 +818,7 @@
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const from = fly.getBoundingClientRect(), to = target.getBoundingClientRect();
       const img = fly.querySelector("img");
-      const timing = { duration: 950, easing: "cubic-bezier(.65, 0, .25, 1)", fill: "forwards" };
+      const timing = { duration: 1000, easing: "cubic-bezier(.7, 0, .2, 1)", fill: "forwards" };
       const box = (r) => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
       const flight = fly.animate([box(from), box(to)], timing);
       img.animate([
@@ -878,6 +889,15 @@
     show(first);
   }
 
+  // leaving the home page mid-intro ends it at once, so no other page is left white or half-hidden
+  const introTimers = [];
+  const later = (fn, ms) => introTimers.push(setTimeout(fn, ms));
+  function endIntro() {
+    introTimers.forEach(clearTimeout);
+    introTimers.length = 0;
+    document.body.classList.remove("is-intro", "is-white");
+  }
+
   function introPile() {
     const tiles = [...view.querySelectorAll(".tile")];
     const strip = document.getElementById("strip").getBoundingClientRect();
@@ -901,12 +921,12 @@
       Promise.all(imgs.map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; })))),
       new Promise((r) => setTimeout(r, 1500)),
     ]).then(() => {
-      onScreen.forEach((t, k) => setTimeout(() => {
+      onScreen.forEach((t, k) => later(() => {
         t.style.transition = "transform .9s cubic-bezier(.2,.9,.25,1.02)";
         t.style.transform = t.dataset.pile;
       }, 200 + k * PILE));
       const dealAt = 200 + onScreen.length * PILE + 500;
-      setTimeout(() => {
+      later(() => {
         document.body.classList.remove("is-white");
         tiles.forEach((t) => {
           const k = Math.max(0, onScreen.indexOf(t));
@@ -917,12 +937,12 @@
           t.classList.remove("stacked");
         });
       }, dealAt);
-      setTimeout(() => tiles.forEach((t) => t.classList.remove("on-table")), dealAt + DEAL - 200);
+      later(() => tiles.forEach((t) => t.classList.remove("on-table")), dealAt + DEAL - 200);
       // phones: once every card has landed, the column runs one loop, starting and stopping gently,
       // so the deal and the loop read as two clear moves instead of fighting each other
-      setTimeout(() => spinStrip(), dealAt + DEAL + onScreen.length * 90);
-      setTimeout(() => document.body.classList.remove("is-intro"), dealAt + DEAL + 200);
-      setTimeout(() => tiles.forEach((t) => { t.style.transition = ""; t.style.transitionDelay = ""; }), dealAt + DEAL + 1200);
+      later(() => spinStrip(), dealAt + DEAL + onScreen.length * 90);
+      later(() => document.body.classList.remove("is-intro"), dealAt + DEAL + 200);
+      later(() => tiles.forEach((t) => { t.style.transition = ""; t.style.transitionDelay = ""; }), dealAt + DEAL + 1200);
     });
   }
 })();
