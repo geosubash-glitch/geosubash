@@ -599,10 +599,14 @@
           const shift = shifts[i].toFixed(2);
           put(t, "transform", `translate3d(${vertical ? `0,${shift}px` : `${shift}px,0`},0) scale(${(size * shrink).toFixed(4)})`);
           // and the cards sent back slowly dim, so the one in focus is the only one lit
-          const dim = Math.min(1, blur / 6) * .55;
-          put(frames[i], "filter", blur > .05 ? `blur(${blur.toFixed(2)}px) brightness(${(1 - dim).toFixed(3)})` : "");
+          // blur is costly to repaint, so it moves in half-pixel steps and only on cards in view
+          const span = vertical ? innerHeight : innerWidth, start = geo[i].at + offset + shifts[i];
+          if (start > span + 100 || start + geo[i].len < -100) return;
+          const step = Math.round(blur * 2) / 2;
+          const dim = Math.min(1, step / 6) * .55;
+          put(frames[i], "filter", step ? `blur(${step}px) brightness(${(1 - dim).toFixed(2)})` : "");
           // the name sits a little in front of the picture, nearer the lens, so it goes less soft
-          if (labels[i]) put(labels[i], "filter", blur > .05 ? `blur(${(blur * .35).toFixed(2)}px)` : "");
+          if (labels[i]) put(labels[i], "filter", step ? `blur(${(Math.round(step * .7) / 2)}px)` : "");
         });
       }
       if (!reducedMotion) {
