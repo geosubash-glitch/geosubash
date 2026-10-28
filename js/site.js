@@ -152,7 +152,7 @@
           ${p.story ? chapters(p) : ""}
         </section>
         <nav class="ends">
-          <a class="next" href="${p.other ? "#/other" : "#/"}"><span class="label">Back to</span><span class="title">${p.other ? "Archive" : "Works"}</span></a>
+          <a class="back label" href="${p.other ? "#/other" : "#/"}">Back</a>
           <a class="next to" href="#/work/${next.slug}"><span class="label">Next project</span><span class="title">${esc(next.title)}</span></a>
         </nav>`,
     };
