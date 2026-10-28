@@ -17,6 +17,8 @@
   layer over the page. Home is a looping strip (vertical on phones) with an intro that deals cards
   from a pile on white; resting a card brings it into focus with a short note beside it.
   "Get in touch" scrambles into the email on hover.
+- Motion: only the four lengths in css/site.css (`--t-fast/base/slow/calm`) and two curves (`--ease` for moves,
+  `--ease-out` for things arriving). New animations must use them.
 - Work in progress lives in `window.ONGOING` (js/projects.js): listed under Archive,
   page at `#/now/<slug>` with the FigJam board embedded live.
 - About-page shelf (music, books, photos) is `data/shelf.json` + `assets/shelf/`, edited by the
