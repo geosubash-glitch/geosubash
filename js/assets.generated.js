@@ -391,7 +391,50 @@ window.ASSETS = {
   },
   "patient-transfers": {
     "cover": "assets/web/patient-transfers/cover.webp?v=f207e11a",
-    "slides": [],
+    "slides": [
+      {
+        "src": "assets/web/patient-transfers/slide-01.webp?v=34416ecf",
+        "w": 1400,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/patient-transfers/slide-02.webp?v=e158c7b8",
+        "w": 1400,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/patient-transfers/slide-03.webp?v=b9b51d21",
+        "w": 1400,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/patient-transfers/slide-04.webp?v=6dbdb23b",
+        "w": 1400,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/patient-transfers/slide-05.webp?v=6d35b261",
+        "w": 1400,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/patient-transfers/slide-06.webp?v=78d17c94",
+        "w": 1400,
+        "h": 2000,
+        "part": 1
+      },
+      {
+        "src": "assets/web/patient-transfers/slide-07.webp?v=7615112f",
+        "w": 1400,
+        "h": 1014,
+        "part": 1
+      }
+    ],
     "gallery": []
   },
   "daybook": {

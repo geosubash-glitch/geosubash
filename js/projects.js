@@ -240,6 +240,20 @@ window.PROJECTS = [
     links: {},
   },
   {
+    slug: "patient-transfers",
+    title: "Assisted transfer device",
+    subtitle: "Device for transferring patients at home",
+    year: "2026",
+    course: "Technically Complex Product Design",
+    category: "Product Design",
+    tags: ["Product design", "Assistive technology", "Healthcare"],
+    guide: "Amaltas",
+    summary: [
+      "A compact, helper-centred device for transferring patients with moderate lower-body ability between everyday surfaces. It is designed for an adult aged 60 and above who is helped by one family caregiver at home: at the bed edge, chair and commode, in small rooms and narrow bathrooms.",
+    ],
+    links: {},
+  },
+  {
     slug: "skyra",
     other: true,      // listed under Archive, not on the home strip
     title: "Skyra",
@@ -256,23 +270,7 @@ window.PROJECTS = [
 ];
 
 // Work in progress. `board` is a FigJam link shared as "anyone with the link can view".
-window.ONGOING = [
-  {
-    slug: "patient-transfers",
-    title: "Patient transfers",
-    subtitle: "Research on moving patients",
-    status: "In research",
-    course: "Technically Complex Product Design",
-    year: "2026",
-    category: "Product Design",
-    tags: ["Product design", "Assistive technology", "Healthcare"],
-    board: "https://www.figma.com/board/MXgtUhK8ImltCtHCKq468F/tcp-?node-id=0-1",
-    summary: [
-      "Research towards a product that helps carers move older residents between bed, chair and toilet. At Nirmal Hriday Bhavan they lift about a hundred residents, most over 80, entirely by hand. The research so far is on the board below.",
-    ],
-    links: { "Research board": "https://www.figma.com/board/MXgtUhK8ImltCtHCKq468F/tcp-?node-id=0-1" },
-  },
-];
+window.ONGOING = [];
 
 // merge generated covers and slides
 for (const p of [...window.PROJECTS, ...window.ONGOING]) {
