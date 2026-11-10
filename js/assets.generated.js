@@ -390,7 +390,7 @@ window.ASSETS = {
     ]
   },
   "patient-transfers": {
-    "cover": "assets/web/patient-transfers/cover.webp?v=f207e11a",
+    "cover": "assets/web/patient-transfers/cover.webp?v=65a675e2",
     "slides": [
       {
         "src": "assets/web/patient-transfers/slide-01.webp?v=34416ecf",

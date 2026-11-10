@@ -6,7 +6,7 @@
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // where to centre each cover when it is cropped to a tall frame on the home strip,
-  const FOCUS = { anchor: 50, rebrush: 36, lapcare: 50, "audio-deck": 45, "creta-cmf": 76 };
+  const FOCUS = { "patient-transfers": 46, anchor: 50, rebrush: 36, lapcare: 50, "audio-deck": 45, "creta-cmf": 76 };
   // and how far down to centre it in the wide banner on its project page
   const HERO_Y = { anchor: 20, daybook: 40 };
   // covers shown whole (never cropped or zoomed), on a matching background colour
