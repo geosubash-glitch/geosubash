@@ -38,6 +38,20 @@ window.SITE = {
 
 window.PROJECTS = [
   {
+    slug: "patient-transfers",
+    title: "Assisted transfer device",
+    subtitle: "Device for transferring patients at home",
+    year: "2026",
+    course: "Technically Complex Product Design",
+    category: "Product Design",
+    tags: ["Product design", "Assistive technology", "Healthcare"],
+    guide: "Amaltas",
+    summary: [
+      "A compact, helper-centred device for transferring patients with moderate lower-body ability between everyday surfaces. It is designed for an adult aged 60 and above who is helped by one family caregiver at home: at the bed edge, chair and commode, in small rooms and narrow bathrooms.",
+    ],
+    links: {},
+  },
+  {
     slug: "anchor",
     title: "Anchor",
     subtitle: "Reminder device for older adults",
@@ -236,20 +250,6 @@ window.PROJECTS = [
     tools: ["Photoshop", "Illustrator", "AI renders"],
     summary: [
       "A colour, material and finish proposal for the Hyundai Creta, based on trends in fashion, lifestyle and tech products, mainly premium headphones and earbuds. It pairs soft body colours with copper or brushed aluminium accents, in six colourways inside and out.",
-    ],
-    links: {},
-  },
-  {
-    slug: "patient-transfers",
-    title: "Assisted transfer device",
-    subtitle: "Device for transferring patients at home",
-    year: "2026",
-    course: "Technically Complex Product Design",
-    category: "Product Design",
-    tags: ["Product design", "Assistive technology", "Healthcare"],
-    guide: "Amaltas",
-    summary: [
-      "A compact, helper-centred device for transferring patients with moderate lower-body ability between everyday surfaces. It is designed for an adult aged 60 and above who is helped by one family caregiver at home: at the bed edge, chair and commode, in small rooms and narrow bathrooms.",
     ],
     links: {},
   },
