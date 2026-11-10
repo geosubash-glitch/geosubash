@@ -301,6 +301,8 @@
     let page;
     if (!section || (section === "work" && !slug)) page = { name: "work", ...homePage() };
     else if (section === "work") page = { name: projects.find((p) => p.slug === slug)?.other ? "other" : "work", ...projectPage(slug) };
+    // a project that moved out of work-in-progress keeps its old #/now/ link working
+    else if (section === "now" && slug && projects.some((p) => p.slug === slug)) page = { name: "work", ...projectPage(slug) };
     else if (section === "now" && slug) page = { name: "work", ...ongoingPage(slug) };
     else if (section === "other") page = { name: "other", ...otherPage() };
     else if (section === "about") page = { name: "about", ...aboutPage() };
