@@ -8,7 +8,7 @@ window.SITE = {
   role: "Industrial Designer",
   school: "NID",
   location: "Kerala",
-  email: "geosubash@gmail.com",
+  email: "geo.2023ug023@nid.ac.in",
   links: {
     behance: "https://www.behance.net/geosubash",
     linkedin: "https://www.linkedin.com/in/geo-subash-816a911ba/",
